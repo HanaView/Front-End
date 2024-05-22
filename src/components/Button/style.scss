@@ -1,0 +1,93 @@
+// styles/button.scss
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+
+  &.btn-default {
+    background-color: transparent;
+    color: #333;
+    border-radius: 0;
+  }
+
+  &.btn-primary {
+    background-color: $color-primary;
+    color: #fff;
+  }
+
+  &.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+  }
+
+  &.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+  }
+
+  &.btn-small {
+    padding: 0.25rem 0.5rem;
+  }
+
+  &.btn-medium {
+    padding: 0.5rem 1rem;
+  }
+
+  &.btn-large {
+    height: 50px;
+    width: 361px;
+  }
+
+  &.btn-capsule {
+    border-radius: 999px;
+  }
+
+  &.btn-none {
+    border-radius: 0px;
+  }
+  &.btn-rect {
+    border-radius: 10px;
+  }
+
+  &.btn-loading {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.65;
+  }
+
+  .spinner {
+    margin-right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #fff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+  }
+
+  .icon {
+    margin-right: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
