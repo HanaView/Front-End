@@ -20,14 +20,7 @@ const router = createBrowserRouter([
           { index: true, element: <Consulting /> },
           { path: ":testId", element: <Main /> }
         ]
-      },
-      {
-        path: "auth",
-        children: [
-          { index: true, element: <Camera /> },          
-          { path: ":testId", element: <Main /> }
-        ]
-      },
+      },      
       {
         path: "test",
         children: [
@@ -36,6 +29,10 @@ const router = createBrowserRouter([
         ]
       }
     ]
+  },
+  {
+    path: "auth",
+    element: <Camera />    
   }
 ]);
 
