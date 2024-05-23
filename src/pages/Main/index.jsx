@@ -17,7 +17,9 @@ function Main() {
     <>
       <p>{data.description}</p>
       <Button onClick={() => navigate("/test")}>TEST</Button>
-      <Button onClick={() => navigate("/auth")}>CAMERA</Button>
+      <Button onClick={() => navigate("/auth")}>AUTH</Button>
+      <Button onClick={() => navigate("/camera")}>CAMERA</Button>
+
     </>
   );
 }
