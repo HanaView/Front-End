@@ -10,6 +10,22 @@ import GlobalModal from "@/components/Modal";
 
 function App() {
   const queryClient = new QueryClient();
+
+  const checkBrowserSize = ($rootStyle) => {
+    if (!$rootStyle) {
+      return;
+    }
+    let heightPerOne = window.innerHeight * 0.01;
+    $rootStyle.setProperty("--vh", `${heightPerOne}px`);
+  };
+  const handleResize = () => {
+    checkBrowserSize(document.documentElement.style);
+  };
+  React.useEffect(() => {
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+  }, []);
   return (
     <>
       <QueryClientProvider client={queryClient}>
