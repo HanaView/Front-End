@@ -8,7 +8,9 @@ function Camera() {
     const getCameraStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true
+          video: {
+            facingMode: { exact: "environment" } // 후면 카메라 사용 설정
+          }
         });
         videoRef.current.srcObject = stream;
       } catch (error) {
