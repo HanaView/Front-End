@@ -11,7 +11,7 @@
 .global-modal-overlay {
   &.ReactModal__Overlay--after-open {
     //overlay 수정
-    height: 100vh;
+    height: $vh-100;
     width: 100vw;
     position: absolute;
     bottom: 0;
