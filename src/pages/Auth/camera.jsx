@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import './camera.scss';
+import "./camera.scss";
 function Camera() {
+
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const [capturedImage, setCapturedImage] = useState(null);
 
   useEffect(() => {
     const getCameraStream = async () => {
@@ -14,7 +16,7 @@ function Camera() {
             facingMode: { exact: "environment" } // 후면 카메라 사용 설정
           }
         });
-        videoRef.current.srcObject = stream;
+        videoRef.current.srcObject = stream;     
       } catch (error) {
         console.error("Error accessing camera:", error);
       }
@@ -31,23 +33,27 @@ function Camera() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     const dataURL = canvas.toDataURL("image/png");
     console.log(dataURL);
+    setCapturedImage(dataURL); // 사진 저장
   };
 
   return (
-    <div className="camera-container">
-      <p className="text-container">
-        신분증 인증
-      </p>
+    <div className="camera-container">    
+      <p className="text-container">신분증 인증</p>
       <div className="camera-preview">
         <video ref={videoRef} autoPlay playsInline></video>
         <div className="overlay"></div>
       </div>
       <p className="text-container">
-        영역 안에 신분증이 꽉 차도록 배치 후 <br/>
+        영역 안에 신분증이 꽉 차도록 배치 후 <br />
         하단 버튼을 누르면 촬영됩니다.
       </p>
       <button className="capture-button" onClick={capturePhoto}></button>
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
+      {capturedImage && (
+        <div className="captured-image-container">
+          <img src={capturedImage} alt="Captured" />
+        </div>
+      )}
     </div>
   );
 }
