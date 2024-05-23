@@ -57,12 +57,14 @@ function Auth() {
             />
           </label>
 
-          <Button size="large" shape="rect" onClick={""}>
-            확인
-          </Button>
-          <Button size="large" shape="rect" onClick={""}>
-            취소
-          </Button>
+            <div className="button-container">
+              <Button shape="rect" onClick={""}>
+                확인
+              </Button>
+              <Button shape="rect" onClick={""}>
+                취소
+              </Button>
+            </div>
         </form>
       </div>
     </div>

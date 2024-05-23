@@ -1,4 +1,4 @@
-.Auth { 
+.Auth {
   padding: 20px;
   height: 100vh;
   margin: auto;
@@ -36,7 +36,7 @@ label {
 }
 
 input[type="text"],
-input[type="date"] {  
+input[type="date"] {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -53,7 +53,17 @@ input[type="date"]:focus {
   margin-bottom: 30px;
   padding-top: 30px;
   padding-bottom: 30px;
-  
+
   color: $color-primary;
-  text-align: center;  
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.button-container button {
+  margin-left: 10px;
+  margin-right: 10px; 
 }
