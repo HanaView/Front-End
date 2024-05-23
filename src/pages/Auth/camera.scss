@@ -12,13 +12,16 @@
 .camera-preview {
   position: relative;
   width: 100%;
+  aspect-ratio: 1.7;
   max-width: 400px;
 }
 
 video {
   width: 100%;
-  height: auto;
+  height: 100%;
+  overflow: clip;
   border-radius: 8px;
+  object-fit: cover;
 }
 
 .overlay {
