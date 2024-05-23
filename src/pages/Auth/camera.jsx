@@ -8,9 +8,10 @@ function Camera() {
     const getCameraStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { exact: "environment" } // 후면 카메라 사용 설정
-          }
+          video: true // 전면카메라
+          // video: {
+          //   facingMode: { exact: "environment" } // 후면 카메라 사용 설정
+          // }
         });
         videoRef.current.srcObject = stream;
       } catch (error) {
@@ -37,6 +38,10 @@ function Camera() {
         <video ref={videoRef} autoPlay playsInline></video>
         <div className="overlay"></div>
       </div>
+      <p>
+        영역 안에 신분증이 꽉 차도록 배치 후
+        하단 버튼을 누르면 촬영됩니다.
+      </p>
       <button className="capture-button" onClick={capturePhoto}></button>
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
     </div>
