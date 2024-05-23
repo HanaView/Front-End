@@ -7,6 +7,7 @@ import Main from "@/pages/Main/index";
 import Test from "@/pages/Test";
 import Consulting from "@/pages/Consulting";
 import Camera from "@/pages/Auth/camera";
+import Auth from "@/pages/Auth";
 
 const router = createBrowserRouter([
   {
@@ -31,8 +32,12 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "auth",
+    path: "camera",
     element: <Camera />    
+  },
+  {
+    path: "auth",
+    element: <Auth />    
   }
 ]);
 
