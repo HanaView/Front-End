@@ -6,6 +6,7 @@ import Main from "@/pages/Main/index";
 
 import Test from "@/pages/Test";
 import Consulting from "@/pages/Consulting";
+import Camera from "@/pages/Auth/camera";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,13 @@ const router = createBrowserRouter([
         path: "consulting",
         children: [
           { index: true, element: <Consulting /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
+        path: "auth",
+        children: [
+          { index: true, element: <Camera /> },          
           { path: ":testId", element: <Main /> }
         ]
       },
