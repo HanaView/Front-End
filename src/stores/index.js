@@ -14,3 +14,6 @@ export const initialModalState = {
 };
 //모달
 export const globalModalAtom = atom(initialModalState);
+
+//카메라
+export const capturedImageAtom =atom(null);

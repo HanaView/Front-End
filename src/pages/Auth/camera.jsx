@@ -1,20 +1,23 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "./camera.scss";
+import { useAtom } from "jotai";
+import { capturedImageAtom } from "@/stores";
 function Camera() {
-
+  const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const [capturedImage, setCapturedImage] = useState(null);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const getCameraStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          //video: true // 전면카메라
+          video: true // 전면카메라
 
-          video: {
-            facingMode: { exact: "environment" } // 후면 카메라 사용 설정
-          }
+          // video: {
+          //   facingMode: { exact: "environment" } // 후면 카메라 사용 설정
+          // }
         });
         videoRef.current.srcObject = stream;     
       } catch (error) {
@@ -33,7 +36,9 @@ function Camera() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     const dataURL = canvas.toDataURL("image/png");
     console.log(dataURL);
+    // @ts-ignore
     setCapturedImage(dataURL); // 사진 저장
+    navigate("/auth"); // 사진출력 페이지로 이동
   };
 
   return (
@@ -49,11 +54,11 @@ function Camera() {
       </p>
       <button className="capture-button" onClick={capturePhoto}></button>
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
-      {capturedImage && (
+      {/* {capturedImage && (
         <div className="captured-image-container">
           <img src={capturedImage} alt="Captured" />
         </div>
-      )}
+      )} */}
     </div>
   );
 }
