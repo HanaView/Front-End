@@ -1,20 +1,37 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Camera from "./camera";
 import "./index.scss";
 import Button from "@/components/Button";
+import { useAtom } from "jotai";
+import { capturedImageAtom } from "@/stores";
 
 function Auth() {
+  const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [registNumber, setRegistNumber] = useState("");
   const [address, setAddress] = useState("");
   const [issueDate, setIssueDate] = useState("");
+
+  const onClickCancel = () =>{
+    // @ts-ignore
+    setCapturedImage(null);
+    navigate("/camera");
+  }
 
   return (
     <div className="Auth">
       <div className="container">
         <h2 className="text-container">신분증 인증</h2>
         <div className="id-card">
-          <img src="/path/to/your/id-card-image.png" alt="ID Card" />
+          {capturedImage ? (
+            <img src={capturedImage} alt="Captured" />
+          ) : (
+            <img src="/path/to/your/id-card-image.png" alt="ID Card" />
+          )}
         </div>
+        {/* <Camera setCapturedImage={setCapturedImage} /> */}
         <p className="text-container">
           신분증 정보를 확인해주세요. <br />
           <br />
@@ -57,14 +74,14 @@ function Auth() {
             />
           </label>
 
-            <div className="button-container">
-              <Button shape="rect" onClick={""}>
-                확인
-              </Button>
-              <Button shape="rect" onClick={""}>
-                취소
-              </Button>
-            </div>
+          <div className="button-container">
+            <Button shape="rect" onClick={""}>
+              확인
+            </Button>
+            <Button shape="rect" onClick={onClickCancel}>
+              취소
+            </Button>
+          </div>
         </form>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import RootLayout from "@/Layouts/RootLayout/index";
@@ -9,8 +10,9 @@ import Consulting from "@/pages/Consulting";
 import Camera from "@/pages/Auth/camera";
 import Auth from "@/pages/Auth";
 
+
 const router = createBrowserRouter([
-  {
+  {  
     path: "/",
     element: <RootLayout />,
     children: [
@@ -37,7 +39,7 @@ const router = createBrowserRouter([
   },
   {
     path: "auth",
-    element: <Auth />    
+    element: <Auth/>    
   }
 ]);
 
