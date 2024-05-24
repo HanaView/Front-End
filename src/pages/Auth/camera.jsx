@@ -8,18 +8,18 @@ function Camera() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const getCameraStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true // 전면카메라
+          // video: true // 전면카메라
 
-          // video: {
-          //   facingMode: { exact: "environment" } // 후면 카메라 사용 설정
-          // }
+          video: {
+            facingMode: { exact: "environment" } // 후면 카메라 사용 설정
+          }
         });
-        videoRef.current.srcObject = stream;     
+        videoRef.current.srcObject = stream;
       } catch (error) {
         console.error("Error accessing camera:", error);
       }
@@ -42,7 +42,7 @@ function Camera() {
   };
 
   return (
-    <div className="camera-container">    
+    <div className="camera-container">
       <p className="text-container">신분증 인증</p>
       <div className="camera-preview">
         <video ref={videoRef} autoPlay playsInline></video>
