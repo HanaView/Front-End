@@ -13,11 +13,11 @@ function Camera() {
     const getCameraStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true // 전면카메라
+          //video: true // 전면카메라
 
-          // video: {
-          //   facingMode: { exact: "environment" } // 후면 카메라 사용 설정
-          // }
+          video: {
+            facingMode: { exact: "environment" } // 후면 카메라 사용 설정
+          }
         });
         videoRef.current.srcObject = stream;     
       } catch (error) {
