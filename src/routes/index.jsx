@@ -15,6 +15,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+
     children: [
       { index: true, element: <Main /> },
       {
@@ -39,11 +40,11 @@ const router = createBrowserRouter([
     children: [{ index: true, element: <Home /> }]
   },
   {
-    path: "camera",
+    path: "/camera",
     element: <Camera />
   },
   {
-    path: "auth",
+    path: "/auth",
     element: <Auth />
   }
 ]);
