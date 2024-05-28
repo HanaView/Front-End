@@ -7,5 +7,4 @@ function Consulting() {
     </div>
   );
 }
-
 export default Consulting;
