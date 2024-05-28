@@ -6,16 +6,15 @@ import RootLayout from "@/Layouts/RootLayout/index";
 import Main from "@/pages/Main/index";
 
 import Test from "@/pages/Test";
-import Consulting from "@/pages/Consulting";
+import Consulting from "@/pages/Consulting/Customer";
 import Camera from "@/pages/Auth/camera";
 import Auth from "@/pages/Auth";
 
-
 const router = createBrowserRouter([
-  {  
+  {
     path: "/",
     element: <RootLayout />,
-    
+
     children: [
       { index: true, element: <Main /> },
       {
@@ -24,7 +23,7 @@ const router = createBrowserRouter([
           { index: true, element: <Consulting /> },
           { path: ":testId", element: <Main /> }
         ]
-      },      
+      },
       {
         path: "test",
         children: [
@@ -36,11 +35,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/camera",
-    element: <Camera />    
+    element: <Camera />
   },
   {
     path: "/auth",
-    element: <Auth/>    
+    element: <Auth />
   }
 ]);
 
