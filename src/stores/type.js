@@ -10,3 +10,4 @@ export const UserTypes = {
   TELLER: "TELLER",
   CUSTOMER: "CUSTOMER"
 };
+
