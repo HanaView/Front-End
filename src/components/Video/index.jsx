@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.scss";
 
-const Consulting = () => {
+const ConsultVideo = () => {
   return (
     <div className="Consulting">
       <div className="connection-options">
@@ -25,4 +25,4 @@ const Consulting = () => {
   );
 };
 
-export default Consulting;
+export default ConsultVideo;

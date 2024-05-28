@@ -1,8 +1,10 @@
-// 텔러 화상 상담 화면
 import React from "react";
 //rcfe
 function Consulting() {
-  return <div>컨설팅 화면</div>;
+  return (
+    <div>
+      <div>텔러 상담 화면</div>
+    </div>
+  );
 }
-
 export default Consulting;
