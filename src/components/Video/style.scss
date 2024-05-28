@@ -1,0 +1,43 @@
+.Consulting {
+    padding: 20px;
+  }
+  
+  .connection-options {
+    display: flex;
+  }
+  
+  .option {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .option img {
+    width: 180px;
+    height: 110px;
+  }
+  
+  .section {
+    margin: 0 20px 20px 0;
+  }
+  
+  .title {
+    margin-bottom: 10px;
+  }
+  
+  content {
+    display: flex;
+  }
+  
+  .video-section {
+    width: 500px;
+    height: 400px;
+    background-color: #eaeaea;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: #555;
+  }
+  
