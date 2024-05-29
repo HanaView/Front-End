@@ -65,7 +65,7 @@ function Camera() {
       console.log(formData);
       try {
         const response = await axios.post(
-          "http://localhost:80/api/login/ocr",
+          "http://172.16.20.211:80/api/login/ocr",
           formData,
           {
             headers: {
