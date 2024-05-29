@@ -16,7 +16,7 @@ function CallInfo() {
                     <img className="callBtn" src="/src/assets/images/micOn.png" onClick={toggleMic} alt="mic"/> :
                     <img className="callBtn" src="/src/assets/images/micOff.png" onClick={toggleMic} alt="mic"/> 
                 }
-                <img className="callBtn" src="/src/assets/images/endCallBtn.png"/>
+                <img className="callBtn" id="endCallBtn" src="/src/assets/images/endCallBtn.png"/>
             </div>
         </div>
     );
