@@ -1,0 +1,27 @@
+.homePage {
+  display: flex;
+  height: calc(100vh - $footer-height - 40px);
+  justify-content: center;
+}
+
+.homeLogo {
+  height: 100px;
+  width: 216px;
+  position: absolute;
+  background-image: url(@/assets/images/hanaLogo.svg);
+  background-size: inherit;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.homeCenter {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .title {
+    font-size: 50px;
+    margin-bottom: 50px;
+    color: $color-primary;
+  }
+}

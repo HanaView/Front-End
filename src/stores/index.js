@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { SideButtonTypes } from "./type";
+import { getUserTypeFromStorage } from "@/common/hooks/Auth";
 
 //네비게이션 버튼
 export const selectedSideButtonAtom = atom(SideButtonTypes.NONE);
@@ -16,4 +17,7 @@ export const initialModalState = {
 export const globalModalAtom = atom(initialModalState);
 
 //카메라
-export const capturedImageAtom =atom(null);
+export const capturedImageAtom = atom(null);
+
+//인증
+export const userTypeAtom = atom(getUserTypeFromStorage());
