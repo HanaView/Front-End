@@ -4,6 +4,8 @@ import "./camera.scss";
 import { useAtom } from "jotai";
 import { capturedImageAtom } from "@/stores";
 import axios from "axios";
+import imageCompression from "browser-image-compression"; // 이미지 압축 라이브러리
+
 function Camera() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
   const [file, setFile] = useState(null);
@@ -16,10 +18,11 @@ function Camera() {
     const getCameraStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          //video: true // 전면카메라
-
           video: {
-            facingMode: { exact: "environment" } // 후면 카메라 사용 설정
+            //facingMode: { exact: "environment" }, // 후면 카메라 사용 설정
+            facingMode: "user",
+            width: { ideal: 518 }, // 원하는 해상도를 설정
+            height: { ideal: 320 } // 원하는 해상도를 설정
           }
         });
         videoRef.current.srcObject = stream;
@@ -30,37 +33,34 @@ function Camera() {
     getCameraStream();
   }, []);
 
-  // const capturePhoto = () => {
-  //   const canvas = canvasRef.current;
-  //   const video = videoRef.current;
-  //   const context = canvas.getContext("2d");
-  //   canvas.width = video.videoWidth;
-  //   canvas.height = video.videoHeight;
-  //   context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  //   const dataURL = canvas.toDataURL("image/png");
-  //   console.log(dataURL);
-  //   // @ts-ignore
-  //   setCapturedImage(dataURL); // 사진 저장
-  //   navigate("/auth"); // 사진출력 페이지로 이동
-  // };
-
   const captureAndUpload = async () => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d");    
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    context.drawImage(video, 0, 0, 518, 320);
 
-    const dataURL = canvas.toDataURL("image/png");
+    const dataURL = canvas.toDataURL("image/jpg");
     console.log(dataURL);
 
     // @ts-ignore
     setCapturedImage(dataURL); // 사진 저장
 
     canvas.toBlob(async (blob) => {
+      // // 이미지 압축 옵션 설정
+      // const options = {
+      //   maxSizeMB: 1, // 최대 파일 크기 (MB 단위)
+      //   maxWidthOrHeight: 1280, // 최대 너비 또는 높이
+      //   useWebWorker: true // 웹 워커 사용 (성능 향상)
+      // };
+
+      // // 이미지 압축
+      // const compressedBlob = await imageCompression(blob, options);
+
       const formData = new FormData();
-      formData.append("file", blob, "captured_image.png");
+      formData.append("file", blob, "captured_image.jpg");
       console.log("###");
       console.log(formData);
       try {
@@ -80,7 +80,7 @@ function Camera() {
         localStorage.setItem("ocrData", JSON.stringify(response.data));
 
         // 사진출력 페이지로 이동
-        navigate("/auth"); 
+        navigate("/auth");
       } catch (error) {
         console.error("Error uploading image:", error);
         if (error.response) {
@@ -89,7 +89,7 @@ function Camera() {
           console.error("Response headers:", error.response.headers);
         }
       }
-    }, "image/png");
+    }, "image/jpg");
   };
 
   return (
