@@ -4,4 +4,4 @@ export const getTest = async () =>
   await onRequest({
     method: "GET",
     url: `/repos/TanStack/query`
-  });
+  })
