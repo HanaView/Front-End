@@ -2,7 +2,7 @@ import CallInfo from "@/components/CallInfo";
 import Chat from "@/components/Chat";
 import React from "react";
 import "./style.scss";
-import ConsultVideo from "@/components/Video/index";
+import ConsultVideo from "@/components/Video/";
 
 
 //rcfe
