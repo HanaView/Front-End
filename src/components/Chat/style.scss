@@ -1,0 +1,27 @@
+#chatDiv {
+    border: 6px solid #008E71;
+    border-radius: 50px;
+    width: 300px;
+    height: calc(100% - 120px);
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+#chatInputContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#chatContainer {
+    height: 90%;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+  }
+
+#chatInputContainer > input {
+    width: 75%;
+    padding: 0 10px;
+    border-radius: 50px;
+}
