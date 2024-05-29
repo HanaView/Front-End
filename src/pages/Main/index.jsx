@@ -9,17 +9,20 @@ import useMain from "./useMain";
 function Main() {
   const navigate = useNavigate();
 
-  const { onChangeUserType } = useMain();
-  const { data } = useQuery({
-    queryKey: ["test"],
-    queryFn: () => getTest()
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["test"],
+  //   queryFn: () => getTest()
+  // });
 
-  if (!data) return <></>;
+
+  const { onChangeUserType } = useMain();
+
+
+  // if (!data) return <></>;
 
   return (
     <>
-      <p>{data.description}</p>
+      {/* <p>{data.description}</p> */}
       <Button onClick={() => navigate("/test")}>TEST</Button>
       <Button onClick={() => navigate("/auth")}>AUTH</Button>
       <Button onClick={() => navigate("/camera")}>CAMERA</Button>
