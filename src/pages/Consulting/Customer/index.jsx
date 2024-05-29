@@ -10,8 +10,10 @@ function Consulting() {
   return (
     <div className="serviceContainer">
       <ConsultVideo />
-      <CallInfo/>
-      <Chat/>
+      <div id="consultRightSection">
+        <CallInfo/>
+        <Chat/>
+      </div>     
     </div>
   );
 }
