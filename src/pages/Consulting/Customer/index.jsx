@@ -1,13 +1,19 @@
+import CallInfo from "@/components/CallInfo";
+import Chat from "@/components/Chat";
 import React from "react";
-import Consulting from "@/components/Video/index";
-import "./index.scss"; // customer/index.jsx의 스타일 파일
+import "./style.scss";
+import ConsultVideo from "@/components/Video/";
 
-const CustomerPage = () => {
+
+//rcfe
+function Consulting() {
   return (
-    <div className="CustomerPage">
-      <Consulting />
+    <div className="serviceContainer">
+      <ConsultVideo />
+      <CallInfo/>
+      <Chat/>
     </div>
   );
-};
+}
 
-export default CustomerPage;
+export default Consulting;
