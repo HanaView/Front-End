@@ -11,8 +11,7 @@
 
 .camera-preview {
   position: relative;
-  width: 100%;
-  // aspect-ratio: 1.7;
+  width: 100%; 
   max-width: 400px;
   aspect-ratio: 8.6 / 5.4; /* 민증 사진 비율 */
 }
