@@ -1,18 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "./camera.scss";
 import { useAtom } from "jotai";
 import { capturedImageAtom } from "@/stores";
 import axios from "axios";
 import imageCompression from "browser-image-compression"; // 이미지 압축 라이브러리
 
-function Camera() {
+function Camera() { 
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
   const [file, setFile] = useState(null);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const key = searchParams.get('key');
 
   useEffect(() => {
     const getCameraStream = async () => {
@@ -51,6 +54,7 @@ function Camera() {
     canvas.toBlob(async (blob) => {     
       const formData = new FormData();
       formData.append("file", blob, "captured_image.jpg");
+      formData.append("key", key);
       console.log("###");
       console.log(formData);
       try {
