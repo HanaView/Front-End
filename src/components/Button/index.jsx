@@ -10,7 +10,7 @@ function Button({
   className = "",
   style = {},
   color = "primary",
-  size = "medium",
+  size = "small",
   shape = "capsule",
   children,
   icon = undefined,

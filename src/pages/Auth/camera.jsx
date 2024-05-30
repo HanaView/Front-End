@@ -22,7 +22,7 @@ function Camera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            //facingMode: { exact: "environment" }, // 후면 카메라 사용 설정
+            // facingMode: { exact: "environment" }, // 후면 카메라 사용 설정
             facingMode: "user", // 전면 카메라 사용 설정
             width: { ideal: 518 }, // 원하는 해상도를 설정
             height: { ideal: 320 } // 원하는 해상도를 설정
