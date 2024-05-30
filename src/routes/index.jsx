@@ -10,6 +10,7 @@ import Camera from "@/pages/Auth/camera";
 import Auth from "@/pages/Auth";
 import Home from "@/pages/Home";
 import Footer from "@/Layouts/Footer";
+import Login from "@/pages/Login";
 
 
 const router = createBrowserRouter([
@@ -19,10 +20,17 @@ const router = createBrowserRouter([
 
     children: [
       { index: true, element: <Main /> },
+      // {
+      //   path: "consulting",
+      //   children: [
+      //     { index: true, element: <Consulting /> },
+      //     { path: ":testId", element: <Main /> }
+      //   ]
+      // },
       {
-        path: "consulting",
+        path: "login",     
         children: [
-          { index: true, element: <Consulting /> },
+          { index: true, element: <Login /> },
           { path: ":testId", element: <Main /> }
         ]
       },
@@ -39,7 +47,7 @@ const router = createBrowserRouter([
     path: "/home",
     element: <Footer />,
     children: [{ index: true, element: <Home /> }]
-  },
+  },  
   {
     path: "/camera",
     element: <Camera />
