@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import Chat from "../Chat";
 
 const WebRTCVideoCall = () => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [screenShareStream, setScreenShareStream] = useState(null);
-  const [dataChannel, setDataChannel] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [messageQueue, setMessageQueue] = useState([]);
   const [iceCandidatesQueue, setIceCandidatesQueue] = useState([]);
-  const [messages, setMessages] = useState([]);
   const [isMuted, setIsMuted] = useState(false);
 
   const localVideoRef = useRef(null);
@@ -30,6 +29,9 @@ const WebRTCVideoCall = () => {
   const MAX_MESSAGE_SIZE = 4 * 1024; // 4KB
   let initialOfferMLineOrder = null; // m-line 순서를 저장하는 변수
   const messageParts = []; // 청크를 저장하는 배열
+
+  const [messages, setMessages] = useState([]);
+  const [dataChannel, setDataChannel] = useState(null);
 
   useEffect(() => {
     initializeWebSocket();
@@ -317,18 +319,12 @@ const WebRTCVideoCall = () => {
         <video ref={remoteVideoRef} autoPlay playsInline></video>
         <video ref={screenShareVideoRef} autoPlay playsInline></video>
       </div>
-      <div>
+      {/* <div>
         <input ref={chatInputRef} type="text" placeholder="메시지를 입력하세요" />
         <button onClick={handleSendMessage}>전송</button>
-      </div>
-      <div>
-        {messages.map((message, index) => (
-          <div key={index}>
-            <strong>{message.sender}:</strong> {message.content}{" "}
-            <span>{message.timestamp}</span>
-          </div>
-        ))}
-      </div>
+      </div> */}
+      <Chat sendMessage={sendMessage} messages={messages} />
+
     </div>
   );
 };
