@@ -19,8 +19,8 @@ function Camera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: { exact: "environment" }, // 후면 카메라 사용 설정
-            // facingMode: "user", // 전면 카메라 사용 설정
+            //facingMode: { exact: "environment" }, // 후면 카메라 사용 설정
+            facingMode: "user", // 전면 카메라 사용 설정
             width: { ideal: 518 }, // 원하는 해상도를 설정
             height: { ideal: 320 } // 원하는 해상도를 설정
           }
@@ -48,17 +48,7 @@ function Camera() {
     // @ts-ignore
     setCapturedImage(dataURL); // 사진 저장
 
-    canvas.toBlob(async (blob) => {
-      // // 이미지 압축 옵션 설정
-      // const options = {
-      //   maxSizeMB: 1, // 최대 파일 크기 (MB 단위)
-      //   maxWidthOrHeight: 1280, // 최대 너비 또는 높이
-      //   useWebWorker: true // 웹 워커 사용 (성능 향상)
-      // };
-
-      // // 이미지 압축
-      // const compressedBlob = await imageCompression(blob, options);
-
+    canvas.toBlob(async (blob) => {     
       const formData = new FormData();
       formData.append("file", blob, "captured_image.jpg");
       console.log("###");

@@ -4,11 +4,12 @@ import Camera from "./camera";
 import "./index.scss";
 import Button from "@/components/Button";
 import { useAtom } from "jotai";
-import { capturedImageAtom } from "@/stores";
+import { capturedImageAtom, globalModalAtom } from "@/stores";
 import axios from "axios";
 
 function Auth() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
+  const [modalData, setModalData] = useAtom(globalModalAtom); // 모달
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [registNumber, setRegistNumber] = useState("");
@@ -16,23 +17,9 @@ function Auth() {
   const [issueDate, setIssueDate] = useState("");
 
   useEffect(() => {
-    // Fetch the OCR data from the backend
-    // axios
-    //   .get("http://localhost:80/api/login/ocr") // Adjust the URL as needed
-    //   .then((response) => {
-    //     const data = response.data;
-    //     setName(data.username);
-    //     setRegistNumber(data.usernum);
-    //     setAddress(data.useraddress);
-    //     setIssueDate(data.userdate);
-    //   })
-    //   .catch((error) => {
-    //     console.error("There was an error fetching the OCR data!", error);
-    //   });
-
     const ocrData = JSON.parse(localStorage.getItem("ocrData"));
     if (ocrData) {
-      console.log("??",ocrData);
+      // console.log("??",ocrData);
       setName(ocrData.data.username);
       setRegistNumber(ocrData.data.usernum);
       setAddress(ocrData.data.useraddress);
@@ -40,24 +27,33 @@ function Auth() {
     }
   }, []);
 
-  // db에 저장할 내용들
-  const handleSubmit = (e) => {
-    // e.preventDefault();
-    // // Save the form data to the backend
-    // const formData = {
-    //   name,
-    //   registNumber,
-    //   address,
-    //   issueDate
-    // };
-    // axios
-    //   .post("/saveData", formData) // Adjust the URL as needed
-    //   .then((response) => {
-    //     alert("Data saved successfully!");
-    //   })
-    //   .catch((error) => {
-    //     console.error("There was an error saving the data!", error);
-    //   });
+  // redis에 저장할 내용들
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get("/getUserData", {
+        params: { userId: "yourUserId" }
+      }); // Adjust userId as needed
+      const userData = response.data;
+
+      if (name === userData.name && registNumber === userData.registNumber) {
+        // 본인인증이 완료되었을때
+        setModalData((prevState) => ({
+          ...prevState,
+          isOpen: true,
+          content: "본인인증이 완료되었습니다"
+        }));
+      } else {
+        // 본인인증이 틀렸을때
+        setModalData((prevState) => ({
+          ...prevState,
+          isOpen: true,
+          content: "다시 입력해주세요"
+        }));
+      }
+    } catch (error) {
+      console.error("There was an error fetching the user data!", error);
+    }
   };
 
   const onClickCancel = () => {
@@ -81,7 +77,6 @@ function Auth() {
             <img src="/path/to/your/id-card-image.png" alt="ID Card" />
           )}
         </div>
-        {/* <Camera setCapturedImage={setCapturedImage} /> */}
         <p className="text-container">
           신분증 정보를 확인해주세요. <br />
           <br />
@@ -137,5 +132,5 @@ function Auth() {
     </div>
   );
 }
-  
+
 export default Auth;
