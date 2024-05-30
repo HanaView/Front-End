@@ -10,6 +10,7 @@ import Camera from "@/pages/Auth/camera";
 import Auth from "@/pages/Auth";
 import Home from "@/pages/Home";
 import Footer from "@/Layouts/Footer";
+import ConsultVideo from "@/components/Video";
 
 
 const router = createBrowserRouter([
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
       {
         path: "consulting",
         children: [
-          { index: true, element: <Consulting /> },
+          { index: true, element: <ConsultVideo /> },
           { path: ":testId", element: <Main /> }
         ]
       },
