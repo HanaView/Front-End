@@ -10,8 +10,8 @@ function Consulting() {
   return (
     <div className="serviceContainer">
       <WebRTCVideoCall />
-      {/* <CallInfo/>
-      <Chat/> */}
+      <CallInfo/>
+      <Chat/>
     </div>
   );
 }

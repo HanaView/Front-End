@@ -85,8 +85,7 @@ const WebRTCVideoCall = () => {
       sendMessage({ offer: peerConnection.current.localDescription });
     };
     
-    
-
+  
     setTimeout(createOffer, 1000);
 
     return () => {
