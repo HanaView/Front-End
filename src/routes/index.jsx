@@ -11,6 +11,8 @@ import Auth from "@/pages/Auth";
 import Home from "@/pages/Home";
 import Footer from "@/Layouts/Footer";
 import Login from "@/pages/Login";
+import AfterTeller from "@/pages/After/index_teller";
+import AfterCustomer from "@/pages/After/index_customer";
 
 
 const router = createBrowserRouter([
@@ -31,6 +33,20 @@ const router = createBrowserRouter([
         path: "login",     
         children: [
           { index: true, element: <Login /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
+        path: "afterTeller",     
+        children: [
+          { index: true, element: <AfterTeller /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
+        path: "afterCustomer",     
+        children: [
+          { index: true, element: <AfterCustomer /> },
           { path: ":testId", element: <Main /> }
         ]
       },

@@ -25,6 +25,7 @@ function Home() {
               시작하기
             </Button>
           </div>
+          <div className="hanaCharacter"></div>
         </div>
       </div>
     </>
