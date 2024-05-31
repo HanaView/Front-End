@@ -20,44 +20,45 @@ const customStyles = {
   }
 };
 
+export const closeModal = (setModalData) => {
+  setModalData(initialModalState);
+};
+
 function GlobalModal() {
   const [modalData, setModalData] = useAtom(globalModalAtom);
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    // subtitle.style.color = "#f00";
-  }
 
-  const closeModal = () => {
-    setModalData(initialModalState);
-  };
   const onClickConfirmButton = () => {
     if (modalData.onClickConfirm) modalData.onClickConfirm();
-    else closeModal();
+    else closeModal(setModalData);
   };
 
   return (
     <Modal
       isOpen={modalData.isOpen}
-      onAfterOpen={afterOpenModal}
-      onRequestClose={closeModal}
+      // onAfterOpen={afterOpenModal}
+      onRequestClose={() => closeModal(setModalData)}
       // @ts-ignore
       style={customStyles}
       overlayClassName={"global-modal-overlay"}
     >
-      <Button color="default" className="right close-btn" onClick={closeModal}>
+      <Button
+        color="default"
+        className="right close-btn"
+        onClick={() => closeModal(setModalData)}
+      >
         x
       </Button>
       <div className="center">
         {modalData.children ? (
           modalData.children
         ) : (
-          <span>modalData.content</span>
+          <span>{modalData.content}</span>
         )}
       </div>
       <Button
         className="global-modal-button"
         shape="rect"
-        onClick={onClickConfirmButton}
+        onClick={() => onClickConfirmButton()}
       >
         {modalData.confirmButtonText ? modalData.confirmButtonText : "확인"}
       </Button>

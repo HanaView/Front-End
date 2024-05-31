@@ -1,18 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "./camera.scss";
 import { useAtom } from "jotai";
 import { capturedImageAtom } from "@/stores";
 import axios from "axios";
 import imageCompression from "browser-image-compression"; // 이미지 압축 라이브러리
 
-function Camera() {
+function Camera() { 
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
   const [file, setFile] = useState(null);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const key = searchParams.get('key');
 
   useEffect(() => {
     const getCameraStream = async () => {
@@ -48,19 +51,10 @@ function Camera() {
     // @ts-ignore
     setCapturedImage(dataURL); // 사진 저장
 
-    canvas.toBlob(async (blob) => {
-      // // 이미지 압축 옵션 설정
-      // const options = {
-      //   maxSizeMB: 1, // 최대 파일 크기 (MB 단위)
-      //   maxWidthOrHeight: 1280, // 최대 너비 또는 높이
-      //   useWebWorker: true // 웹 워커 사용 (성능 향상)
-      // };
-
-      // // 이미지 압축
-      // const compressedBlob = await imageCompression(blob, options);
-
+    canvas.toBlob(async (blob) => {     
       const formData = new FormData();
       formData.append("file", blob, "captured_image.jpg");
+      formData.append("key", key);
       console.log("###");
       console.log(formData);
       try {
