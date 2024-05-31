@@ -3,23 +3,35 @@ import "./index_teller.scss";
 import Button from "@/components/Button";
 
 function AfterTeller() {
-  const [customer, setCustomer] = useState("");
+  const [customer, setCustomer] = useState("박병철");
   const [teller, setTeller] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
+
+  const handleChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleSubmit = (e) => { // '확인'버튼 눌렀을때 전송될 내용
+
+  }
 
   return (
     <>
-      <div className="AfterContainer">
-        <div className="loginForm">
+      <form className="AfterTellerContainer">
+        <div className="title">상담 내용을 기록해주세요</div>
+        <div className="dummy"></div>
+        <div className="formContainer">
           <label>
             담당고객
             <input
               className="inputForm"
               type="text"
-              placeholder="김서윤"
-              value={customer}      
-              disabled        
+              //placeholder="박병철"
+              value={customer}
+              style={{ width: "30%" }}
+              disabled
             />
           </label>
           <label>
@@ -27,10 +39,25 @@ function AfterTeller() {
             <input
               className="inputForm"
               type="text"
-              placeholder="임탁균"
-              value={teller}    
-              disabled          
+              placeholder="김서윤"
+              value={teller}
+              style={{ width: "30%" }}
+              disabled
             />
+          </label>
+          <label>
+            업무 선택
+            <select
+              className="inputForm"
+              value={selectedOption}
+              onChange={handleChange}
+            >
+              <option value="">업무 선택</option>
+              <option value="option1">예/적금</option>
+              <option value="option2">카드</option>
+              <option value="option3">대출</option>
+              <option value="option4">전자금융</option>
+            </select>
           </label>
           <label>
             제목
@@ -44,16 +71,20 @@ function AfterTeller() {
           </label>
           <label>
             내용
-            <input
-              className="inputForm"
-              type="text"
+            <textarea
+              className="textareaForm"
               placeholder="내용을 입력해주세요"
               value={content}
+              style={{ height: "150px" }}
               onChange={(e) => setContent(e.target.value)}
             />
           </label>
         </div>
-      </div>
+
+        <Button type="submit" shape="rect" onClick={handleSubmit} >
+          확인
+        </Button>
+      </form>
     </>
   );
 }
