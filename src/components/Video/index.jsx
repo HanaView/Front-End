@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import Chat from "../Chat";
 
 const WebRTCVideoCall = () => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [screenShareStream, setScreenShareStream] = useState(null);
+  const [dataChannel, setDataChannel] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [messageQueue, setMessageQueue] = useState([]);
   const [iceCandidatesQueue, setIceCandidatesQueue] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [isMuted, setIsMuted] = useState(false);
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const screenShareVideoRef = useRef(null);
-  const largeVideoRef = useRef(null);
-  const largeVideoContainerRef = useRef(null);
   const chatInputRef = useRef(null);
 
   const localStreamRef = useRef(null);
@@ -25,33 +24,17 @@ const WebRTCVideoCall = () => {
     })
   );
 
-  let reconnectAttempts = useRef(0); // 재연결 시도 횟수를 추적하는 변수
+  const reconnectAttempts = useRef(0); // 재연결 시도 횟수를 추적하는 변수
   const MAX_MESSAGE_SIZE = 4 * 1024; // 4KB
-  let initialOfferMLineOrder = null; // m-line 순서를 저장하는 변수
   const messageParts = []; // 청크를 저장하는 배열
-
-  const [messages, setMessages] = useState([]);
-  const [dataChannel, setDataChannel] = useState(null);
 
   useEffect(() => {
     initializeWebSocket();
-
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        setLocalStream(stream);
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
-        stream.getTracks().forEach((track) => {
-          peerConnection.current.addTrack(track, stream);
-        });
-      })
-      .catch((error) => console.error("Error accessing media devices.", error));
+    getUserMedia();
 
     peerConnection.current.onicecandidate = (event) => {
       if (event.candidate) {
-        console.log('ICE candidate 생성:', event.candidate);
+        console.log("ICE candidate 생성:", event.candidate);
 
         iceCandidatesQueue.push(event.candidate);
         sendIceCandidates();
@@ -59,36 +42,52 @@ const WebRTCVideoCall = () => {
     };
 
     peerConnection.current.ontrack = (event) => {
-      console.log('원격 피어로부터 수신된 스트림 배열:', event.streams[0]);
+      console.log("원격 피어로부터 수신된 스트림 배열:", event.streams[0]);
       setRemoteStream(event.streams[0]);
       remoteVideoRef.current.srcObject = event.streams[0];
     };
 
-    const createOffer = async () => {
-      const newChannel = peerConnection.current.createDataChannel('chat');
+    peerConnection.current.ondatachannel = (event) => {
+      const newChannel = event.channel;
       setDataChannel(newChannel);
-    
+
       newChannel.onopen = () => {
-        console.log("채팅용 데이터 채널이 열렸습니다.");
-        // 데이터 채널이 열리면 큐에 있는 메시지를 전송합니다.
+        console.log("데이터 채널 열림");
         while (messageQueue.length > 0) {
           const message = messageQueue.shift();
           newChannel.send(message);
         }
       };
-    
+
       newChannel.onmessage = (event) => {
         console.log("받은 메시지:", event.data);
         displayChatMessage("Remote", event.data);
       };
-    
+    };
+
+    const createOffer = async () => {
+      const newChannel = peerConnection.current.createDataChannel("chat");
+      setDataChannel(newChannel);
+
+      newChannel.onopen = () => {
+        console.log("채팅용 데이터 채널이 열렸습니다.");
+        while (messageQueue.length > 0) {
+          const message = messageQueue.shift();
+          newChannel.send(message);
+        }
+      };
+
+      newChannel.onmessage = (event) => {
+        console.log("받은 메시지:", event.data);
+        displayChatMessage("Remote", event.data);
+      };
+
       const offer = await peerConnection.current.createOffer();
       await peerConnection.current.setLocalDescription(offer);
       sendMessage({ offer: peerConnection.current.localDescription });
     };
-    
-  
-    setTimeout(createOffer, 1000);
+
+    createOffer();
 
     return () => {
       if (signalingServer.current) signalingServer.current.close();
@@ -122,7 +121,7 @@ const WebRTCVideoCall = () => {
     );
 
     signalingServer.current.onopen = () => {
-      console.log("웹소켓 열렸어요");
+      console.log("웹소켓 열림");
       setIsConnected(true);
       reconnectAttempts.current = 0;
 
@@ -134,26 +133,43 @@ const WebRTCVideoCall = () => {
     };
 
     signalingServer.current.onmessage = async (message) => {
-      // console.log("Received message:", message.data);
       const data = JSON.parse(message.data);
       processMessage(data);
     };
 
     signalingServer.current.onclose = (event) => {
-      console.log("WebSocket connection closed:", event);
+      console.log("웹소켓 닫힘:", event);
       setIsConnected(false);
-      reconnectAttempts.current++;
-      const reconnectDelay = Math.min(
-        1000 * Math.pow(2, reconnectAttempts.current),
-        30000
-      );
-      setTimeout(initializeWebSocket, reconnectDelay);
+      reconnectWebSocket();
     };
 
     signalingServer.current.onerror = (error) => {
-      console.error("WebSocket error:", error);
+      console.error("웹소켓 에러:", error);
       signalingServer.current.close();
     };
+  };
+
+  const reconnectWebSocket = () => {
+    const reconnectDelay = Math.min(
+      1000 * Math.pow(2, reconnectAttempts.current),
+      30000
+    );
+    setTimeout(initializeWebSocket, reconnectDelay);
+  };
+
+  const getUserMedia = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setLocalStream(stream);
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+        stream.getTracks().forEach((track) => {
+          peerConnection.current.addTrack(track, stream);
+        });
+      })
+      .catch((error) => console.error("Error accessing media devices.", error));
   };
 
   const sendMessage = (message) => {
@@ -166,6 +182,7 @@ const WebRTCVideoCall = () => {
           i * MAX_MESSAGE_SIZE,
           (i + 1) * MAX_MESSAGE_SIZE
         );
+
         const partMessage = JSON.stringify({
           part: i,
           total: totalParts,
@@ -178,7 +195,7 @@ const WebRTCVideoCall = () => {
         "WebSocket이 연결되지 않았습니다. 메시지를 보내지 못했습니다:",
         message
       );
-      setMessageQueue([...messageQueue, message]);
+      setMessageQueue((prevQueue) => [...prevQueue, message]);
     }
   };
 
@@ -214,34 +231,38 @@ const WebRTCVideoCall = () => {
     await peerConnection.current.setRemoteDescription(
       new RTCSessionDescription(offer)
     );
-  
+
     const answer = await peerConnection.current.createAnswer();
     await peerConnection.current.setLocalDescription(answer);
     sendMessage({ answer: peerConnection.current.localDescription });
-  };
-  
 
-  const handleAnswer = async (answer) => {
-    await peerConnection.current.setRemoteDescription(
-      new RTCSessionDescription(answer)
-    );
-  
     while (iceCandidatesQueue.length > 0) {
       await peerConnection.current.addIceCandidate(
         new RTCIceCandidate(iceCandidatesQueue.shift())
       );
     }
   };
-  
+
+  const handleAnswer = async (answer) => {
+    await peerConnection.current.setRemoteDescription(
+      new RTCSessionDescription(answer)
+    );
+
+    while (iceCandidatesQueue.length > 0) {
+      await peerConnection.current.addIceCandidate(
+        new RTCIceCandidate(iceCandidatesQueue.shift())
+      );
+    }
+  };
 
   const handleToggleMute = () => {
     setIsMuted(!isMuted);
   };
 
   const stopScreenShare = () => {
-    if (screenShareStream.current) {
-      screenShareStream.current.getTracks().forEach((track) => track.stop());
-      screenShareStream.current = null;
+    if (screenShareStream) {
+      screenShareStream.getTracks().forEach((track) => track.stop());
+      setScreenShareStream(null);
       screenShareVideoRef.current.srcObject = null;
     }
   };
@@ -262,7 +283,7 @@ const WebRTCVideoCall = () => {
       content: message,
       timestamp: new Date().toLocaleTimeString()
     };
-    setMessages([...messages, newMessage]);
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
   };
 
   const handleSendMessage = () => {
@@ -278,34 +299,6 @@ const WebRTCVideoCall = () => {
     }
   };
 
-  const getMLineOrder = (sdp) => {
-    return sdp.split("\n").filter((line) => line.startsWith("m="));
-  };
-
-  const reorderMLines = (sdp, order) => {
-    const lines = sdp.split("\n");
-    const newSdp = [];
-    const mLines = [];
-
-    lines.forEach((line) => {
-      if (line.startsWith("m=")) {
-        mLines.push(line);
-      } else {
-        newSdp.push(line);
-      }
-    });
-
-    order.forEach((mLine) => {
-      const index = mLines.indexOf(mLine);
-      if (index !== -1) {
-        newSdp.push(mLines[index]);
-        mLines.splice(index, 1);
-      }
-    });
-
-    return newSdp.concat(mLines).join("\n");
-  };
-
   return (
     <div>
       <div>
@@ -319,12 +312,22 @@ const WebRTCVideoCall = () => {
         <video ref={remoteVideoRef} autoPlay playsInline></video>
         <video ref={screenShareVideoRef} autoPlay playsInline></video>
       </div>
-      {/* <div>
-        <input ref={chatInputRef} type="text" placeholder="메시지를 입력하세요" />
+      <div>
+        <input
+          ref={chatInputRef}
+          type="text"
+          placeholder="메시지를 입력하세요"
+        />
         <button onClick={handleSendMessage}>전송</button>
-      </div> */}
-      <Chat sendMessage={sendMessage} messages={messages} />
-
+      </div>
+      <div>
+        {messages.map((message, index) => (
+          <div key={index}>
+            <strong>{message.sender}:</strong> {message.content}{" "}
+            <span>{message.timestamp}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
