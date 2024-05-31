@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import "./style.scss";
 
 const WebRTCVideoCall = () => {
   const [localStream, setLocalStream] = useState(null);
@@ -41,27 +42,42 @@ const WebRTCVideoCall = () => {
       }
     };
 
+    // 이거 안됨???
     peerConnection.current.ontrack = (event) => {
       console.log("원격 피어로부터 수신된 스트림 배열:", event.streams[0]);
-      setRemoteStream(event.streams[0]);
-      remoteVideoRef.current.srcObject = event.streams[0];
+      console.log("########");
+      console.log(event);
+      console.log(event.streams[0]);
+      // {"part":0,"total":1,"content":"{\"answer\":{\"type\":\"answer\",\"sdp\":\"v=0\\r\\no=- 7962377470565020577 4 IN IP4 127.0.0.1\\r\\ns=-\\r\\nt=0 0\\r\\na=group:BUNDLE 0\\r\\na=extmap-allow-mixed\\r\\na=msid-semantic: WMS\\r\\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\\r\\nc=IN IP4 0.0.0.0\\r\\na=ice-ufrag:32R9\\r\\na=ice-pwd:x7UreoGg9nOGPZB8QWmAg5mY\\r\\na=ice-options:trickle\\r\\na=fingerprint:sha-256 3F:D5:77:EE:1B:8E:B8:EA:9F:98:15:DF:DB:DE:17:F3:6F:28:20:DE:0D:79:AA:FC:E9:9D:56:C0:59:2E:53:33\\r\\na=setup:passive\\r\\na=mid:0\\r\\na=sctp-port:5000\\r\\na=max-message-size:262144\\r\\n\"}}"}
+      // 원격 비디오 표시
+
+      console.log("event.streams.length");
+      console.log(event.streams.length);
+
+      if (remoteVideoRef.current && event.streams && event.streams.length > 0) {
+        remoteVideoRef.current.srcObject = event.streams[0];
+      } else {
+        console.error("원격 비디오 표시 실패: 누락된 스트림 또는 요소");
+      }
     };
 
     peerConnection.current.ondatachannel = (event) => {
       const newChannel = event.channel;
       setDataChannel(newChannel);
 
+      newChannel.onmessage = (event) => {
+        console.log("받은 메시지:", event.data);
+        displayChatMessage("Remote", event.data);
+      };
+
       newChannel.onopen = () => {
+        console.log(newChannel.readyState);
         console.log("데이터 채널 열림");
+
         while (messageQueue.length > 0) {
           const message = messageQueue.shift();
           newChannel.send(message);
         }
-      };
-
-      newChannel.onmessage = (event) => {
-        console.log("받은 메시지:", event.data);
-        displayChatMessage("Remote", event.data);
       };
     };
 
@@ -81,7 +97,7 @@ const WebRTCVideoCall = () => {
         console.log("받은 메시지:", event.data);
         displayChatMessage("Remote", event.data);
       };
-
+      // 1. 로컬 피어에서 오퍼 생성 및 설정:
       const offer = await peerConnection.current.createOffer();
       await peerConnection.current.setLocalDescription(offer);
       sendMessage({ offer: peerConnection.current.localDescription });
@@ -132,8 +148,26 @@ const WebRTCVideoCall = () => {
       sendIceCandidates();
     };
 
+    // 웹소켓 메시지 수신: data에는 JSON 문자열이 포함됨
+    // JSON 문자열을 파싱하여 processMessage 함수로 전달?
+    // processMessage 함수는 data에 따라 다른 동작을 수행함
+    // processMessage 함수는 offer, answer, ice, part 등의 키를 가진 객체를 처리함
+    // part 키는 메시지가 여러 부분으로 나누어져 전송되었을 때 사용됨
+    // 메시지가 여러 부분으로 나누어져 전송되면 part 키가 포함된 객체를 처리하고, 마지막 부분이 수신되면 전체 메시지를 처리함
+    // processMessage 함수는 handleRemoteIceCandidate, handleOffer, handleAnswer, handleMessagePart 함수를 호출함
+    // handleRemoteIceCandidate 함수는 원격 ICE 후보를 처리함
+    // handleOffer 함수는 원격 피어로부터 받은 offer를 처리함
+    // handleAnswer 함수는 원격 피어로부터 받은 answer를 처리함
+    // handleMessagePart 함수는 메시지의 부분을 처리함
+    // handleMessagePart 함수는 part 키가 포함된 객체를 받아서 messageParts 배열에 부분을 저장함
+    // 모든 부분을 수신하면 messageParts 배열을 조합하여 전체 메시지를 처리함
     signalingServer.current.onmessage = async (message) => {
       const data = JSON.parse(message.data);
+      console.log("받은 메시지:", data);
+      // console.log("######");
+      // console.log(typeof data);
+      // console.log(message.data);
+
       processMessage(data);
     };
 
@@ -166,6 +200,8 @@ const WebRTCVideoCall = () => {
           localVideoRef.current.srcObject = stream;
         }
         stream.getTracks().forEach((track) => {
+          console.log("track");
+          console.log(track);
           peerConnection.current.addTrack(track, stream);
         });
       })
@@ -173,29 +209,35 @@ const WebRTCVideoCall = () => {
   };
 
   const sendMessage = (message) => {
-    if (signalingServer.current.readyState === WebSocket.OPEN) {
-      const jsonString = JSON.stringify(message);
-      const totalParts = Math.ceil(jsonString.length / MAX_MESSAGE_SIZE);
+    const sendOrQueueMessage = (message) => {
+      if (signalingServer.current.readyState === WebSocket.OPEN) {
+        const jsonString = JSON.stringify(message);
+        const totalParts = Math.ceil(jsonString.length / MAX_MESSAGE_SIZE);
 
-      for (let i = 0; i < totalParts; i++) {
-        const messagePart = jsonString.slice(
-          i * MAX_MESSAGE_SIZE,
-          (i + 1) * MAX_MESSAGE_SIZE
-        );
+        for (let i = 0; i < totalParts; i++) {
+          const messagePart = jsonString.slice(
+            i * MAX_MESSAGE_SIZE,
+            (i + 1) * MAX_MESSAGE_SIZE
+          );
 
-        const partMessage = JSON.stringify({
-          part: i,
-          total: totalParts,
-          content: messagePart
-        });
-        signalingServer.current.send(partMessage);
+          const partMessage = JSON.stringify({
+            part: i,
+            total: totalParts,
+            content: messagePart
+          });
+          signalingServer.current.send(partMessage);
+        }
+      } else {
+        console.error("WebSocket is not open. Queuing message:", message);
+        setMessageQueue((prevQueue) => [...prevQueue, message]);
       }
-    } else {
-      console.error(
-        "WebSocket이 연결되지 않았습니다. 메시지를 보내지 못했습니다:",
-        message
-      );
+    };
+
+    if (signalingServer.current.readyState === WebSocket.CONNECTING) {
+      console.error("WebSocket is still connecting. Queuing message:", message);
       setMessageQueue((prevQueue) => [...prevQueue, message]);
+    } else {
+      sendOrQueueMessage(message);
     }
   };
 
@@ -208,12 +250,14 @@ const WebRTCVideoCall = () => {
   };
 
   const processMessage = (data) => {
-    if (data.ice) {
+    if (data.ice === 'candidate' && isConnected) {
       handleRemoteIceCandidate(data.ice);
-    } else if (data.offer) {
+    } else if (data.offer === 'offer') {
       handleOffer(data.offer);
-    } else if (data.answer) {
+
+    } else if (data.answer === 'answer' && isConnected) {
       handleAnswer(data.answer);
+
     } else if (data.part !== undefined && data.content !== undefined) {
       handleMessagePart(data);
     }
@@ -228,29 +272,63 @@ const WebRTCVideoCall = () => {
   };
 
   const handleOffer = async (offer) => {
-    await peerConnection.current.setRemoteDescription(
-      new RTCSessionDescription(offer)
-    );
-
-    const answer = await peerConnection.current.createAnswer();
-    await peerConnection.current.setLocalDescription(answer);
-    sendMessage({ answer: peerConnection.current.localDescription });
-
-    while (iceCandidatesQueue.length > 0) {
-      await peerConnection.current.addIceCandidate(
-        new RTCIceCandidate(iceCandidatesQueue.shift())
+    try {
+      await peerConnection.current.setRemoteDescription(
+        new RTCSessionDescription(offer)
       );
+      console.log("원격 오퍼가 성공적으로 설정되었습니다.");
+
+      if (peerConnection.current.signalingState === "have-remote-offer") {
+        const answer = await peerConnection.current.createAnswer();
+        await peerConnection.current.setLocalDescription(answer);
+        console.log("로컬 응답이 성공적으로 생성 및 설정되었습니다.");
+
+        // 생성한 응답을 상대방에게 보냅니다.
+        sendMessage({ answer: peerConnection.current.localDescription });
+      } else {
+        console.warn(
+          `잘못된 상태에서 createAnswer 또는 setLocalDescription 호출: ${peerConnection.current.signalingState}`
+        );
+      }
+    } catch (error) {
+      console.error("원격 오퍼 설정 중 오류 발생:", error);
     }
   };
 
-  const handleAnswer = async (answer) => {
-    await peerConnection.current.setRemoteDescription(
-      new RTCSessionDescription(answer)
-    );
+  // 이전 offer에서 가져온 미디어 유형의 순서를 기반으로 현재 offer의 SDP를 재정렬하는 함수
+  const reorderMediaTypesInSdp = (sdp, mediaTypes) => {
+    const lines = sdp.split("\r\n");
+    const reorderedLines = [];
+    const otherLines = [];
 
-    while (iceCandidatesQueue.length > 0) {
-      await peerConnection.current.addIceCandidate(
-        new RTCIceCandidate(iceCandidatesQueue.shift())
+    // SDP를 라인별로 분리하여 미디어 유형에 따라 재정렬
+    for (const line of lines) {
+      if (mediaTypes.some((mediaType) => line.startsWith(mediaType))) {
+        reorderedLines.push(line);
+      } else {
+        otherLines.push(line);
+      }
+    }
+
+    // 재정렬된 미디어 유형 라인들을 하나의 문자열로 결합하여 반환
+    return [...reorderedLines, ...otherLines].join("\r\n");
+  };
+
+  const handleAnswer = async (answer) => {
+    // SDP 상태 체크: 로컬 오퍼가 생성된 상태인지 확인
+    if (peerConnection.current.signalingState === "have-local-offer") {
+      try {
+        // 원격 SDP 응답 설정
+        await peerConnection.current.setRemoteDescription(
+          new RTCSessionDescription(answer)
+        );
+        console.log("원격 SDP가 성공적으로 설정되었습니다.");
+      } catch (error) {
+        console.error("원격 SDP 설정 중 오류 발생:", error);
+      }
+    } else {
+      console.warn(
+        `###잘못된 상태에서 setRemoteDescription 호출: ${peerConnection.current.signalingState}`
       );
     }
   };
