@@ -13,6 +13,7 @@ import Footer from "@/Layouts/Footer";
 import Login from "@/pages/Login";
 import AfterTeller from "@/pages/After/index_teller";
 import AfterCustomer from "@/pages/After/index_customer";
+import Finish from "@/pages/Auth/finish";
 
 
 const router = createBrowserRouter([
@@ -71,7 +72,12 @@ const router = createBrowserRouter([
   {
     path: "/auth",
     element: <Auth />
-  }
+  },
+  {
+    path: "/authfinish",
+    element: <Footer />,
+    children: [{ index: true, element: <Finish /> }]
+  },  
 ]);
 
 export default router;
