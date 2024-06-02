@@ -11,32 +11,28 @@ import Auth from "@/pages/Auth";
 import Home from "@/pages/Home";
 import Footer from "@/Layouts/Footer";
 import ConsultVideo from "@/components/Video";
+import ConsultingTeller from "@/pages/Consulting/Teller";
 
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-
     children: [
       { index: true, element: <Main /> },
       {
         path: "consulting",
         children: [
-          { index: true, element: <ConsultVideo /> },
-          { path: ":testId", element: <Main /> }
+          { path: "customer", element: <Consulting /> },
+          { path: "teller", element: <ConsultingTeller /> },
         ]
       },
       {
         path: "test",
-        children: [
-          { index: true, element: <Test /> },
-          { path: ":testId", element: <Main /> }
-        ]
+        element: <Test />
       }
     ]
-  },
-  {
+  },  {
     path: "/home",
     element: <Footer />,
     children: [{ index: true, element: <Home /> }]

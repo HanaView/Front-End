@@ -1,10 +1,29 @@
-import React from "react";
+import CallInfo from "@/components/CallInfo";
+import Chat from "@/components/Chat";
+import React, { useState } from "react";
+import "./style.scss";
+import ConsultVideo from "@/components/Video/";
+import ConsultTeller from "@/components/Teller";
+
+
 //rcfe
-function Consulting() {
+function ConsultingTeller() {
+  const [isMuted, setIsMuted] = useState(false);
+
+  const handleToggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
   return (
-    <div>
-      <div>텔러 상담 화면</div>
+    <div className="serviceContainer">
+      <ConsultTeller isMuted={isMuted}/>
+      <div id="consultRightSection">
+        <CallInfo onToggleMute={handleToggleMute} isMuted={isMuted}/>
+        <Chat/>
+      </div>     
     </div>
   );
 }
-export default Consulting;
+
+export default ConsultingTeller;
+
