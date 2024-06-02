@@ -5,7 +5,9 @@ import RootLayout from "@/Layouts/RootLayout/index";
 import Main from "@/pages/Main/index";
 
 import Test from "@/pages/Test";
-import Consulting from "@/pages/Consulting/Customer";
+import Customer from "@/pages/Consulting/Customer";
+import Teller from "@/pages/Consulting/Teller";
+
 import Camera from "@/pages/Auth/camera";
 import Auth from "@/pages/Auth";
 import Home from "@/pages/Home";
@@ -13,26 +15,23 @@ import Footer from "@/Layouts/Footer";
 import ConsultVideo from "@/components/Video";
 
 
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-
     children: [
       { index: true, element: <Main /> },
       {
         path: "consulting",
         children: [
-          { index: true, element: <ConsultVideo /> },
-          { path: ":testId", element: <Main /> }
+          { path: "customer", element: <Customer /> },
+          { path: "teller", element: <Teller /> },
         ]
       },
       {
         path: "test",
-        children: [
-          { index: true, element: <Test /> },
-          { path: ":testId", element: <Main /> }
-        ]
+        element: <Test />
       }
     ]
   },

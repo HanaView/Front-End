@@ -1,19 +1,30 @@
-import CallInfo from "@/components/CallInfo";
-import Chat from "@/components/Chat";
-import React from "react";
+import CallInfo from "@/components/CallInfo/";
+import Chat from "@/components/Chat/";
+import React, { useState } from "react";
 import "./style.scss";
-import WebRTCVideoCall from "@/components/Video/";
+import ConsultVideo from "@/components/Video/";
+import TellerVideo from "@/components/Teller";
+import CustomerVideo from "@/components/Customer";
 
 
 //rcfe
-function Consulting() {
+function Customer() {
+  const [isMuted, setIsMuted] = useState(false);
+
+  const handleToggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
   return (
     <div className="serviceContainer">
-      <WebRTCVideoCall />
-      <CallInfo/>
-      <Chat/>
+      <CustomerVideo isMuted={isMuted}/>
+      <div id="consultRightSection">
+        <CallInfo onToggleMute={handleToggleMute} isMuted={isMuted}/>
+        {/* <Chat/> */}
+      </div>     
     </div>
   );
 }
 
-export default Consulting;
+export default Customer;
+

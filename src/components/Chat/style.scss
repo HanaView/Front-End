@@ -2,26 +2,27 @@
     border: 6px solid #008E71;
     border-radius: 50px;
     width: 300px;
-    height: calc(100% - 180px);
+    height: 300px; /* 고정 높이 설정 */
     padding: 15px 20px;
     display: flex;
     flex-direction: column;
-}
-
-#chatInputContainer {
+  }
+  
+  #chatInputContainer {
     display: flex;
     justify-content: space-between;
     width: 100%;
-}
-
-#chatContainer {
-    height: 90%;
-    overflow-y: scroll;
+  }
+  
+  #chatContainer {
+    flex: 1; /* 남은 공간을 차지하도록 설정 */
+    overflow-y: auto; /* 스크롤 활성화 */
     margin-bottom: 10px;
   }
-
-#chatInputContainer > input {
+  
+  #chatInputContainer > input {
     width: 75%;
     padding: 0 10px;
     border-radius: 50px;
-}
+  }
+  
