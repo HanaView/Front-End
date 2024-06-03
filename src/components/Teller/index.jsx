@@ -146,7 +146,7 @@ const TellerVideo = ({ isMuted }) => {
       <video ref={localVideoRef} className='video' autoPlay />
       <video ref={remoteVideoRef} className='video' autoPlay />
       <button onClick={handleCallButtonClick}>Call</button>
-      <Chat onSendMessage={handleSendMessage} messages={messages} />
+      {/* <Chat onSendMessage={handleSendMessage} messages={messages} /> */}
 
     </div>
   );

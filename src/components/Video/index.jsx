@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "./style.scss";
 
-const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
+const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLargeVideo = true }) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [signalingSocket, setSignalingSocket] = useState(null);
@@ -10,7 +10,6 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
-  const largeVideoRef = useRef(null);
 
   useEffect(() => {
     // 로컬 미디어 스트림 가져오기
@@ -159,10 +158,11 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
         </div>
       </div>
       <button onClick={handleCallButtonClick}>Call</button>
-      
-      <div id="largeVideo">
-        {activeVideo && <video ref={largeVideoRef} autoPlay />}
-      </div>
+      {showLargeVideo && (
+        <div id="largeVideoContainer">
+          {activeVideo && <video id="largeVideo" ref={largeVideoRef} autoPlay />}
+        </div>
+      )}
     </div>
   );
 };
