@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "./style.scss";
 
-const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLargeVideo = true }) => {
+const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLargeVideo = true, onShareScreen }) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [signalingSocket, setSignalingSocket] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
 
+  const [screenSharingStream, setScreenSharingStream] = useState(null); // 화면 공유 스트림
+
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
+  const screenVideoRef = useRef(null); // 화면 공유 비디오 레퍼런스
+
 
   useEffect(() => {
     // 로컬 미디어 스트림 가져오기
@@ -127,6 +131,26 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLarg
     }
   };
 
+  const startScreenSharing = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      setScreenSharingStream(stream);
+      screenVideoRef.current.srcObject = stream;
+
+      stream.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, stream);
+      });
+
+      peerConnection.createOffer()
+        .then((offer) => peerConnection.setLocalDescription(offer))
+        .then(() => {
+          signalingSocket.send(JSON.stringify({ type: 'offer', sdp: peerConnection.localDescription }));
+        });
+    } catch (error) {
+      console.error('Error sharing screen:', error);
+    }
+  };
+
   return (
     <div id='consultVideo'>
       <div id='videoOptions'>
@@ -141,20 +165,16 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLarg
             </div>
           )}
         </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
-          <p>손님</p>
-          {remoteVideoRef ? (
-            <video ref={remoteVideoRef} autoPlay />
+        <div className='videoContainer' onClick={() => handleVideoContainerClick(screenSharingStream)}>
+          <p>화면 공유</p>
+          {screenSharingStream ? (
+            <video ref={screenVideoRef} autoPlay />
           ) : (
             <div className='videoPending'>
               <img src='/src/assets/images/videoPending.png'/>
-              <p>연결 대기중 ...</p>
+              <p>화면 공유 대기중 ...</p>
             </div>
           )}
-        </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(null)}>
-          <p>화면 공유</p>
-          <video/>
         </div>
       </div>
       <button onClick={handleCallButtonClick}>Call</button>
