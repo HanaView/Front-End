@@ -3,23 +3,61 @@ import Chat from "@/components/Chat/";
 import React, { useState } from "react";
 import "./style.scss";
 import ConsultVideo from "@/components/Video/";
-import TellerVideo from "@/components/Teller";
+import { useEffect } from "react";
+// import TellerVideo from "@/components/Teller";
 
 
 //rcfe
 function Teller() {
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(false); // 음소거 State
+  const [callDuration, setCallDuration] = useState(0); // 화상 상담 시간 State
+  const [isCallActive, setIsCallActive] = useState(false); // 화상 상담 활성 여부 State
 
+  useEffect(() => {
+    let timer;
+    if (isCallActive) {
+      timer = setInterval(() => {
+        setCallDuration((prevDuration) => prevDuration + 1);
+      }, 1000);
+    } else {
+      setCallDuration(0);
+    }
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [isCallActive]);
+
+  // 화상 상담 시작 함수
+  const handleCallStart = () => {
+    setIsCallActive(true);
+  };
+
+  // 화상 상담 종료 함수
+  const handleCallEnd = () => {
+    setIsCallActive(false);
+  };
+
+  // 음소거 전환 함수
   const handleToggleMute = () => {
     setIsMuted(!isMuted);
   };
 
+
   return (
     <div className="serviceContainer">
-      <TellerVideo isMuted={isMuted}/>
+
+<ConsultVideo
+          isMuted={isMuted} 
+          onCallStart={handleCallStart} 
+          onCallEnd={handleCallEnd} 
+        />
       <div id="consultRightSection">
-        <CallInfo onToggleMute={handleToggleMute} isMuted={isMuted}/>
-        {/* <Chat/> */}
+              <CallInfo
+          onToggleMute={handleToggleMute}
+          isMuted={isMuted}
+          duration={callDuration}/>
+        <Chat/>
       </div>     
     </div>
   );

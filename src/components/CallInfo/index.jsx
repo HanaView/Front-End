@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import "./style.scss";
 
-function CallInfo({ onToggleMute, isMuted }) {
+function CallInfo({ onToggleMute, isMuted, duration }) {
+    const formatDuration = (seconds) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      };
+
     return (
         <div id="customerCallInfoDiv">
-            <div id="callTimer">00 : 05</div>
+            <div id="callTimer">{formatDuration(duration)}</div>
             <div id="callControls">
                 {!isMuted ?
                     <img className="callBtn" src="/src/assets/images/micOn.png" onClick={onToggleMute} alt="mic"/> :
