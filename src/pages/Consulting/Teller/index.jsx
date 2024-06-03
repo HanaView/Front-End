@@ -78,6 +78,13 @@ function Teller() {
   //   fetchCustomerInfo();
   // }, []);
 
+   // 화면 공유 시작 함수
+   const handleShareScreen = () => {
+    if (largeVideoRef.current && largeVideoRef.current.startScreenSharing) {
+      largeVideoRef.current.startScreenSharing();
+    }
+  };
+
   return (
     <div className="serviceContainer teller">
       <div id="consultLeftSection">
@@ -121,6 +128,7 @@ function Teller() {
               onToggleMute={handleToggleMute}
               isMuted={isMuted}
               duration={callDuration}
+              onShareScreen={handleShareScreen}
             />
             <Chat />
           </div>
