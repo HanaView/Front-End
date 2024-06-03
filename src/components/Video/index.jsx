@@ -6,9 +6,11 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
   const [remoteStream, setRemoteStream] = useState(null);
   const [signalingSocket, setSignalingSocket] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
+  const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
+  const largeVideoRef = useRef(null);
 
   useEffect(() => {
     // 로컬 미디어 스트림 가져오기
@@ -73,7 +75,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
             console.error('Invalid answer message:', message);
           }
           break;
-        case 'ice':
+        case 'ice-candidate':
           if (message.candidate) {
             pc.addIceCandidate(new RTCIceCandidate(message.candidate))
               .catch((error) => {
@@ -101,6 +103,12 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
     }
   }, [isMuted, localStream]);
 
+  useEffect(() => {
+    if (largeVideoRef.current) {
+      largeVideoRef.current.srcObject = activeVideo;
+    }
+  }, [activeVideo]);
+
   const handleCallButtonClick = () => {
     peerConnection.addStream(localStream);
     peerConnection.createOffer()
@@ -111,22 +119,49 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
       onCallStart();
   };
 
+  const handleVideoContainerClick = (stream) => {
+    setActiveVideo(stream);
+    if (stream === localStream) {
+      largeVideoRef.current.srcObject = localStream;
+    } else if (stream === remoteStream) {
+      largeVideoRef.current.srcObject = remoteStream;
+    }
+  };
+
   return (
-    <div>
+    <div id='consultVideo'>
       <div id='videoOptions'>
-        <div className='videoContainer'>
-          <h2>텔러</h2>
-          <video ref={localVideoRef} className='video' autoPlay />
+        <div className='videoContainer' onClick={() => handleVideoContainerClick(localStream)}>
+          <p>텔러</p>
+          {localStream ? (
+            <video ref={localVideoRef} autoPlay />
+          ) : (
+            <div className='videoPending'>
+              <img src='/src/assets/images/videoPending.png'/>
+              <p>연결 대기중 ...</p>
+            </div>
+          )}
         </div>
-        <div className='videoContainer'>
-          <h2>손님</h2>
-          <video ref={remoteVideoRef} className='video' autoPlay />
+        <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
+          <p>손님</p>
+          {remoteVideoRef ? (
+            <video ref={remoteVideoRef} autoPlay />
+          ) : (
+            <div className='videoPending'>
+              <img src='/src/assets/images/videoPending.png'/>
+              <p>연결 대기중 ...</p>
+            </div>
+          )}
         </div>
-        <div className='videoContainer'>
-          <h2>화면 공유</h2>
+        <div className='videoContainer' onClick={() => handleVideoContainerClick(null)}>
+          <p>화면 공유</p>
+          <video/>
         </div>
       </div>
       <button onClick={handleCallButtonClick}>Call</button>
+      <div id="largeVideo">
+        {activeVideo && <video ref={largeVideoRef} autoPlay />}
+      </div>
     </div>
   );
 };

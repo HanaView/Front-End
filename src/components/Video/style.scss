@@ -1,7 +1,7 @@
 #consultVideo {
-  width: calc(100% - 300px);
-  min-height: 100%;
-  padding-right: 50px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 #videoOptions {
@@ -11,9 +11,35 @@
 .videoContainer {
   cursor: pointer;
   text-align: center;
+  margin-right: 10%;
 }
 
-.video {
+.videoContainer p {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.videoContainer video {
   width: 150px;
   height: 150px;
+}
+
+.videoPending {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.videoPending img{
+  width: 130px;
+  height: 130px;
+  margin-bottom: 20px;
+}
+
+#largeVideo {
+  border: 1px solid #008E71;
+  border-radius: 8px;
+  height: 100%;
 }
