@@ -6,7 +6,7 @@ import ConsultVideo from "@/components/Video/";
 
 
 //rcfe
-function Consulting() {
+function ConsultingCustomer() {
   return (
     <div className="serviceContainer">
       <ConsultVideo />
@@ -18,4 +18,4 @@ function Consulting() {
   );
 }
 
-export default Consulting;
+export default ConsultingCustomer;

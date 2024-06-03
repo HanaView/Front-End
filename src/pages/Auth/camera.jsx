@@ -6,7 +6,7 @@ import { capturedImageAtom } from "@/stores";
 import axios from "axios";
 import imageCompression from "browser-image-compression"; // 이미지 압축 라이브러리
 
-function Camera() { 
+function Camera() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
   const [file, setFile] = useState(null);
 
@@ -15,7 +15,7 @@ function Camera() {
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
-  const key = searchParams.get('key');
+  const key = searchParams.get("key");
 
   useEffect(() => {
     const getCameraStream = async () => {
@@ -39,7 +39,7 @@ function Camera() {
   const captureAndUpload = async () => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
-    const context = canvas.getContext("2d");    
+    const context = canvas.getContext("2d");
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -51,7 +51,7 @@ function Camera() {
     // @ts-ignore
     setCapturedImage(dataURL); // 사진 저장
 
-    canvas.toBlob(async (blob) => {     
+    canvas.toBlob(async (blob) => {
       const formData = new FormData();
       formData.append("file", blob, "captured_image.jpg");
       formData.append("key", key);
@@ -73,8 +73,16 @@ function Camera() {
         // 응답 데이터를 localStorage에 저장
         localStorage.setItem("ocrData", JSON.stringify(response.data));
 
-        // 사진출력 페이지로 이동
-        navigate("/auth");
+        // auth 페이지로 이동하면서 쿼리 파라미터 유지
+        if (key) {
+          navigate(`/auth?key=${key}`);
+        } else {
+          // key가 없을 경우 기본 페이지로 이동
+          navigate(`/auth`);
+        }
+
+        // // 사진출력 페이지로 이동
+        // navigate("/auth");
       } catch (error) {
         console.error("Error uploading image:", error);
         if (error.response) {

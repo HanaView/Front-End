@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Camera from "./camera";
 import "./index.scss";
 import Button from "@/components/Button";
@@ -15,46 +15,87 @@ function Auth() {
   const [name, setName] = useState("");
   const [registNumber, setRegistNumber] = useState("");
   const [address, setAddress] = useState("");
-  const [issueDate, setIssueDate] = useState("");  
+  const [issueDate, setIssueDate] = useState("");
+
+  const [searchParams] = useSearchParams();
+  const key = searchParams.get("key");
+  
 
   const ocrData = JSON.parse(localStorage.getItem("ocrData"));
+  console.log(ocrData);
+
   console.log("-------------ocrData를 뽑아오자---------------");
-  console.log(ocrData[1].data[1]);
-  const user = ocrData[1].data[1].user[1];
+  console.log(ocrData.data);
   console.log("-------------redis에 저장된 user정보를 뽑아오자---------------");
-  console.log(ocrData[1].data[1].user[1]);
-  const key = ocrData[1].data[1].key;
-  console.log("-------------key값을 뽑아오자---------------");
-  console.log(ocrData[1].data[1].key);
+  console.log(ocrData.data.user);
+  const user = ocrData.data.user;
+  // console.log("-------------key값을 뽑아오자---------------");
+  // console.log(ocrData.data.key);
+  // const key = ocrData.data.key;
+
+  // if (ocrData.length < 2) {
+  //   console.log("-------------ocrData를 뽑아오자---------------");
+  //   console.log(ocrData.data);
+  //   setUser(ocrData.data.user);
+  //   console.log(
+  //     "-------------redis에 저장된 user정보를 뽑아오자---------------"
+  //   );
+  //   console.log(ocrData.data.user);
+  //   setKey(ocrData.data.key);
+  //   console.log("-------------key값을 뽑아오자---------------");
+  //   console.log(ocrData.data.key);
+  // } else {
+  //   console.log("-------------ocrData를 뽑아오자---------------");
+  //   console.log(ocrData[1].data[1]);
+  //   setUser(ocrData[1].data[1].user[1]);
+  //   console.log(
+  //     "-------------redis에 저장된 user정보를 뽑아오자---------------"
+  //   );
+  //   console.log(ocrData[1].data[1].user[1]);
+  //   setKey(ocrData[1].data[1].key);
+  //   console.log("-------------key값을 뽑아오자---------------");
+  //   console.log(ocrData[1].data[1].key);
+  // }
 
   useEffect(() => {
-    if (ocrData) {
-      setName(ocrData[1].data[1].username);
-      setRegistNumber(ocrData[1].data[1].usernum);
-      setAddress(ocrData[1].data[1].useraddress);
-      setIssueDate(ocrData[1].data[1].userdate);
-    }
+    setName(ocrData.data.username);
+    setRegistNumber(ocrData.data.usernum);
+    setAddress(ocrData.data.useraddress);
+    setIssueDate(ocrData.data.userdate);
+
+    // if (ocrData.length < 2) {
+    //   setName(ocrData.data.username);
+    //   setRegistNumber(ocrData.data.usernum);
+    //   setAddress(ocrData.data.useraddress);
+    //   setIssueDate(ocrData.data.userdate);
+    // }
+    // else{
+    //   setName(ocrData[1].data[1].username);
+    //   setRegistNumber(ocrData[1].data[1].usernum);
+    //   setAddress(ocrData[1].data[1].useraddress);
+    //   setIssueDate(ocrData[1].data[1].userdate);
+    // }
   }, [ocrData]);
 
   // redis에 저장할 내용들
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(key)
+    console.log(key);
     if (name === user.name && registNumber === user.socialNumber) {
       // 본인인증이 완료되었을때
       console.log("본인인증이 완료되었습니다!!!");
-  
+
       try {
-        const response = await axios.post(
+        const response = await axios.post (
           "http://172.16.20.211:80/api/login/authComplete",
           null, // 요청 본문이 없는 경우 null을 사용
           { params: { key: key } } // 쿼리 파라미터로 key를 전달
-        );
+        );       
 
         console.log("--------------------------------------");
-        console.log(response.data);
-  
-        if (response.data[1].result == "success") {
+        console.log(response);
+
+        if (response.data.result == "success") {
           setModalData((prevState) => ({
             ...prevState,
             isOpen: true,
@@ -89,7 +130,8 @@ function Auth() {
           setModalData((prevState) => ({
             ...prevState,
             isOpen: true,
-            content: "서버로부터 응답이 없습니다. 네트워크 상태를 확인해주세요.",
+            content:
+              "서버로부터 응답이 없습니다. 네트워크 상태를 확인해주세요.",
             confirmButtonText: "확인"
           }));
         } else {
