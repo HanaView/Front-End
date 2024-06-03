@@ -19,7 +19,7 @@ function Home() {
               shape="rect"
               onClick={() => {
                 console.log("김서윤 바보");
-                navigate("/login");
+                navigate("/login/customer");
               }}
             >
               시작하기

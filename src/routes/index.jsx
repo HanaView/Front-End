@@ -10,10 +10,11 @@ import Camera from "@/pages/Auth/camera";
 import Auth from "@/pages/Auth";
 import Home from "@/pages/Home";
 import Footer from "@/Layouts/Footer";
-import Login from "@/pages/Login";
+
 import AfterTeller from "@/pages/After/index_teller";
 import AfterCustomer from "@/pages/After/index_customer";
 import Finish from "@/pages/Auth/finish";
+import Login from "@/pages/Login/indexCustomer";
 
 
 const router = createBrowserRouter([
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
       //   ]
       // },
       {
-        path: "login",     
+        path: "login/customer",     
         children: [
           { index: true, element: <Login /> },
           { path: ":testId", element: <Main /> }

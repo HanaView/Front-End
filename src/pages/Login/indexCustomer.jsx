@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./style.scss";
+import "./indexCustomer.scss";
 import Button from "@/components/Button";
 
 function Login() {
@@ -33,7 +33,7 @@ function Login() {
               <input
                 className="inputForm"
                 type="text"
-                placeholder="전화번호를 입력해주세요"
+                placeholder="'-'빼고 입력해주세요"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
