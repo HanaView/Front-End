@@ -24,4 +24,16 @@
     margin-bottom: 50px;
     color: $color-primary;
   }
+  .hanaCharacter {
+    height: 400px;
+    width: 400px;
+    background-image: url(@/assets/images/hanaCharacter2.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    position: fixed;
+    bottom: 0;
+    right: 70px;      
+  }
 }
