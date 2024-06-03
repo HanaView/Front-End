@@ -17,15 +17,17 @@ function ButtonList() {
           })}
           color="default"
           shape="none"
-          onClick={() => handleNavigation("/consulting")}
+          onClick={() => handleNavigation("/consulting/customer/loading")}
         >
           화상연결
         </Button>
         <Button
-          className="side-button"
+          className={classNames("side-button", {
+            selected: selectedSideButton === SideButtonTypes.PRODUCT
+          })}
           color="default"
           shape="none"
-          onClick={() => console.log("상품 연결")}
+          onClick={() => handleNavigation("/consulting/customer/explaining")}
         >
           상품 연결
         </Button>
