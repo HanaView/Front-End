@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./style.scss";
 
-function CallInfo({ onToggleMute, isMuted, duration }) {
+function CallInfo({ onToggleMute, isMuted, duration, onShareScreen }) {
     const formatDuration = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
@@ -17,6 +17,9 @@ function CallInfo({ onToggleMute, isMuted, duration }) {
                     <img className="callBtn" src="/src/assets/images/micOff.png" onClick={onToggleMute} alt="mic"/> 
                 }
                 <img className="callBtn" id="endCallBtn" src="/src/assets/images/endCallBtn.png"/>
+
+                <img className="shareBtn" src="/src/assets/images/screenShareBtn.png" onClick={onShareScreen} alt="share screen"/>
+
             </div>
         </div>
     );
