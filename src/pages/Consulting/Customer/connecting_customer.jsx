@@ -1,12 +1,12 @@
 import CallInfo from "@/components/CallInfo";
 import Chat from "@/components/Chat";
 import React from "react";
-import "./style.scss";
+import "./connecting_customer.scss";
 import ConsultVideo from "@/components/Video/";
 
 
 //rcfe
-function ConsultingCustomer() {
+function ConnectingCustomer() {
   return (
     <div className="serviceContainer">
       <ConsultVideo />
@@ -18,4 +18,4 @@ function ConsultingCustomer() {
   );
 }
 
-export default ConsultingCustomer;
+export default ConnectingCustomer;

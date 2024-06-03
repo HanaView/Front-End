@@ -1,67 +1,65 @@
 import React, { useState } from "react";
-import "./indexCustomer.scss";
+import "./indexTeller.scss";
 import Button from "@/components/Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
 
-function LoginCustomer() {
+function LoginTeller() {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
   const [randomKey, setRandomKey] = useState("");
   const navigate = useNavigate();
 
-  const isFormValid = name.trim() !== "" && phone.trim() !== "";
+  const isFormValid = name.trim() !== "" && password.trim() !== "";
 
   // randomKey가 업데이트되면 navigate 호출
-  useEffect(() => {
-    if (randomKey) {
-      navigate(`/camera?key=${randomKey}`);
-    }
-  }, [randomKey, navigate]);
+  // useEffect(() => {
+  //   if (randomKey) {
+  //     navigate(`/camera?key=${randomKey}`);
+  //   }
+  // }, [randomKey, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // 보내고자 하는 데이터
-    const authData = {
-      name: name,
-      tele: phone
-    };
+    // const authData = {
+    //   name: name,
+    //   tele: password
+    // };
 
-    try {
-      const response = await axios.post(
-        "http://172.16.20.211:80/api/login/auth",
-        authData
-      );
+    // try {
+    //   const response = await axios.post(
+    //     "http://172.16.20.211:80/api/login/auth",
+    //     authData
+    //   );
 
-      // console.log("---------------redis키값----------------");
-      // console.log(response.data.data);
-      console.log("------------------------------");
-      console.log(response.data);
+    //   // console.log("---------------redis키값----------------");
+    //   // console.log(response.data.data);
+    //   console.log("------------------------------");
+    //   console.log(response.data);
 
-      if (response.data.state == 200) {
-        setRandomKey(response.data.data);        
-      } else {
-        // Handle authentication failure
-        alert(response.data.errorCode.message);
-        console.error("Authentication failed:", response.data.errorCode.message);
-      }
-    } catch (error) {
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error("Response error:", error.response.data);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("No response error:", error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Axios error:", error.message);
-      }
-    }
-
-    // navigate("/camera?key=" + randomKey);
+    //   if (response.data.state == 200) {
+    //     setRandomKey(response.data.data);        
+    //   } else {
+    //     // Handle authentication failure
+    //     alert(response.data.errorCode.message);
+    //     console.error("Authentication failed:", response.data.errorCode.message);
+    //   }
+    // } catch (error) {
+    //   if (error.response) {
+    //     // The request was made and the server responded with a status code
+    //     // that falls out of the range of 2xx
+    //     console.error("Response error:", error.response.data);
+    //   } else if (error.request) {
+    //     // The request was made but no response was received
+    //     console.error("No response error:", error.request);
+    //   } else {
+    //     // Something happened in setting up the request that triggered an Error
+    //     console.error("Axios error:", error.message);
+    //   }
+    // }
   };
 
   return (
@@ -85,13 +83,13 @@ function LoginCustomer() {
               />
             </label>
             <label>
-              <div className="labelText">전화번호</div>
+              <div className="labelText">비밀번호</div>
               <input
                 className="inputForm"
                 type="text"
-                placeholder="'-'빼고 입력해주세요"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                placeholder="비밀번호를 입력해주세요"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </label>
           </div>
@@ -123,4 +121,4 @@ function LoginCustomer() {
   );
 }
 
-export default LoginCustomer;
+export default LoginTeller;

@@ -23,9 +23,7 @@ function Main() {
   return (
     <>
       {/* <p>{data.description}</p> */}
-      <Button onClick={() => navigate("/test")}>TEST</Button>
-      <Button onClick={() => navigate("/auth")}>AUTH</Button>
-      <Button onClick={() => navigate("/camera")}>CAMERA</Button>
+      <Button onClick={() => navigate("/test")}>TEST</Button>      
       <Button
         size="large"
         shape="rect"
