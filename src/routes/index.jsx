@@ -15,13 +15,6 @@ import Footer from "@/Layouts/Footer";
 import ConsultVideo from "@/components/Video";
 
 
-import AfterTeller from "@/pages/After/index_teller";
-import AfterCustomer from "@/pages/After/index_customer";
-import Finish from "@/pages/Auth/finish";
-import Login from "@/pages/Login/indexCustomer";
-import ConsultingTeller from "@/pages/Consulting/Teller";
-import LoadingCustomer from "@/pages/Consulting/Customer/loading_customer";
-
 
 const router = createBrowserRouter([
   {
@@ -30,36 +23,10 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Main /> },
       {
-        path: "consulting/customer/loading",
+        path: "consulting",
         children: [
-<<<<<<< HEAD
           { path: "customer", element: <Customer /> },
           { path: "teller", element: <Teller /> },
-=======
-          { index: true, element: <LoadingCustomer /> },
-          { path: ":testId", element: <Main /> }
-        ]
-      },
-      {
-        path: "login/customer",     
-        children: [
-          { index: true, element: <Login /> },
-          { path: ":testId", element: <Main /> }
-        ]
-      },
-      {
-        path: "afterTeller",     
-        children: [
-          { index: true, element: <AfterTeller /> },
-          { path: ":testId", element: <Main /> }
-        ]
-      },
-      {
-        path: "afterCustomer",     
-        children: [
-          { index: true, element: <AfterCustomer /> },
-          { path: ":testId", element: <Main /> }
->>>>>>> develop
         ]
       },
       {
@@ -72,7 +39,7 @@ const router = createBrowserRouter([
     path: "/home",
     element: <Footer />,
     children: [{ index: true, element: <Home /> }]
-  },  
+  },
   {
     path: "/camera",
     element: <Camera />
@@ -80,12 +47,7 @@ const router = createBrowserRouter([
   {
     path: "/auth",
     element: <Auth />
-  },
-  {
-    path: "/authfinish",
-    element: <Footer />,
-    children: [{ index: true, element: <Finish /> }]
-  },  
+  }
 ]);
 
 export default router;
