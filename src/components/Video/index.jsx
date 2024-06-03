@@ -152,10 +152,6 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
     detectSpeaking();
   };
 
-  useEffect(() => {
-    console.log('isSpeaking:', isSpeaking); // isSpeaking 상태 변경을 감지하여 로그 출력
-  }, [isSpeaking]);
-
   return (
     <div id='consultVideo'>
       <div id='videoOptions'>
@@ -173,7 +169,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
         <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
           <p>손님</p>
           {remoteVideoRef ? (
-            <video className={`${isSpeaking ? 'speaking' : ''}`} ref={remoteVideoRef} autoPlay />
+            <video className={`video ${isSpeaking ? 'speaking' : ''}`} ref={remoteVideoRef} autoPlay />
           ) : (
             <div className='videoPending'>
               <img src='/src/assets/images/videoPending.png'/>
@@ -183,7 +179,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
         </div>
         <div className='videoContainer' onClick={() =>  (null)}>
           <p>화면 공유</p>
-          <video/>
+          <video className='video'/>
         </div>
       </div>
       <button onClick={handleCallButtonClick}>Call</button>
