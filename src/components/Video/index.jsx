@@ -7,10 +7,12 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
   const [signalingSocket, setSignalingSocket] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
+  const [isSpeaking, setIsSpeaking] = useState(false); // 음성 감지 상태
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const largeVideoRef = useRef(null);
+  const audioAnalyserRef = useRef(null)
 
   useEffect(() => {
     // 로컬 미디어 스트림 가져오기
@@ -18,6 +20,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
       .then((stream) => {
         setLocalStream(stream);
         localVideoRef.current.srcObject = stream;
+        setupAudioAnalyser(stream); // 오디오 분석 함수 호출
       })
       .catch((error) => {
         console.error('Error accessing media devices:', error);
@@ -128,13 +131,38 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
     }
   };
 
+  const setupAudioAnalyser = (stream) => {
+    const audioContext = new window.AudioContext();
+    const analyser = audioContext.createAnalyser();
+    const source = audioContext.createMediaStreamSource(stream);
+    source.connect(analyser);
+    analyser.fftSize = 256;
+
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    audioAnalyserRef.current = { analyser, dataArray, animationFrameId: null };
+
+    const detectSpeaking = () => {
+      analyser.getByteFrequencyData(dataArray);
+      const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+      setIsSpeaking(average > 3); // 임계값 조정 가능
+
+      audioAnalyserRef.current.animationFrameId = requestAnimationFrame(detectSpeaking);
+    };
+
+    detectSpeaking();
+  };
+
+  useEffect(() => {
+    console.log('isSpeaking:', isSpeaking); // isSpeaking 상태 변경을 감지하여 로그 출력
+  }, [isSpeaking]);
+
   return (
     <div id='consultVideo'>
       <div id='videoOptions'>
         <div className='videoContainer' onClick={() => handleVideoContainerClick(localStream)}>
           <p>텔러</p>
           {localStream ? (
-            <video ref={localVideoRef} autoPlay />
+            <video className={`video ${isSpeaking ? 'speaking' : ''}`} ref={localVideoRef} autoPlay />
           ) : (
             <div className='videoPending'>
               <img src='/src/assets/images/videoPending.png'/>
@@ -145,7 +173,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
         <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
           <p>손님</p>
           {remoteVideoRef ? (
-            <video ref={remoteVideoRef} autoPlay />
+            <video className={`${isSpeaking ? 'speaking' : ''}`} ref={remoteVideoRef} autoPlay />
           ) : (
             <div className='videoPending'>
               <img src='/src/assets/images/videoPending.png'/>
@@ -153,7 +181,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
             </div>
           )}
         </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(null)}>
+        <div className='videoContainer' onClick={() =>  (null)}>
           <p>화면 공유</p>
           <video/>
         </div>
