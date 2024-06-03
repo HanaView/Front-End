@@ -159,6 +159,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
         </div>
       </div>
       <button onClick={handleCallButtonClick}>Call</button>
+      
       <div id="largeVideo">
         {activeVideo && <video ref={largeVideoRef} autoPlay />}
       </div>
