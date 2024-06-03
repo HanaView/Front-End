@@ -10,10 +10,13 @@ import Camera from "@/pages/Auth/camera";
 import Auth from "@/pages/Auth";
 import Home from "@/pages/Home";
 import Footer from "@/Layouts/Footer";
-import Login from "@/pages/Login";
+
 import AfterTeller from "@/pages/After/index_teller";
 import AfterCustomer from "@/pages/After/index_customer";
 import Finish from "@/pages/Auth/finish";
+import Login from "@/pages/Login/indexCustomer";
+import ConsultingTeller from "@/pages/Consulting/Teller";
+import LoadingCustomer from "@/pages/Consulting/Customer/loading_customer";
 
 
 const router = createBrowserRouter([
@@ -23,15 +26,15 @@ const router = createBrowserRouter([
 
     children: [
       { index: true, element: <Main /> },
-      // {
-      //   path: "consulting",
-      //   children: [
-      //     { index: true, element: <Consulting /> },
-      //     { path: ":testId", element: <Main /> }
-      //   ]
-      // },
       {
-        path: "login",     
+        path: "consulting/customer/loading",
+        children: [
+          { index: true, element: <LoadingCustomer /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
+        path: "login/customer",     
         children: [
           { index: true, element: <Login /> },
           { path: ":testId", element: <Main /> }
