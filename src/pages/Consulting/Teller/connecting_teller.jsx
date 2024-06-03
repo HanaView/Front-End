@@ -1,10 +1,10 @@
 import React from "react";
 //rcfe
-function ConsultingTeller() {
+function ConnectingTeller() {
   return (
     <div>
       <div>텔러 상담 화면</div>
     </div>
   );
 }
-export default ConsultingTeller;
+export default ConnectingTeller;
