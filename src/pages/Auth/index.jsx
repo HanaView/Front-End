@@ -86,10 +86,10 @@ function Auth() {
       console.log("본인인증이 완료되었습니다!!!");
 
       try {
-        const response = await axios.post (
-          "http://172.16.20.211:80/api/login/authComplete",
+        const response = await axios.get (
+          "http://172.16.20.211:80/api/login/authComplete?key="+key,
           null, // 요청 본문이 없는 경우 null을 사용
-          { params: { key: key } } // 쿼리 파라미터로 key를 전달
+          // { params: { key: key } } // 쿼리 파라미터로 key를 전달
         );       
 
         console.log("--------------------------------------");
