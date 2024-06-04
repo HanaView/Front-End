@@ -13,10 +13,32 @@ function LoginCustomer() {
 
   const isFormValid = name.trim() !== "" && phone.trim() !== "";
 
+  // useEffect(() => {
+  //   if (randomKey) {
+  //     // 여기서 `/camera?key=${randomKey}` URL을 다른 곳에 넘기는 작업을 수행합니다.
+  //     // 예시로 axios를 사용하여 API 엔드포인트에 넘기는 경우:
+  //     axios
+  //       .post("/your-api-endpoint", { keyUrl: `/camera?key=${randomKey}` })
+  //       .then((response) => {
+  //         // API 호출 성공 시 `/loading` 페이지로 이동합니다.
+  //         navigate("/loading");
+  //       })
+  //       .catch((error) => {
+  //         // 오류 처리
+  //         console.error("Error posting the URL", error);
+  //       });
+
+  //     // 또는 로컬 스토리지에 저장하는 경우:
+  //     // localStorage.setItem('cameraUrl', `/camera?key=${randomKey}`);
+  //     // navigate('/loading');
+  //   }
+  // }, [randomKey, navigate]);
+
   // randomKey가 업데이트되면 navigate 호출
   useEffect(() => {
     if (randomKey) {
       navigate(`/camera?key=${randomKey}`);
+      // navigate(`/auth/customer?key=${randomKey}`);
     }
   }, [randomKey, navigate]);
 
@@ -31,7 +53,7 @@ function LoginCustomer() {
 
     try {
       const response = await axios.post(
-        "http://172.16.20.211:80/api/login/auth",
+        "http://127.0.0.1:80/api/login/auth",
         authData
       );
 
@@ -41,11 +63,14 @@ function LoginCustomer() {
       console.log(response.data);
 
       if (response.data.state == 200) {
-        setRandomKey(response.data.data);        
+        setRandomKey(response.data.data);
       } else {
         // Handle authentication failure
         alert(response.data.errorCode.message);
-        console.error("Authentication failed:", response.data.errorCode.message);
+        console.error(
+          "Authentication failed:",
+          response.data.errorCode.message
+        );
       }
     } catch (error) {
       if (error.response) {

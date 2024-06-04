@@ -18,6 +18,8 @@ import ConnectingCustomer from "@/pages/Customer/Consulting/index";
 import ExplainingCustomer from "@/pages/Customer/explaining_customer";
 import LoginCustomer from "@/pages/Login/indexCustomer";
 import LoginTeller from "@/pages/Login/indexTeller";
+import AuthCustomer from "@/pages/Auth/auth_complete";
+import ConnectingTeller from "@/pages/Consulting/Teller/connecting_teller";
 
 
 const router = createBrowserRouter([
@@ -51,35 +53,14 @@ const router = createBrowserRouter([
           { index: true, element: <ConnectingCustomer /> },
           { path: ":testId", element: <Main /> }
         ]
-      },
+      },      
       {
-        path: "login/customer",     
+        path: "consulting/teller/connecting",
         children: [
-          { index: true, element: <LoginCustomer /> },
+          { index: true, element: <ConnectingTeller /> },
           { path: ":testId", element: <Main /> }
         ]
-      },
-      {
-        path: "login/teller",     
-        children: [
-          { index: true, element: <LoginTeller /> },
-          { path: ":testId", element: <Main /> }
-        ]
-      },
-      {
-        path: "afterTeller",     
-        children: [
-          { index: true, element: <AfterTeller /> },
-          { path: ":testId", element: <Main /> }
-        ]
-      },
-      {
-        path: "afterCustomer",     
-        children: [
-          { index: true, element: <AfterCustomer /> },
-          { path: ":testId", element: <Main /> }
-        ]
-      },
+      },      
       {
         path: "test",
         element: <Test />
@@ -92,13 +73,57 @@ const router = createBrowserRouter([
     children: [{ index: true, element: <Home /> }]
   },
   {
+    path: "/login/customer",     
+    children: [
+      { index: true, element: <LoginCustomer /> },
+      { path: ":testId", element: <Main /> }
+    ]
+  },
+  {
+    path: "/login/teller",     
+    children: [
+      { index: true, element: <LoginTeller /> },
+      { path: ":testId", element: <Main /> }
+    ]
+  },
+  {
+    path: "/auth/customer",     
+    children: [
+      { index: true, element: <AuthCustomer /> },
+      { path: ":testId", element: <Main /> }
+    ]
+  },
+  {
     path: "/camera",
     element: <Camera />
   },
   {
     path: "/auth",
     element: <Auth />
+<<<<<<< HEAD
   }
+=======
+  },
+  {
+    path: "/authfinish",
+    element: <Footer />,
+    children: [{ index: true, element: <Finish /> }]
+  },    
+  {
+    path: "/after/customer",     
+    children: [
+      { index: true, element: <AfterCustomer /> },
+      { path: ":testId", element: <Main /> }
+    ]
+  },
+  {
+    path: "/after/teller",     
+    children: [
+      { index: true, element: <AfterTeller /> },
+      { path: ":testId", element: <Main /> }
+    ]
+  },
+>>>>>>> 446ef20122f86e3af3a5bd19ae3db91f88d3a57d
 ]);
 
 export default router;
