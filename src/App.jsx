@@ -26,6 +26,7 @@ function App() {
 
     window.addEventListener("resize", handleResize);
   }, []);
+  
   return (
     <>
       <QueryClientProvider client={queryClient}>
