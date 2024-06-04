@@ -18,9 +18,9 @@ const useRootLayout = () => {
 
   // URL 기준으로 버튼 상태 변화
   useEffect(() => {
-    if (location.pathname.includes("/consulting")) {
+    if (location.pathname.includes("/consulting/customer/loading")) {
       setSelectedSideButton(SideButtonTypes.CONSULTING);
-    } else if (location.pathname.includes("/product")) {
+    } else if (location.pathname.includes("/consulting/customer/explaining")) {
       setSelectedSideButton(SideButtonTypes.PRODUCT);
     } else if (location.pathname.includes("/assets")) {
       setSelectedSideButton(SideButtonTypes.ASSETS);

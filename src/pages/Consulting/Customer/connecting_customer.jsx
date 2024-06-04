@@ -1,15 +1,14 @@
 import CallInfo from "@/components/CallInfo";
 import Chat from "@/components/Chat";
-import React, { useState, useEffect } from "react";
-import "./style.scss";
+import React, { useState, useEffect, useRef } from "react";
+import "./connecting_customer.scss";
 import ConsultVideo from "@/components/Video/index";
 
-
-//rcfe
 function Consulting() {
   const [isMuted, setIsMuted] = useState(false); // 음소거 State
   const [callDuration, setCallDuration] = useState(0); // 화상 상담 시간 State
   const [isCallActive, setIsCallActive] = useState(false); // 화상 상담 활성 여부 State
+  const largeVideoRef = useRef(null); // largeVideoRef 정의
 
   useEffect(() => {
     let timer;
@@ -45,18 +44,22 @@ function Consulting() {
     <div className="serviceContainer">
       <div id="consultLeftSection">
         <ConsultVideo
-          isMuted={isMuted} 
-          onCallStart={handleCallStart} 
-          onCallEnd={handleCallEnd} 
+          isMuted={isMuted}
+          onCallStart={handleCallStart}
+          onCallEnd={handleCallEnd}
+          largeVideoRef={largeVideoRef} // largeVideoRef 전달
+          onShareScreen={() => {}} // 화면 공유 함수 전달
         />
       </div>
       <div id="consultRightSection">
         <CallInfo
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
-          duration={callDuration}/>
-        <Chat/>
-      </div>     
+          duration={callDuration}
+          onShareScreen={() => {}} // Add the missing onShareScreen property
+        />
+        <Chat />
+      </div>
     </div>
   );
 }

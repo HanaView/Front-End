@@ -1,10 +1,14 @@
 import Axios from "axios";
 import { SERVER_URL } from "@/common/config";
 
-const instance = Axios.create({
-  baseURL: SERVER_URL,
-  timeout: 1000
-});
+const createAxiosInstance = (isMock) => {
+  return Axios.create({
+    baseURL: isMock ? "http://localhost:5173" : SERVER_URL,
+    timeout: 1000
+  });
+};
+
+const instance = createAxiosInstance(false);
 
 instance.interceptors.request.use(
   (config) => {
@@ -55,9 +59,11 @@ instance.interceptors.response.use(
   }
 );
 
-const onRequest = async ({ method, url, data = "" }) => {
+const onRequest = async ({ method, url, data = "", mock = false }) => {
+  const axiosInstance = createAxiosInstance(mock);
+
   try {
-    const res = await instance.request({ method, url, data });
+    const res = await axiosInstance.request({ method, url, data });
     return res.data;
   } catch (err) {
     return Promise.reject(err);

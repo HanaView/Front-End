@@ -95,6 +95,7 @@ function Teller() {
             onCallEnd={handleCallEnd}
             largeVideoRef={largeVideoRef} // largeVideoRef 전달
             showLargeVideo={false} // largeVideoContainer를 숨김
+            onShareScreen={handleShareScreen}
           />
         </div>
         <div className="customerInfoContainer">
