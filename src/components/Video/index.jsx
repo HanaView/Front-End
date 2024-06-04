@@ -1,194 +1,161 @@
-import React, { useState, useEffect, useRef } from 'react';
-import "./style.scss";
+    import React, { useState, useEffect, useRef } from 'react';
+    import "./style.scss";
 
-const ConsultVideo = ({ isMuted, onCallStart, onCallEnd }) => {
-  const [localStream, setLocalStream] = useState(null);
-  const [remoteStream, setRemoteStream] = useState(null);
-  const [signalingSocket, setSignalingSocket] = useState(null);
-  const [peerConnection, setPeerConnection] = useState(null);
-  const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
-  const [isSpeaking, setIsSpeaking] = useState(false); // 음성 감지 상태
+    const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalingSocket
+    }) => {
+      const [localStream, setLocalStream] = useState(null);
+      const [remoteStream, setRemoteStream] = useState(null);
+      const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
+      const [isLocalSpeaking, setIsLocalSpeaking] = useState(false); // 로컬 음성 감지 상태
+      const [isRemoteSpeaking, setIsRemoteSpeaking] = useState(false); // 리모트 음성 감지 상태
+      const [dotCount, setDotCount] = useState(1); // 연결 대기중 ... 의 . 개수
 
-  const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
-  const largeVideoRef = useRef(null);
-  const audioAnalyserRef = useRef(null)
+      const localVideoRef = useRef(null);
+      const remoteVideoRef = useRef(null);
+      const largeVideoRef = useRef(null);
+      const localAudioAnalyserRef = useRef(null);
+      const remoteAudioAnalyserRef = useRef(null);
 
-  useEffect(() => {
-    // 로컬 미디어 스트림 가져오기
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        setLocalStream(stream);
-        localVideoRef.current.srcObject = stream;
-        setupAudioAnalyser(stream); // 오디오 분석 함수 호출
-      })
-      .catch((error) => {
-        console.error('Error accessing media devices:', error);
-      });
+      useEffect(() => {
+        // 로컬 미디어 스트림 가져오기
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+          .then((stream) => {
+            localVideoRef.current.srcObject = stream;
+            setLocalStream(stream);
+          })
+          .catch((error) => {
+            console.error('Error accessing media devices:', error);
+          });
+    
+        if (peerConnection) {
+          peerConnection.ontrack = (event) => {
+            setRemoteStream(event.streams[0]);
+          };
+        }
+      }, [peerConnection]);
 
-    // 시그널링 서버 연결
-    const socket = new WebSocket('ws://127.0.0.1:8080/WebRTC/signaling');
-    setSignalingSocket(socket);
+      useEffect(() => {
+        if (localStream) {
+          setupAudioAnalyser(localStream, setIsLocalSpeaking, localAudioAnalyserRef);
+          localStream.getAudioTracks().forEach((track) => {
+            track.enabled = !isMuted;
+          });
+        }
+      }, [localStream, isMuted]);
 
-    // 피어 연결 설정
-    const pc = new RTCPeerConnection({
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-      ],
-    });
-    setPeerConnection(pc);
+      // remoteStream이 변경될 때마다 remoteVideoRef 초기화, audioAnalyser 세팅
+      useEffect(() => {
+        if (remoteStream && remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = remoteStream;
+          setupAudioAnalyser(remoteStream, setIsRemoteSpeaking, remoteAudioAnalyserRef); // 리모트 오디오 분석 함수 호출
+        }
+      }, [remoteStream]);
 
-    // 이벤트 리스너 설정
-    pc.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket.send(JSON.stringify({ type: 'ice-candidate', candidate: event.candidate }));
-      }
-    };
+      useEffect(() => {
+        if (largeVideoRef.current) {
+          largeVideoRef.current.srcObject = activeVideo;
+        }
+      }, [activeVideo]);
 
-    pc.ontrack = (event) => {
-      setRemoteStream(event.streams[0]);
-      remoteVideoRef.current.srcObject = event.streams[0];
-    };
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setDotCount((prevDotCount) => {
+            if (prevDotCount === 3) {
+              return 1;
+            }
+            return prevDotCount + 1;
+          });
+        }, 800);
+    
+        return () => clearInterval(interval);
+      }, []);
 
-    socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      switch (message.type) {
-        case 'offer':
-          if (message.sdp) {
-            pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
-              .then(() => pc.createAnswer())
-              .then((answer) => pc.setLocalDescription(answer))
-              .then(() => {
-                socket.send(JSON.stringify({ type: 'answer', sdp: pc.localDescription }));
-              })
-              .catch((error) => {
-                console.error('Error setting remote description:', error);
-              });
-          } else {
-            console.error('Invalid offer message:', message);
-          }
-          break;
-        case 'answer':
-          if (message.sdp) {
-            pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
-              .catch((error) => {
-                console.error('Error setting remote description:', error);
-              });
-          } else {
-            console.error('Invalid answer message:', message);
-          }
-          break;
-        case 'ice-candidate':
-          if (message.candidate) {
-            pc.addIceCandidate(new RTCIceCandidate(message.candidate))
-              .catch((error) => {
-                console.error('Error adding ICE candidate:', error);
-              });
-          } else {
-            console.error('Invalid ICE message:', message);
-          }
-          break;
-      }
-    };
+      const handleCallButtonClick = () => {
+        peerConnection.addStream(localStream);
+        peerConnection.createOffer()
+          .then((offer) => peerConnection.setLocalDescription(offer))
+          .then(() => {
+            signalingSocket.send(JSON.stringify({ type: 'offer', sdp: peerConnection.localDescription }));
+          });
+          onCallStart();
+      };
 
-    return () => {
-      // 컴포넌트 언마운트 시 정리
-      pc.close();
-      socket.close();
-    };
-  }, []);
+      // 선택된 비디오를 크게 보여주는 함수
+      const handleVideoContainerClick = (stream) => {
+        setActiveVideo(stream);
+        console.log(stream)
+        console.log(remoteStream)
+        console.log(remoteVideoRef)
+        if (stream === localStream) {
+          largeVideoRef.current.srcObject = localStream;
+        } else if (stream === remoteStream) {
+          largeVideoRef.current.srcObject = remoteStream;
+        }
+      };
 
-  useEffect(() => {
-    if (localStream) {
-      localStream.getAudioTracks().forEach((track) => {
-        track.enabled = !isMuted;
-      });
-    }
-  }, [isMuted, localStream]);
+      // 큰 비디오 보이지 않게 하는 함수
+      const handleLargeVideoClick = () => {
+        setActiveVideo(null);
+      };
 
-  useEffect(() => {
-    if (largeVideoRef.current) {
-      largeVideoRef.current.srcObject = activeVideo;
-    }
-  }, [activeVideo]);
+      const setupAudioAnalyser = (stream, setSpeaking, analyserRef) => {
+        const audioContext = new window.AudioContext();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyser.fftSize = 256;
+    
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        analyserRef.current = { analyser, dataArray, animationFrameId: null };
+    
+        const detectSpeaking = () => {
+          analyser.getByteFrequencyData(dataArray);
+          const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+          setSpeaking(average > 3); // 임계값 조정 가능
+    
+          analyserRef.current.animationFrameId = requestAnimationFrame(detectSpeaking);
+        };
+    
+        detectSpeaking();
+      };
 
-  const handleCallButtonClick = () => {
-    peerConnection.addStream(localStream);
-    peerConnection.createOffer()
-      .then((offer) => peerConnection.setLocalDescription(offer))
-      .then(() => {
-        signalingSocket.send(JSON.stringify({ type: 'offer', sdp: peerConnection.localDescription }));
-      });
-      onCallStart();
-  };
-
-  const handleVideoContainerClick = (stream) => {
-    setActiveVideo(stream);
-    if (stream === localStream) {
-      largeVideoRef.current.srcObject = localStream;
-    } else if (stream === remoteStream) {
-      largeVideoRef.current.srcObject = remoteStream;
-    }
-  };
-
-  const setupAudioAnalyser = (stream) => {
-    const audioContext = new window.AudioContext();
-    const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaStreamSource(stream);
-    source.connect(analyser);
-    analyser.fftSize = 256;
-
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    audioAnalyserRef.current = { analyser, dataArray, animationFrameId: null };
-
-    const detectSpeaking = () => {
-      analyser.getByteFrequencyData(dataArray);
-      const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-      setIsSpeaking(average > 3); // 임계값 조정 가능
-
-      audioAnalyserRef.current.animationFrameId = requestAnimationFrame(detectSpeaking);
-    };
-
-    detectSpeaking();
-  };
-
-  return (
-    <div id='consultVideo'>
-      <div id='videoOptions'>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(localStream)}>
-          <p>텔러</p>
-          {localStream ? (
-            <video className={`video ${isSpeaking ? 'speaking' : ''}`} ref={localVideoRef} autoPlay />
-          ) : (
-            <div className='videoPending'>
-              <img src='/src/assets/images/videoPending.png'/>
-              <p>연결 대기중 ...</p>
+      return (
+        <div id='consultVideo'>
+          <div id='videoOptions'>
+            <div className='videoContainer' onClick={() => handleVideoContainerClick(localStream)}>
+              <p>텔러</p>
+              {localVideoRef ? (
+                <video className={`video ${isLocalSpeaking ? 'speaking' : ''}`} ref={localVideoRef} autoPlay />
+              ) : (
+                <div className='videoPending'>
+                  <img src='/src/assets/images/videoPending.png'/>
+                  <p>연결 대기중 {'.'.repeat(dotCount)}</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
-          <p>손님</p>
-          {remoteVideoRef ? (
-            <video className={`video ${isSpeaking ? 'speaking' : ''}`} ref={remoteVideoRef} autoPlay />
-          ) : (
-            <div className='videoPending'>
-              <img src='/src/assets/images/videoPending.png'/>
-              <p>연결 대기중 ...</p>
+            <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
+              <p>손님</p>
+              {remoteStream ? (
+                <video className={`video ${isRemoteSpeaking ? 'speaking' : ''}`} ref={remoteVideoRef} autoPlay />
+              ) : (
+                <div className='videoPending'>
+                  <img src='/src/assets/images/videoPending.png'/>
+                  <p>연결 대기중 {'.'.repeat(dotCount)}</p>
+                </div>
+              )}
             </div>
-          )}
+            <div className='videoContainer' onClick={() =>  (null)}>
+              <p>화면 공유</p>
+              <video className='video'/>
+            </div>
+          </div>
+          <button onClick={handleCallButtonClick}>Call</button>
+          
+          <div id="largeVideo">
+            {activeVideo && <video className="largeV" ref={largeVideoRef} onClick={handleLargeVideoClick} autoPlay />}
+          </div>
         </div>
-        <div className='videoContainer' onClick={() =>  (null)}>
-          <p>화면 공유</p>
-          <video className='video'/>
-        </div>
-      </div>
-      <button onClick={handleCallButtonClick}>Call</button>
-      
-      <div id="largeVideo">
-        {activeVideo && <video ref={largeVideoRef} autoPlay />}
-      </div>
-    </div>
-  );
-};
+      );
+    };
 
-export default ConsultVideo;
+    export default ConsultVideo;

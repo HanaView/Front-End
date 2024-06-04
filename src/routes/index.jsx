@@ -5,21 +5,17 @@ import RootLayout from "@/Layouts/RootLayout/index";
 import Main from "@/pages/Main/index";
 
 import Test from "@/pages/Test";
-import Customer from "@/pages/Consulting/Customer/connecting_customer";
-import Teller from "@/pages/Consulting/Teller/connecting_teller";
 
 import Camera from "@/pages/Auth/camera";
 import Auth from "@/pages/Auth";
 import Home from "@/pages/Home";
 import Footer from "@/Layouts/Footer";
-import ConsultVideo from "@/components/Video";
 
 import AfterTeller from "@/pages/After/index_teller";
 import AfterCustomer from "@/pages/After/index_customer";
-import Finish from "@/pages/Auth/finish";
-import LoadingCustomer from "@/pages/Consulting/Customer/loading_customer";
-import ConnectingCustomer from "@/pages/Consulting/Customer/connecting_customer";
-import ExplainingCustomer from "@/pages/Consulting/Customer/explaining_customer";
+import LoadingCustomer from "@/pages/Customer/loading_customer";
+import ConnectingCustomer from "@/pages/Customer/Consulting/index";
+import ExplainingCustomer from "@/pages/Customer/explaining_customer";
 import LoginCustomer from "@/pages/Login/indexCustomer";
 import LoginTeller from "@/pages/Login/indexTeller";
 
@@ -38,8 +34,6 @@ const router = createBrowserRouter([
       {
         path: "consulting",
         children: [
-          { path: "customer", element: <Customer /> },
-          { path: "teller", element: <Teller /> },
           { index: true, element: <LoadingCustomer /> },
           { path: ":testId", element: <Main /> }
         ]

@@ -23,7 +23,10 @@
   width: 150px;
   height: 150px;
   border: 4px solid transparent;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, transform 0.2s;
+  overflow: clip;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .speaking {
@@ -44,12 +47,15 @@
   margin-bottom: 20px;
 }
 
-#largeVideo {
-  border: 1px solid #008E71;
-  border-radius: 8px;
-  height: 100%;
+.videoPending p{
+  font-size: 1.2rem;
 }
 
-#largeVideo video {
+#largeVideo {
+}
+
+.largeV {
+  border-radius: 8px;
   height: 100%;
+  cursor: pointer;
 }
