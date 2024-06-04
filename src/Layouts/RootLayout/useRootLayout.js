@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
-import { selectedSideButtonAtom } from "@/stores";
+import { selectedSideButtonAtom, userTypeAtom } from "@/stores";
 import { SideButtonTypes } from "@/stores/type";
 
 const useRootLayout = () => {
@@ -15,6 +15,7 @@ const useRootLayout = () => {
   const [selectedSideButton, setSelectedSideButton] = useAtom(
     selectedSideButtonAtom
   );
+  const [userType,setUserType] = useAtom(userTypeAtom);
 
   // URL 기준으로 버튼 상태 변화
   useEffect(() => {
@@ -24,9 +25,13 @@ const useRootLayout = () => {
       setSelectedSideButton(SideButtonTypes.PRODUCT);
     } else if (location.pathname.includes("/assets")) {
       setSelectedSideButton(SideButtonTypes.ASSETS);
+    } else if (location.pathname.includes("/consulting/teller/connecting")) {
+      setSelectedSideButton(SideButtonTypes.CONSULTING);
+      setUserType("TELLER");
     } else {
       setSelectedSideButton(SideButtonTypes.NONE);
     }
+
   }, [location.pathname, setSelectedSideButton]);
 
   return {
