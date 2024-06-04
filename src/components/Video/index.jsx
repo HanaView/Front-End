@@ -7,13 +7,12 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLarg
   const [signalingSocket, setSignalingSocket] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
-
-  const [screenSharingStream, setScreenSharingStream] = useState(null); // 화면 공유 스트림
+  const [isSpeaking, setIsSpeaking] = useState(false); // 음성 감지 상태
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
-  const screenVideoRef = useRef(null); // 화면 공유 비디오 레퍼런스
-
+  // const largeVideoRef = useRef(null);
+  const audioAnalyserRef = useRef(null)
 
   useEffect(() => {
     // 로컬 미디어 스트림 가져오기
@@ -21,6 +20,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLarg
       .then((stream) => {
         setLocalStream(stream);
         localVideoRef.current.srcObject = stream;
+        setupAudioAnalyser(stream); // 오디오 분석 함수 호출
       })
       .catch((error) => {
         console.error('Error accessing media devices:', error);
@@ -131,24 +131,25 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLarg
     }
   };
 
-  const startScreenSharing = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      setScreenSharingStream(stream);
-      screenVideoRef.current.srcObject = stream;
+  const setupAudioAnalyser = (stream) => {
+    const audioContext = new window.AudioContext();
+    const analyser = audioContext.createAnalyser();
+    const source = audioContext.createMediaStreamSource(stream);
+    source.connect(analyser);
+    analyser.fftSize = 256;
 
-      stream.getTracks().forEach((track) => {
-        peerConnection.addTrack(track, stream);
-      });
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    audioAnalyserRef.current = { analyser, dataArray, animationFrameId: null };
 
-      peerConnection.createOffer()
-        .then((offer) => peerConnection.setLocalDescription(offer))
-        .then(() => {
-          signalingSocket.send(JSON.stringify({ type: 'offer', sdp: peerConnection.localDescription }));
-        });
-    } catch (error) {
-      console.error('Error sharing screen:', error);
-    }
+    const detectSpeaking = () => {
+      analyser.getByteFrequencyData(dataArray);
+      const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+      setIsSpeaking(average > 3); // 임계값 조정 가능
+
+      audioAnalyserRef.current.animationFrameId = requestAnimationFrame(detectSpeaking);
+    };
+
+    detectSpeaking();
   };
 
   return (
@@ -157,7 +158,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLarg
         <div className='videoContainer' onClick={() => handleVideoContainerClick(localStream)}>
           <p>텔러</p>
           {localStream ? (
-            <video ref={localVideoRef} autoPlay />
+            <video className={`video ${isSpeaking ? 'speaking' : ''}`} ref={localVideoRef} autoPlay />
           ) : (
             <div className='videoPending'>
               <img src='/src/assets/images/videoPending.png'/>
@@ -165,24 +166,27 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, largeVideoRef, showLarg
             </div>
           )}
         </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(screenSharingStream)}>
-          <p>화면 공유</p>
-          {screenSharingStream ? (
-            <video ref={screenVideoRef} autoPlay />
+        <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
+          <p>손님</p>
+          {remoteVideoRef ? (
+            <video className={`video ${isSpeaking ? 'speaking' : ''}`} ref={remoteVideoRef} autoPlay />
           ) : (
             <div className='videoPending'>
               <img src='/src/assets/images/videoPending.png'/>
-              <p>화면 공유 대기중 ...</p>
+              <p>연결 대기중 ...</p>
             </div>
           )}
         </div>
+        <div className='videoContainer' onClick={() =>  (null)}>
+          <p>화면 공유</p>
+          <video className='video'/>
+        </div>
       </div>
       <button onClick={handleCallButtonClick}>Call</button>
-      {showLargeVideo && (
-        <div id="largeVideoContainer">
-          {activeVideo && <video id="largeVideo" ref={largeVideoRef} autoPlay />}
-        </div>
-      )}
+      
+      <div id="largeVideo">
+        {activeVideo && <video ref={largeVideoRef} autoPlay />}
+      </div>
     </div>
   );
 };
