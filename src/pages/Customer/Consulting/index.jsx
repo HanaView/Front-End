@@ -28,6 +28,23 @@ function Consulting() {
     });
     setPeerConnection(pc);
 
+     // 데이터 채널 생성
+     const dc = pc.createDataChannel('chat');
+     setDataChannel(dc);
+ 
+     // 데이터 채널 이벤트 리스너 설정
+     dc.onopen = () => {
+       console.log('Data channel opened');
+     };
+ 
+     dc.onclose = () => {
+       console.log('Data channel closed');
+     };
+ 
+     dc.onerror = (error) => {
+       console.error('Data channel error:', error);
+     };
+
     // 이벤트 리스너 설정
     pc.onicecandidate = (event) => {
       if (event.candidate) {
@@ -130,7 +147,9 @@ function Consulting() {
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
           duration={callDuration}/>
-        <Chat/>
+        <Chat
+          dataChannel={dataChannel}
+          setMessages={setMessages}/>
       </div>     
     </div>
   );
