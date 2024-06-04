@@ -3,7 +3,7 @@ import { SERVER_URL } from "@/common/config";
 
 const createAxiosInstance = (isMock) => {
   return Axios.create({
-    baseURL: isMock ? "http://localhost:5173" : SERVER_URL,
+    baseURL: SERVER_URL,
     timeout: 1000
   });
 };
@@ -35,7 +35,7 @@ instance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 403) {
       // Handle token refresh logic here
       // isTokenExpired() - A function to check if the token is expired
       // tokenRefresh() - A function to refresh the token

@@ -15,6 +15,8 @@ export const initialModalState = {
 };
 //모달
 export const globalModalAtom = atom(initialModalState);
+//비번 요청 시 떠야하는 모달
+export const passwordRequestlModalAtom = atom(initialModalState);
 
 //카메라
 export const capturedImageAtom = atom(null);
