@@ -87,7 +87,7 @@ function Auth() {
 
       try {
         const response = await axios.get (
-          "http://172.16.20.211:80/api/login/authComplete?key="+key,
+          "http://127.0.0.1:80/api/login/authComplete?key="+key,
           null, // 요청 본문이 없는 경우 null을 사용
           // { params: { key: key } } // 쿼리 파라미터로 key를 전달
         );       

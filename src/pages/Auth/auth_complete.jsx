@@ -1,12 +1,60 @@
 import React, { useState } from "react";
 import "./auth_complete.scss";
 import Button from "@/components/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
 
 function AuthCustomer() {
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const key = searchParams.get("key");
+
+  const checkToken = async (e) => {
+    e.preventDefault();
+   
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:80/api/login/validate?key="+key,        
+      );
+      
+      console.log("------------------------------");
+      console.log(response.data);
+
+      if (response.data.state == 200) {
+        console.log("--------accessToken----------");
+        console.log(response.data.data.accessToken);
+        console.log("--------refreshToken----------");
+        console.log(response.data.data.refreshToken);
+        console.log("--------refreshTokenExpirationTime----------");
+        console.log(response.data.data.refreshTokenExpirationTime);
+
+
+        navigate("/consulting/customer/loading");
+      } else {
+        // Handle authentication failure
+        alert(response.data.errorCode.message);
+        console.error(
+          "Authentication failed:",
+          response.data.errorCode.message
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Response error:", error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response error:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Axios error:", error.message);
+      }
+    } 
+  };
+
 
   const [timeLeft, setTimeLeft] = useState(600); // 10분을 초 단위로 설정 (10분 * 60초)
 
@@ -50,7 +98,8 @@ function AuthCustomer() {
             <Button
               size="large"
               shape="rect"
-              onClick={() => navigate("/consulting/customer/loading")}
+              onClick={checkToken}
+              // onClick={() => navigate("/consulting/customer/loading")}
             >
               본인인증 완료
             </Button>

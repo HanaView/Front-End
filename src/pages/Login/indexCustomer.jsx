@@ -38,6 +38,7 @@ function LoginCustomer() {
   useEffect(() => {
     if (randomKey) {
       navigate(`/camera?key=${randomKey}`);
+      // navigate(`/auth/customer?key=${randomKey}`);
     }
   }, [randomKey, navigate]);
 
@@ -52,7 +53,7 @@ function LoginCustomer() {
 
     try {
       const response = await axios.post(
-        "http://172.16.20.211:80/api/login/auth",
+        "http://127.0.0.1:80/api/login/auth",
         authData
       );
 
