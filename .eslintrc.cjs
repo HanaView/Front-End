@@ -31,7 +31,8 @@ module.exports = {
   },
   rules: {
     "react/jsx-uses-vars": "error",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off"
   },
   overrides: [
     {

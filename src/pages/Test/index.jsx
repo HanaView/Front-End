@@ -1,7 +1,10 @@
+import React, { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useAtom } from "jotai";
+import { getAllDeposits } from "@/apis/deposit";
 import Button from "@/components/Button";
 import { globalModalAtom } from "@/stores";
-import { useAtom } from "jotai";
-import React from "react";
+import Task from "../Consulting/Task";
 
 function Test() {
   const [modalData, setModalData] = useAtom(globalModalAtom);
@@ -13,6 +16,7 @@ function Test() {
       content: "하이"
     }));
   };
+
   const onClickButton2 = () => {
     setModalData((prevState) => ({
       ...prevState,
@@ -26,15 +30,19 @@ function Test() {
       )
     }));
   };
+
   return (
-    <div>
-      <Button size="large" shape="rect" onClick={onClickButton}>
-        go
-      </Button>
-      <Button size="large" shape="rect" onClick={onClickButton2}>
-        go2
-      </Button>
-    </div>
+    <>
+      <Task />
+      <div>
+        <Button size="large" shape="rect" onClick={onClickButton}>
+          go
+        </Button>
+        <Button size="large" shape="rect" onClick={onClickButton2}>
+          go2
+        </Button>
+      </div>
+    </>
   );
 }
 
