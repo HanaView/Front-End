@@ -27,7 +27,6 @@ function AuthCustomer() {
         console.log("--------refreshToken----------");
         console.log(response.data.data.refreshToken);
         console.log("--------refreshTokenExpirationTime----------");
-
         console.log(response.data.data.refreshTokenExpirationTime);
 
         sessionStorage.setItem("ACCESS_TOKEN", response.data.data.accessToken);
