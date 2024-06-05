@@ -1,14 +1,14 @@
 .serviceContainer.teller {
-    height: calc(var(--vh, 1vh) * 100);
-    /* --vh 사용 */
-    padding: 0px 20px;
-    display: flex;
-  
-    overflow: hidden;
-    /* 스크롤 숨기기 */
-    box-sizing: border-box;
-  }
-  
+  height: calc(var(--vh, 1vh) * 100);
+  /* --vh 사용 */
+  padding: 0px 20px;
+  display: flex;
+
+  overflow: hidden;
+  /* 스크롤 숨기기 */
+  box-sizing: border-box;
+
+
   #consultLeftSection {
     width: 20%;
     display: flex;
@@ -18,34 +18,34 @@
     overflow: hidden;
     /* 스크롤 숨기기 */
   }
-  
+
   /* 추가 스타일 */
   #consultLeftSection>* {
     flex: 1;
     overflow: hidden;
     /* 스크롤 숨기기 */
   }
-  
+
   #consultLeftSection .videoContainer {
     flex: 2;
     /* 더 큰 비율로 공간 차지 */
   }
-  
+
   #consultLeftSection .customerInfoContainer {
     flex: 1;
     overflow: auto;
     /* 내용이 넘칠 경우 스크롤 표시 */
   }
-  
+
   #consultRightSection {
     width: 80%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     /* 스크롤 숨기기 */
-  
+
   }
-  
+
   #mainContent {
     flex: 1;
     display: flex;
@@ -53,16 +53,16 @@
     margin-bottom: 20px;
     overflow: hidden;
     /* 스크롤 숨기기 */
-  
+
   }
-  
+
   #sideContent {
     display: flex;
     flex-direction: column;
     margin-left: 20px;
-  
+
   }
-  
+
   .selectedScreen {
     flex: 1;
     background-color: #e0e0e0;
@@ -75,9 +75,9 @@
     /* largeVideo를 절대 위치로 설정하기 위해 필요 */
     overflow: hidden;
     /* 스크롤 숨기기 */
-  
+
   }
-  
+
   .inputSection {
     flex: 0;
     background-color: #f0f0f0;
@@ -87,12 +87,12 @@
     font-size: 1.5em;
     overflow: hidden;
     /* 스크롤 숨기기 */
-  
+
     height: 50px;
     /* 필요한 높이로 설정 */
-  
+
   }
-  
+
   #consultLeftSection #videoOptions {
     display: flex;
     justify-content: space-between;
@@ -101,25 +101,25 @@
     width: 100%;
     /* videoContainer의 너비에 맞추기 위해 100% 설정 */
   }
-  
+
   .videoContainer {
     width: 100%;
     /* videoContainer의 기본 너비 설정 */
   }
-  
+
   #consultRightSection {
     display: flex;
     flex-direction: column;
     width: 80%;
     overflow: hidden;
     /* 스크롤 숨기기 */
-  
+
   }
-  
+
   #consultRightSection>* {
     margin-bottom: 20px;
   }
-  
+
   #consultRightSection #chatDiv {
     flex: 1;
     /* selectedScreen과 같은 높이 설정 */
@@ -127,16 +127,16 @@
     /* flex: 0.5가 적용될 수 있도록 height 자동 설정 */
     overflow: hidden;
     /* 스크롤 숨기기 */
-  
+
   }
-  
+
   #consultRightSection .inputSection {
     flex: 1;
     /* 남은 공간을 차지하도록 설정 */
     margin-bottom: 0;
     /* 자식 요소의 기본 마진 제거 */
   }
-  
+
   #largeVideoContainer {
     width: 100%;
     /* 선택된 화면의 전체 너비 */
@@ -150,10 +150,11 @@
     top: 0;
     left: 0;
   }
-  
+
   #largeVideo {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
   }
+} // teller css 구분할때 꼭! 필요
