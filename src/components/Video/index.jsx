@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "./style.scss";
 
-const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalingSocket, isTeller, largeVideoRef, showLargeVideo = true }) => {
+const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalingSocket, isTeller, largeVideoRef, activeVideo }) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
-  const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
+  // const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
   const [isLocalSpeaking, setIsLocalSpeaking] = useState(false); // 로컬 음성 감지 상태
   const [isRemoteSpeaking, setIsRemoteSpeaking] = useState(false); // 리모트 음성 감지 상태
   const [dotCount, setDotCount] = useState(1); // 연결 대기중 ... 의 . 개수
@@ -95,12 +95,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDotCount((prevDotCount) => {
-        if (prevDotCount === 3) {
-          return 1;
-        }
-        return prevDotCount + 1;
-      });
+      setDotCount((prevDotCount) => (prevDotCount === 3 ? 1 : prevDotCount + 1));
     }, 800);
 
     return () => clearInterval(interval);
@@ -119,7 +114,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
   };
 
   const handleVideoContainerClick = (stream) => {
-    setActiveVideo(stream);
+    // setActiveVideo(stream);
     if (largeVideoRef && largeVideoRef.current) {
       largeVideoRef.current.srcObject = stream;
     }
@@ -146,26 +141,26 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
     detectSpeaking();
   };
 
-  const startScreenSharing = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      if (screenVideoRef.current) {
-        screenVideoRef.current.srcObject = stream;
-      }
-      setScreenStream(stream);
+  // const startScreenSharing = async () => {
+  //   try {
+  //     const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+  //     if (screenVideoRef.current) {
+  //       screenVideoRef.current.srcObject = stream;
+  //     }
+  //     setScreenStream(stream);
 
-      stream.getTracks().forEach((track) => {
-        peerConnection.addTrack(track, stream);
-      });
+  //     stream.getTracks().forEach((track) => {
+  //       peerConnection.addTrack(track, stream);
+  //     });
 
-      if (largeVideoRef && largeVideoRef.current) {
-        largeVideoRef.current.srcObject = stream;
-      }
-    } catch (error) {
-      console.error('Error sharing screen:', error);
-      alert('Error sharing screen. Please check your screen sharing permissions.');
-    }
-  };
+  //     if (largeVideoRef && largeVideoRef.current) {
+  //       largeVideoRef.current.srcObject = stream;
+  //     }
+  //   } catch (error) {
+  //     console.error('Error sharing screen:', error);
+  //     alert('Error sharing screen. Please check your screen sharing permissions.');
+  //   }
+  // };
 
   return (
     <div id='consultVideo' className={isTeller ? 'teller' : ''}>

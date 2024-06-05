@@ -14,12 +14,14 @@ function ConnectingTeller() {
   const [dataChannel, setDataChannel] = useState(null);
   const [messages, setMessages] = useState([]);
   // const [customerInfo, setCustomerInfo] = useState(null);
+  const [screenStream, setScreenStream] = useState(null);
+  const [activeVideo, setActiveVideo] = useState(null);
 
   const customerInfo = {
     name: "김하나",
     phoneNumber: "010-0000-0000",
     idNumber: "990000-1234567",
-    idImage: "/src/assets/images/videoPending.png",
+    idImage: "/src/assets/images/videoPending.png"
   };
 
   const largeVideoRef = useRef(null);
@@ -83,6 +85,9 @@ function ConnectingTeller() {
           } else {
             console.error("Invalid ICE message:", message);
           }
+          break;       
+        default:
+          console.error("알 수 없는 메시지 타입:", message);
           break;
       }
     };
@@ -120,12 +125,28 @@ function ConnectingTeller() {
     setIsMuted(!isMuted);
   };
 
-  const handleShareScreen = () => {
-    if (consultVideoRef.current && consultVideoRef.current.startScreenSharing) {
-      consultVideoRef.current.startScreenSharing();
+
+  const startScreenSharing = async () => {
+    console.log('Attempting to start screen sharing...');
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      console.log('Screen sharing stream obtained:', stream);
+      setScreenStream(stream);
+
+      stream.getTracks().forEach((track) => {
+        console.log('Adding track to peer connection:', track);
+        peerConnection.current.addTrack(track, stream);
+      });
+
+      if (largeVideoRef.current) {
+        largeVideoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error('Error sharing screen:', error);
+      alert('Error sharing screen. Please check your screen sharing permissions.');
     }
   };
-  
+
   const handleMessageReceived = (message) => {
     setMessages((prevMessages) => [...prevMessages, message]);
   };
@@ -141,7 +162,10 @@ function ConnectingTeller() {
             peerConnection={peerConnection}
             signalingSocket={signalingSocket}
             isTeller={true}
-            largeVideoRef={largeVideoRef}          />
+            largeVideoRef={largeVideoRef}
+            activeVideo={activeVideo}
+
+          />
         </div>
         <div className="customerInfoContainer">
           <CustomerInfo
@@ -160,18 +184,19 @@ function ConnectingTeller() {
             </div>
           </div>
           <div id="sideContent">
-            <CallInfo
+          <CallInfo
               onToggleMute={handleToggleMute}
               isMuted={isMuted}
               duration={callDuration}
               isTeller={true}
-              onShareScreen={handleShareScreen}
+              onShareScreen={startScreenSharing}
             />
-   <Chat
-          dataChannel={dataChannel}
-          messages={messages}
-          onMessageReceived={handleMessageReceived}/>
-      </div>            
+            <Chat
+              dataChannel={dataChannel}
+              messages={messages}
+              onMessageReceived={handleMessageReceived}
+            />
+          </div>
         </div>
         <div className="inputSection">필요업무에 맞는 입력창</div>
       </div>

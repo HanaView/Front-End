@@ -3,6 +3,7 @@ import Chat from "@/components/Chat";
 import React, { useState, useEffect } from "react";
 import "./index.scss";
 import ConsultVideo from "@/components/Video/index";
+import { useRef } from "react";
 
 //rcfe
 function Consulting() {
@@ -14,6 +15,7 @@ function Consulting() {
   const [peerConnection, setPeerConnection] = useState(null); // peerConnection State
   const [dataChannel, setDataChannel] = useState(null); // 채팅용 데이터 채널 State
   const [messages, setMessages] = useState([]); // 채팅 메시지 배열
+  const largeVideoRef = useRef(null);
 
   useEffect(() => {
     // 시그널링 서버 연결
@@ -104,9 +106,14 @@ function Consulting() {
                     console.error('Invalid ICE message:', message);
                 }
                 break;
+            case 'screen-share':
+                  if (message.stream) {
+                    largeVideoRef.current.srcObject = message.stream;
+                  }
+                  break;
             default:
-                console.error('알 수 없는 메시지 타입:', message);
-                break;
+                  console.error('알 수 없는 메시지 타입:', message);
+                  break;
         }
     };
 
@@ -156,24 +163,27 @@ function Consulting() {
   return (
     <div className="serviceContainer">
       <div id="consultLeftSection">
-        <ConsultVideo
-          isMuted={isMuted} 
-          onCallStart={handleCallStart} 
-          onCallEnd={handleCallEnd} 
+      <ConsultVideo
+          isMuted={isMuted}
+          onCallStart={handleCallStart}
+          onCallEnd={handleCallEnd}
           peerConnection={peerConnection}
           signalingSocket={signalingSocket}
-          isTeller={false} // Add the missing isTeller property
-        />
+          isTeller={false}
+          largeVideoRef={largeVideoRef}  />
       </div>
       <div id="consultRightSection">
         <CallInfo
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
-          duration={callDuration}/>
+          duration={callDuration} isTeller={undefined} onShareScreen={undefined}/>
         <Chat
           dataChannel={dataChannel}
           messages={messages}
           onMessageReceived={handleMessageReceived}/>
+           <div id="largeVideoContainer">
+          <video id="largeVideo" ref={largeVideoRef} autoPlay />
+        </div>
       </div>     
     </div>
   );
