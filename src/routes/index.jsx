@@ -5,6 +5,7 @@ import RootLayout from "@/Layouts/RootLayout/index";
 import Main from "@/pages/Main/index";
 
 import Test from "@/pages/Test";
+
 import Camera from "@/pages/Auth/camera";
 import Auth from "@/pages/Auth";
 import Home from "@/pages/Home";
@@ -12,10 +13,9 @@ import Footer from "@/Layouts/Footer";
 
 import AfterTeller from "@/pages/After/index_teller";
 import AfterCustomer from "@/pages/After/index_customer";
-import Finish from "@/pages/Auth/finish";
-import LoadingCustomer from "@/pages/Consulting/Customer/loading_customer";
-import ConnectingCustomer from "@/pages/Consulting/Customer/connecting_customer";
-import ExplainingCustomer from "@/pages/Consulting/Customer/explaining_customer";
+import LoadingCustomer from "@/pages/Customer/loading_customer";
+import ConnectingCustomer from "@/pages/Customer/Consulting/index";
+import ExplainingCustomer from "@/pages/Customer/explaining_customer";
 import LoginCustomer from "@/pages/Login/indexCustomer";
 import LoginTeller from "@/pages/Login/indexTeller";
 import AuthCustomer from "@/pages/Auth/auth_complete";
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
 
     children: [      
       {
-        path: "consulting/customer/loading",
+        path: "consulting",
         children: [
           { index: true, element: <LoadingCustomer /> },
           { path: ":testId", element: <Main /> }
@@ -63,13 +63,15 @@ const router = createBrowserRouter([
       },      
       {
         path: "test",
-        children: [
-          { index: true, element: <Test /> },
-          { path: ":testId", element: <Main /> }
-        ]
+        element: <Test />
       }
     ]
-  },  
+  },
+  {
+    path: "/home",
+    element: <Footer />,
+    children: [{ index: true, element: <Home /> }]
+  },
   {
     path: "/login/customer",     
     children: [
@@ -98,6 +100,9 @@ const router = createBrowserRouter([
   {
     path: "/auth",
     element: <Auth />
+<<<<<<< HEAD
+  }
+=======
   },
   {
     path: "/authfinish",
@@ -118,6 +123,7 @@ const router = createBrowserRouter([
       { path: ":testId", element: <Main /> }
     ]
   },
+>>>>>>> 446ef20122f86e3af3a5bd19ae3db91f88d3a57d
 ]);
 
 export default router;

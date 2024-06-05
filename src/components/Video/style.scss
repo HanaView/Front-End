@@ -1,41 +1,61 @@
 #consultVideo {
-  width: calc(100% - 300px);
-  min-height: 100%;
-  padding-right: 50px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.option {
+#videoOptions {
   display: flex;
-  align-items: center;
-  margin-right: 20px;
+}
+
+.videoContainer {
   cursor: pointer;
   text-align: center;
+  margin-right: 10%;
 }
 
-.option img {
-  min-width: 200px;
-  height: 150px;
-}
-
-.section {
-  margin: 0 20px 20px 0;
-}
-
-.title {
-  margin-bottom: 10px;
+.videoContainer p {
   font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
-.video-section {
-  min-height: 450px;
+.video {
+  width: 150px;
+  height: 150px;
+  border: 4px solid transparent;
+  transition: border-color 0.2s, transform 0.2s;
+  overflow: clip;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
-.video-section {
-  width: 100%;
-  height: 100%;
-  background-color: #eaeaea;
-  justify-content: center;
+.speaking {
+  border-color: #00A585;
+}
+
+.videoPending {
+  width: 150px;
+  height: 150px;
+  display: flex;
   align-items: center;
-  font-size: 24px;
-  color: #555;
+  flex-direction: column;
+}
+
+.videoPending img{
+  width: 130px;
+  height: 130px;
+  margin-bottom: 20px;
+}
+
+.videoPending p{
+  font-size: 1.2rem;
+}
+
+#largeVideo {
+}
+
+.largeV {
+  border-radius: 8px;
+  height: 100%;
+  cursor: pointer;
 }
