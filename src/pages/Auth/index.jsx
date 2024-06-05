@@ -17,9 +17,9 @@ function Auth() {
   const [address, setAddress] = useState("");
   const [issueDate, setIssueDate] = useState("");
 
-  const [searchParams] = useSearchParams();
-  const key = searchParams.get("key");
-  
+  // const [searchParams] = useSearchParams();
+  // const key = searchParams.get("key");
+  const key = localStorage.getItem("key");
 
   const ocrData = JSON.parse(localStorage.getItem("ocrData"));
   console.log(ocrData);
