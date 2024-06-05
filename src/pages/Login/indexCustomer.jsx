@@ -37,8 +37,10 @@ function LoginCustomer() {
   // randomKey가 업데이트되면 navigate 호출
   useEffect(() => {
     if (randomKey) {
-      navigate(`/camera?key=${randomKey}`);
-      // navigate(`/auth/customer?key=${randomKey}`);               
+      // navigate(`/camera?key=${randomKey}`);
+      // navigate("/camera");
+      localStorage.setItem("key", randomKey);
+      navigate(`/auth/customer?key=${randomKey}`);               
     }
   }, [randomKey, navigate]);
 

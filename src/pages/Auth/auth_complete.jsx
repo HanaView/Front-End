@@ -30,8 +30,7 @@ function AuthCustomer() {
         console.log("--------refreshTokenExpirationTime----------");
         console.log(response.data.data.refreshTokenExpirationTime);
 
-
-        navigate("/consulting/customer/loading");
+        navigate(`/consulting/customer/loading?key=${key}`);
       } else {
         // Handle authentication failure
         alert(response.data.errorCode.message);
@@ -89,7 +88,7 @@ function AuthCustomer() {
           <div className="dummy"></div>
           <div className="timer">
             <div className="clock">{formatTime(timeLeft)}</div>
-            <div className="content">이내에</div>
+            <div className="content">&nbsp;이내에</div>
           </div>
           <br />
           <div className="content">인증해주세요</div>
