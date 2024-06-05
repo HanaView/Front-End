@@ -4,6 +4,7 @@
     display: flex;
 }
 
-.consultRightSection {
-    display: flex;
+#consultLeftSection {
+    width: calc(100% - 300px);
+    margin-right: 5%;
 }
