@@ -125,6 +125,10 @@ function ConnectingTeller() {
       consultVideoRef.current.startScreenSharing();
     }
   };
+  
+  const handleMessageReceived = (message) => {
+    setMessages((prevMessages) => [...prevMessages, message]);
+  };
 
   return (
     <div className="serviceContainer teller">
@@ -163,8 +167,11 @@ function ConnectingTeller() {
               isTeller={true}
               onShareScreen={handleShareScreen}
             />
-            <Chat />
-          </div>
+   <Chat
+          dataChannel={dataChannel}
+          messages={messages}
+          onMessageReceived={handleMessageReceived}/>
+      </div>            
         </div>
         <div className="inputSection">필요업무에 맞는 입력창</div>
       </div>
