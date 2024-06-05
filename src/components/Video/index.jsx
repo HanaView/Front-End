@@ -83,9 +83,6 @@
       // 선택된 비디오를 크게 보여주는 함수
       const handleVideoContainerClick = (stream) => {
         setActiveVideo(stream);
-        console.log(stream)
-        console.log(remoteStream)
-        console.log(remoteVideoRef)
         if (stream === localStream) {
           largeVideoRef.current.srcObject = localStream;
         } else if (stream === remoteStream) {

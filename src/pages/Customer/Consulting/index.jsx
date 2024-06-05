@@ -11,9 +11,9 @@ function Consulting() {
   const [isCallActive, setIsCallActive] = useState(false); // 화상 상담 활성 여부 State
 
   const [signalingSocket, setSignalingSocket] = useState(null);
-  const [peerConnection, setPeerConnection] = useState(null);
-  const [dataChannel, setDataChannel] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [peerConnection, setPeerConnection] = useState(null); // peerConnection State
+  const [dataChannel, setDataChannel] = useState(null); // 채팅용 데이터 채널 State
+  const [messages, setMessages] = useState([]); // 채팅 메시지 배열
 
   useEffect(() => {
     // 시그널링 서버 연결
@@ -22,83 +22,101 @@ function Consulting() {
 
     // 피어 연결 설정
     const pc = new RTCPeerConnection({
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-      ],
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+        ],
     });
     setPeerConnection(pc);
 
-     // 데이터 채널 생성
-     const dc = pc.createDataChannel('chat');
-     setDataChannel(dc);
- 
-     // 데이터 채널 이벤트 리스너 설정
-     dc.onopen = () => {
-       console.log('Data channel opened');
-     };
- 
-     dc.onclose = () => {
-       console.log('Data channel closed');
-     };
- 
-     dc.onerror = (error) => {
-       console.error('Data channel error:', error);
-     };
+    // 데이터 채널 생성
+    const dc = pc.createDataChannel('chat');
+
+    // 데이터 채널 이벤트 리스너 설정
+    dc.onopen = () => {
+        console.log('Data channel opened');
+    };
+
+    dc.onclose = () => {
+        console.log('Data channel closed');
+    };
+
+    dc.onerror = (error) => {
+        console.error('Data channel error:', error);
+    };
+
+    dc.onmessage = (event) => {
+        console.log('Data channel message received:', event.data);
+        const receivedMessage = JSON.parse(event.data);
+        setMessages((prevMessages) => [...prevMessages, { sender: '텔러', message: receivedMessage.message }]);
+    };
+
+    // 데이터 채널 설정이 완료되었을 때 실행되는 함수
+    const onDataChannelCreated = (event) => {
+        const dc = event.channel;
+        setDataChannel(dc);
+    };
+
+    // 데이터 채널 생성 이벤트 리스너 설정
+    pc.ondatachannel = onDataChannelCreated;
 
     // 이벤트 리스너 설정
     pc.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket.send(JSON.stringify({ type: 'ice-candidate', candidate: event.candidate }));
-      }
+        if (event.candidate) {
+            socket.send(JSON.stringify({ type: 'ice-candidate', candidate: event.candidate }));
+        }
     };
 
     socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      switch (message.type) {
-        case 'offer':
-          if (message.sdp) {
-            pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
-              .then(() => pc.createAnswer())
-              .then((answer) => pc.setLocalDescription(answer))
-              .then(() => {
-                socket.send(JSON.stringify({ type: 'answer', sdp: pc.localDescription }));
-              })
-              .catch((error) => {
-                console.error('Error setting remote description:', error);
-              });
-          } else {
-            console.error('Invalid offer message:', message);
-          }
-          break;
-        case 'answer':
-          if (message.sdp) {
-            pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
-              .catch((error) => {
-                console.error('Error setting remote description:', error);
-              });
-          } else {
-            console.error('Invalid answer message:', message);
-          }
-          break;
-        case 'ice-candidate':
-          if (message.candidate) {
-            pc.addIceCandidate(new RTCIceCandidate(message.candidate))
-              .catch((error) => {
-                console.error('Error adding ICE candidate:', error);
-              });
-          } else {
-            console.error('Invalid ICE message:', message);
-          }
-          break;
-      }
+        const message = JSON.parse(event.data);
+        switch (message.type) {
+            case 'offer':
+                if (message.sdp) {
+                    pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
+                        .then(() => pc.createAnswer())
+                        .then((answer) => pc.setLocalDescription(answer))
+                        .then(() => {
+                            socket.send(JSON.stringify({ type: 'answer', sdp: pc.localDescription }));
+                        })
+                        .catch((error) => {
+                            console.error('Error setting remote description:', error);
+                        });
+                } else {
+                    console.error('Invalid offer message:', message);
+                }
+                break;
+            case 'answer':
+                if (message.sdp) {
+                    pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
+                        .catch((error) => {
+                            console.error('Error setting remote description:', error);
+                        });
+                } else {
+                    console.error('Invalid answer message:', message);
+                }
+                break;
+            case 'ice-candidate':
+                if (message.candidate) {
+                    pc.addIceCandidate(new RTCIceCandidate(message.candidate))
+                        .catch((error) => {
+                            console.error('Error adding ICE candidate:', error);
+                        });
+                } else {
+                    console.error('Invalid ICE message:', message);
+                }
+                break;
+            default:
+                console.error('알 수 없는 메시지 타입:', message);
+                break;
+        }
     };
 
     return () => {
-      // 컴포넌트 언마운트 시 정리
-      pc.close();
-      socket.close();
+        // 컴포넌트 언마운트 시 정리
+        pc.close();
+        socket.close();
     };
-  }, []);
+}, []);
+
 
   // 화상 상담 시작 함수
   const handleCallStart = () => {
@@ -131,6 +149,10 @@ function Consulting() {
     setIsMuted(!isMuted);
   };
 
+  const handleMessageReceived = (message) => {
+    setMessages((prevMessages) => [...prevMessages, message]);
+  };
+
   return (
     <div className="serviceContainer">
       <div id="consultLeftSection">
@@ -149,7 +171,8 @@ function Consulting() {
           duration={callDuration}/>
         <Chat
           dataChannel={dataChannel}
-          setMessages={setMessages}/>
+          messages={messages}
+          onMessageReceived={handleMessageReceived}/>
       </div>     
     </div>
   );
