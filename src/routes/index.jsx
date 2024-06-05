@@ -19,6 +19,11 @@ import ExplainingCustomer from "@/pages/Customer/explaining_customer";
 import LoginCustomer from "@/pages/Login/indexCustomer";
 import LoginTeller from "@/pages/Login/indexTeller";
 
+import AuthCustomer from "@/pages/Auth/auth_complete";
+import Teller from "@/pages/Teller";
+import Finish from "@/pages/Auth/finish";
+
+
 import ConnectingTeller from "@/pages/Teller/";
 import Finish from "@/pages/Auth/finish";
 import AuthCustomer from "@/pages/Auth/auth_complete";
@@ -58,7 +63,7 @@ const router = createBrowserRouter([
       {
         path: "consulting/teller/connecting",
         children: [
-          { index: true, element: <ConnectingTeller /> },
+          { index: true, element: <Teller /> },
           { path: ":testId", element: <Main /> }
         ]
       },      
