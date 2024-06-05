@@ -29,7 +29,9 @@ function ConnectingTeller() {
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
-        socket.send(JSON.stringify({ type: "ice-candidate", candidate: event.candidate }));
+        socket.send(
+          JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
+        );
       }
     };
 
@@ -42,7 +44,9 @@ function ConnectingTeller() {
               .then(() => pc.createAnswer())
               .then((answer) => pc.setLocalDescription(answer))
               .then(() => {
-                socket.send(JSON.stringify({ type: "answer", sdp: pc.localDescription }));
+                socket.send(
+                  JSON.stringify({ type: "answer", sdp: pc.localDescription })
+                );
               })
               .catch((error) => {
                 console.error("Error setting remote description:", error);
@@ -53,20 +57,22 @@ function ConnectingTeller() {
           break;
         case "answer":
           if (message.sdp) {
-            pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
-              .catch((error) => {
-                console.error("Error setting remote description:", error);
-              });
+            pc.setRemoteDescription(
+              new RTCSessionDescription(message.sdp)
+            ).catch((error) => {
+              console.error("Error setting remote description:", error);
+            });
           } else {
             console.error("Invalid answer message:", message);
           }
           break;
         case "ice-candidate":
           if (message.candidate) {
-            pc.addIceCandidate(new RTCIceCandidate(message.candidate))
-              .catch((error) => {
+            pc.addIceCandidate(new RTCIceCandidate(message.candidate)).catch(
+              (error) => {
                 console.error("Error adding ICE candidate:", error);
-              });
+              }
+            );
           } else {
             console.error("Invalid ICE message:", message);
           }
