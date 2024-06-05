@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./auth_complete.scss";
 import Button from "@/components/Button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
 
 function AuthCustomer() {
   const navigate = useNavigate();
@@ -13,12 +12,12 @@ function AuthCustomer() {
 
   const checkToken = async (e) => {
     e.preventDefault();
-   
+
     try {
       const response = await axios.get(
-        "http://127.0.0.1:80/api/login/validate?key="+key,        
+        "http://127.0.0.1:80/api/login/validate?key=" + key
       );
-      
+
       console.log("------------------------------");
       console.log(response.data);
 
@@ -28,7 +27,14 @@ function AuthCustomer() {
         console.log("--------refreshToken----------");
         console.log(response.data.data.refreshToken);
         console.log("--------refreshTokenExpirationTime----------");
+
         console.log(response.data.data.refreshTokenExpirationTime);
+
+        sessionStorage.setItem("ACCESS_TOKEN", response.data.data.accessToken);
+        sessionStorage.setItem(
+          "REFRESH_TOKEN",
+          response.data.data.refreshToken
+        );
 
         navigate(`/consulting/customer/loading?key=${key}`);
       } else {
@@ -51,9 +57,8 @@ function AuthCustomer() {
         // Something happened in setting up the request that triggered an Error
         console.error("Axios error:", error.message);
       }
-    } 
+    }
   };
-
 
   const [timeLeft, setTimeLeft] = useState(600); // 10분을 초 단위로 설정 (10분 * 60초)
 

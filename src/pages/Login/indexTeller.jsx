@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./indexTeller.scss";
 import Button from "@/components/Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
 
 function LoginTeller() {
   const [name, setName] = useState("");
@@ -34,7 +33,7 @@ function LoginTeller() {
         "http://127.0.0.1:80/api/auth/consultant/login",
         authData
       );
-      
+
       console.log("------------------------------");
       console.log(response.data);
 
@@ -46,11 +45,20 @@ function LoginTeller() {
         console.log("--------refreshTokenExpirationTime----------");
         console.log(response.data.data.refreshTokenExpirationTime);
 
-        navigate("/consulting/teller/loading");        
+        sessionStorage.setItem("ACCESS_TOKEN", response.data.data.accessToken);
+        sessionStorage.setItem(
+          "REFRESH_TOKEN",
+          response.data.data.refreshToken
+        );
+
+        navigate("/consulting/teller/loading");
       } else {
         // Handle authentication failure
         alert(response.data.errorCode.message);
-        console.error("Authentication failed:", response.data.errorCode.message);
+        console.error(
+          "Authentication failed:",
+          response.data.errorCode.message
+        );
       }
     } catch (error) {
       if (error.response) {
