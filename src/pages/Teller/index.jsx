@@ -123,8 +123,7 @@ function ConnectingTeller() {
             onCallEnd={handleCallEnd}
             peerConnection={peerConnection}
             signalingSocket={signalingSocket}
-            isTeller={true}
-          />
+            isTeller={true} largeVideoRef={largeVideoRef}          />
         </div>
         <div className="customerInfoContainer">
           <CustomerInfo

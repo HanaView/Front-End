@@ -25,8 +25,7 @@ import Finish from "@/pages/Auth/finish";
 
 
 import ConnectingTeller from "@/pages/Teller/";
-import Finish from "@/pages/Auth/finish";
-import AuthCustomer from "@/pages/Auth/auth_complete";
+
 
 const router = createBrowserRouter([
   {
