@@ -1,36 +1,88 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ConsultVideo from "@/components/Video/";
 import CallInfo from "@/components/CallInfo/";
 import Chat from "@/components/Chat/";
-import "./style.scss"; // teller 전용 스타일
-import { useRef } from "react";
+import "./style.scss";
 import CustomerInfo from "@/components/CustomerInfo";
 
-function Teller() {
-  const [isMuted, setIsMuted] = useState(false); // 음소거 State
-  const [callDuration, setCallDuration] = useState(0); // 화상 상담 시간 State
-  const [isCallActive, setIsCallActive] = useState(false); // 화상 상담 활성 여부 State
-  const [customerInfo, setCustomerInfo] = useState(null); // 손님 정보 State
+function ConnectingTeller() {
+  const [isMuted, setIsMuted] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
+  const [isCallActive, setIsCallActive] = useState(false);
+  const [signalingSocket, setSignalingSocket] = useState(null);
+  const [peerConnection, setPeerConnection] = useState(null);
+  const [dataChannel, setDataChannel] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [customerInfo, setCustomerInfo] = useState(null);
 
-  const largeVideoRef = useRef(null); // largeVideoRef 정의
+  const largeVideoRef = useRef(null);
+  const consultVideoRef = useRef(null); // ConsultVideo 컴포넌트를 참조합니다.
 
-  // 스크롤 방지 및 뷰포트 높이 조정
   useEffect(() => {
-    // 함수 정의
-    const setScreenSize = () => {
-      let vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
+    setSignalingSocket(socket);
+
+    const pc = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+    });
+    setPeerConnection(pc);
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.send(
+          JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
+        );
+      }
     };
 
-    // 함수 호출
-    setScreenSize();
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      switch (message.type) {
+        case "offer":
+          if (message.sdp) {
+            pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
+              .then(() => pc.createAnswer())
+              .then((answer) => pc.setLocalDescription(answer))
+              .then(() => {
+                socket.send(
+                  JSON.stringify({ type: "answer", sdp: pc.localDescription })
+                );
+              })
+              .catch((error) => {
+                console.error("Error setting remote description:", error);
+              });
+          } else {
+            console.error("Invalid offer message:", message);
+          }
+          break;
+        case "answer":
+          if (message.sdp) {
+            pc.setRemoteDescription(
+              new RTCSessionDescription(message.sdp)
+            ).catch((error) => {
+              console.error("Error setting remote description:", error);
+            });
+          } else {
+            console.error("Invalid answer message:", message);
+          }
+          break;
+        case "ice-candidate":
+          if (message.candidate) {
+            pc.addIceCandidate(new RTCIceCandidate(message.candidate)).catch(
+              (error) => {
+                console.error("Error adding ICE candidate:", error);
+              }
+            );
+          } else {
+            console.error("Invalid ICE message:", message);
+          }
+          break;
+      }
+    };
 
-    // resize 이벤트 리스너 등록
-    window.addEventListener("resize", setScreenSize);
-
-    // cleanup function to remove event listener
     return () => {
-      window.removeEventListener("resize", setScreenSize);
+      pc.close();
+      socket.close();
     };
   }, []);
 
@@ -49,39 +101,21 @@ function Teller() {
     };
   }, [isCallActive]);
 
-  // 화상 상담 시작 함수
   const handleCallStart = () => {
     setIsCallActive(true);
   };
 
-  // 화상 상담 종료 함수
   const handleCallEnd = () => {
     setIsCallActive(false);
   };
 
-  // 음소거 전환 함수
   const handleToggleMute = () => {
     setIsMuted(!isMuted);
   };
-  // 서버에서 손님 정보 가져오기
-  // useEffect(() => {
-  //   const fetchCustomerInfo = async () => {
-  //     try {
-  //       const response = await fetch('/api/customer-info'); // 실제 API 엔드포인트로 교체
-  //       const data = await response.json();
-  //       setCustomerInfo(data);
-  //     } catch (error) {
-  //       console.error('Error fetching customer info:', error);
-  //     }
-  //   };
 
-  //   fetchCustomerInfo();
-  // }, []);
-
-  // 화면 공유 시작 함수
   const handleShareScreen = () => {
-    if (largeVideoRef.current && largeVideoRef.current.startScreenSharing) {
-      largeVideoRef.current.startScreenSharing();
+    if (consultVideoRef.current && consultVideoRef.current.startScreenSharing) {
+      consultVideoRef.current.startScreenSharing();
     }
   };
 
@@ -93,9 +127,9 @@ function Teller() {
             isMuted={isMuted}
             onCallStart={handleCallStart}
             onCallEnd={handleCallEnd}
-            largeVideoRef={largeVideoRef} // largeVideoRef 전달
-            showLargeVideo={false} // largeVideoContainer를 숨김
-            onShareScreen={handleShareScreen}
+            peerConnection={peerConnection}
+            signalingSocket={signalingSocket}
+            isTeller={true}
           />
         </div>
         <div className="customerInfoContainer">
@@ -103,19 +137,9 @@ function Teller() {
             name="김하나"
             phoneNumber="010-0000-0000"
             idNumber="990000-1234567"
-            idImage="/src/assets/images/videoPending.png" // 실제 이미지 경로로 교체
+            idImage="/src/assets/images/videoPending.png"
           />
         </div>
-        {/* {customerInfo && (
-                  <div className="customerInfoContainer">
-
-          <CustomerInfo
-            name={customerInfo.name}
-            phoneNumber={customerInfo.phoneNumber}
-            idNumber={customerInfo.idNumber}
-            idImage={customerInfo.idImage}
-          />
-        )} */}
       </div>
       <div id="consultRightSection">
         <div id="mainContent">
@@ -129,6 +153,8 @@ function Teller() {
               onToggleMute={handleToggleMute}
               isMuted={isMuted}
               duration={callDuration}
+              isTeller={true}
+              onShareScreen={handleShareScreen}
             />
             <Chat />
           </div>
@@ -139,4 +165,4 @@ function Teller() {
   );
 }
 
-export default Teller;
+export default ConnectingTeller;

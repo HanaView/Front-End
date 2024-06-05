@@ -162,6 +162,7 @@ function Consulting() {
           onCallEnd={handleCallEnd} 
           peerConnection={peerConnection}
           signalingSocket={signalingSocket}
+          isTeller={false} // Add the missing isTeller property
         />
       </div>
       <div id="consultRightSection">

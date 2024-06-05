@@ -2,62 +2,84 @@ import Axios from "axios";
 import { SERVER_URL } from "@/common/config";
 
 const createAxiosInstance = (isMock) => {
-  return Axios.create({
-    baseURL: isMock ? "http://localhost:5173" : SERVER_URL,
+  const instance = Axios.create({
+    baseURL: SERVER_URL,
     timeout: 1000
   });
+
+  instance.interceptors.request.use(
+    (config) => {
+      const accessToken = sessionStorage.getItem("ACCESS_TOKEN");
+      config.headers["Content-Type"] = "application/json";
+      if (accessToken) {
+        config.headers["Authorization"] = `Bearer ${accessToken}`;
+      }
+
+      return config;
+    },
+    (error) => {
+      console.log(error);
+      return Promise.reject(error);
+    }
+  );
+
+  instance.interceptors.response.use(
+    (response) => {
+      if (response.status === 404) {
+        // Handle 404
+      }
+      return response;
+    },
+    async (error) => {
+      if (error.response?.status === 403) {
+        // Handle token refresh logic here
+        if (isTokenExpired()) await tokenRefresh();
+
+        const accessToken = getToken();
+
+        error.config.headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        };
+
+        // Retry the request with new token
+        const response = await Axios.request(error.config);
+        return response;
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
 };
 
-const instance = createAxiosInstance(false);
+const isTokenExpired = () => {
+  const token = sessionStorage.getItem("ACCESS_TOKEN");
+  if (!token) return true;
 
-instance.interceptors.request.use(
-  (config) => {
-    const accessToken = sessionStorage.getItem("ACCESS_TOKEN");
+  const payload = JSON.parse(atob(token.split(".")[1]));
+  const expiry = payload.exp * 1000;
+  return Date.now() > expiry;
+};
 
-    config.headers["Content-Type"] = "application/json";
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
-    }
+const tokenRefresh = async () => {
+  try {
+    const refreshToken = sessionStorage.getItem("REFRESH_TOKEN");
+    const response = await Axios.post(`${SERVER_URL}/auth/refresh`, {
+      token: refreshToken
+    });
+    const newAccessToken = response.data.accessToken;
 
-    return config;
-  },
-  (error) => {
-    console.log(error);
-    return Promise.reject(error);
+    sessionStorage.setItem("ACCESS_TOKEN", newAccessToken);
+  } catch (error) {
+    console.error("Failed to refresh token:", error);
+    // Handle token refresh failure (e.g., logout the user)
   }
-);
+};
 
-instance.interceptors.response.use(
-  (response) => {
-    if (response.status === 404) {
-      // Handle 404
-    }
-    return response;
-  },
-  async (error) => {
-    if (error.response?.status === 401) {
-      // Handle token refresh logic here
-      // isTokenExpired() - A function to check if the token is expired
-      // tokenRefresh() - A function to refresh the token
-
-      // TODO: 토큰 리프레쉬 함수 추가
-      // if (isTokenExpired()) await tokenRefresh();
-
-      // const accessToken = getToken();
-
-      error.config.headers = {
-        "Content-Type": "application/json"
-        // TODO: 리프레쉬 토큰 추가하면 주석 해제
-        // Authorization: `Bearer ${accessToken}`
-      };
-
-      // Retry the request with new token
-      const response = await Axios.request(error.config);
-      return response;
-    }
-    return Promise.reject(error);
-  }
-);
+const getToken = () => {
+  return sessionStorage.getItem("ACCESS_TOKEN");
+};
 
 const onRequest = async ({ method, url, data = "", mock = false }) => {
   const axiosInstance = createAxiosInstance(mock);

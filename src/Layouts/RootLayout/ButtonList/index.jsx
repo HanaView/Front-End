@@ -8,6 +8,7 @@ import { userTypeAtom } from "@/stores";
 function ButtonList() {
   const { handleNavigation, selectedSideButton } = useRootLayout();
   const [userType] = useAtom(userTypeAtom);
+
   const CustomerButtons = React.memo(() => {
     return (
       <>
@@ -52,18 +53,18 @@ function ButtonList() {
           })}
           color="default"
           shape="none"
-          onClick={() => handleNavigation("/consulting")}
+          onClick={() => handleNavigation("/consulting/teller/connecting")}
         >
           화상연결(텔러)
         </Button>
-        <Button
+        {/* <Button
           className="side-button"
           color="default"
           shape="none"
           onClick={() => console.log("상품 연결")}
         >
           텔러 버튼
-        </Button>
+        </Button> */}
       </>
     );
   });
