@@ -13,7 +13,14 @@ function ConnectingTeller() {
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [customerInfo, setCustomerInfo] = useState(null);
+  // const [customerInfo, setCustomerInfo] = useState(null);
+
+  const customerInfo = {
+    name: "김하나",
+    phoneNumber: "010-0000-0000",
+    idNumber: "990000-1234567",
+    idImage: "/src/assets/images/videoPending.png",
+  };
 
   const largeVideoRef = useRef(null);
   const consultVideoRef = useRef(null); // ConsultVideo 컴포넌트를 참조합니다.
@@ -123,14 +130,15 @@ function ConnectingTeller() {
             onCallEnd={handleCallEnd}
             peerConnection={peerConnection}
             signalingSocket={signalingSocket}
-            isTeller={true} largeVideoRef={largeVideoRef}          />
+            isTeller={true}
+            largeVideoRef={largeVideoRef}          />
         </div>
         <div className="customerInfoContainer">
           <CustomerInfo
-            name="김하나"
-            phoneNumber="010-0000-0000"
-            idNumber="990000-1234567"
-            idImage="/src/assets/images/videoPending.png"
+            name={customerInfo.name}
+            phoneNumber={customerInfo.phoneNumber}
+            idNumber={customerInfo.idNumber}
+            idImage={customerInfo.idImage}
           />
         </div>
       </div>
