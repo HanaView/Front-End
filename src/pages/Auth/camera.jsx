@@ -75,7 +75,7 @@ function Camera() {
 
         // auth 페이지로 이동하면서 쿼리 파라미터 유지
         if (key) {
-          navigate(`/auth?key=${key}`);
+          navigate(`/auth?key=${key}`);        
         } else {
           // key가 없을 경우 기본 페이지로 이동
           navigate(`/auth`);

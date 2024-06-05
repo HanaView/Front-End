@@ -38,7 +38,7 @@ function LoginCustomer() {
   useEffect(() => {
     if (randomKey) {
       navigate(`/camera?key=${randomKey}`);
-      // navigate(`/auth/customer?key=${randomKey}`);
+      // navigate(`/auth/customer?key=${randomKey}`);               
     }
   }, [randomKey, navigate]);
 

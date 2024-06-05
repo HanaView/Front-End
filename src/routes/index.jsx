@@ -20,12 +20,12 @@ import LoginCustomer from "@/pages/Login/indexCustomer";
 import LoginTeller from "@/pages/Login/indexTeller";
 
 import AuthCustomer from "@/pages/Auth/auth_complete";
-import Teller from "@/pages/Teller";
 import Finish from "@/pages/Auth/finish";
 
 
 import ConnectingTeller from "@/pages/Teller/";
 
+import LoadingTeller from "@/pages/Teller/loading_teller";
 
 const router = createBrowserRouter([
   {
@@ -60,9 +60,16 @@ const router = createBrowserRouter([
         ]
       },      
       {
+        path: "consulting/teller/loading",
+        children: [
+          { index: true, element: <LoadingTeller /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
         path: "consulting/teller/connecting",
         children: [
-          { index: true, element: <Teller /> },
+          { index: true, element: <ConnectingTeller /> },
           { path: ":testId", element: <Main /> }
         ]
       },      
