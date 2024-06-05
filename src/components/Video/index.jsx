@@ -1,7 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import "./style.scss";
 
-const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalingSocket, isTeller, largeVideoRef, showLargeVideo = true }) => {
+const ConsultVideo = ({
+  isMuted,
+  onCallStart,
+  onCallEnd,
+  peerConnection,
+  signalingSocket,
+  isTeller,
+  largeVideoRef,
+  showLargeVideo = true
+}) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
@@ -20,8 +29,10 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
   const checkMediaDevices = async () => {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const hasMicrophone = devices.some(device => device.kind === 'audioinput');
-      const hasCamera = devices.some(device => device.kind === 'videoinput');
+      const hasMicrophone = devices.some(
+        (device) => device.kind === "audioinput"
+      );
+      const hasCamera = devices.some((device) => device.kind === "videoinput");
 
       if (!hasMicrophone) {
         console.warn("마이크가 없습니다.");
@@ -43,21 +54,26 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
 
       if (hasMicrophone && hasCamera) {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true
+          });
           if (localVideoRef.current) {
             localVideoRef.current.srcObject = stream;
           }
           setLocalStream(stream);
         } catch (error) {
-          console.error('Error accessing media devices:', error);
-          alert('Error accessing media devices. Please check your camera and microphone.');
+          console.error("Error accessing media devices:", error);
+          alert(
+            "Error accessing media devices. Please check your camera and microphone."
+          );
         }
       } else {
         if (!hasMicrophone) {
-          alert('No microphone found. Please connect a microphone.');
+          alert("No microphone found. Please connect a microphone.");
         }
         if (!hasCamera) {
-          alert('No camera found. Please connect a camera.');
+          alert("No camera found. Please connect a camera.");
         }
       }
     };
@@ -73,7 +89,11 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
 
   useEffect(() => {
     if (localStream) {
-      setupAudioAnalyser(localStream, setIsLocalSpeaking, localAudioAnalyserRef);
+      setupAudioAnalyser(
+        localStream,
+        setIsLocalSpeaking,
+        localAudioAnalyserRef
+      );
       localStream.getAudioTracks().forEach((track) => {
         track.enabled = !isMuted;
       });
@@ -83,7 +103,11 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
   useEffect(() => {
     if (remoteStream && remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = remoteStream;
-      setupAudioAnalyser(remoteStream, setIsRemoteSpeaking, remoteAudioAnalyserRef); // 리모트 오디오 분석 함수 호출
+      setupAudioAnalyser(
+        remoteStream,
+        setIsRemoteSpeaking,
+        remoteAudioAnalyserRef
+      ); // 리모트 오디오 분석 함수 호출
     }
   }, [remoteStream]);
 
@@ -99,15 +123,17 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
         if (prevDotCount === 3) {
           return 1;
 
-      // 선택된 비디오를 크게 보여주는 함수
-      const handleVideoContainerClick = (stream) => {
-        setActiveVideo(stream);
-        if (stream === localStream) {
-          largeVideoRef.current.srcObject = localStream;
-        } else if (stream === remoteStream) {
-          largeVideoRef.current.srcObject = remoteStream;
+          // 선택된 비디오를 크게 보여주는 함수
+          const handleVideoContainerClick = (stream) => {
+            setActiveVideo(stream);
+            if (stream === localStream) {
+              largeVideoRef.current.srcObject = localStream;
+            } else if (stream === remoteStream) {
+              largeVideoRef.current.srcObject = remoteStream;
+            }
+            return prevDotCount + 1;
+          };
         }
-        return prevDotCount + 1;
       });
     }, 800);
 
@@ -117,10 +143,16 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
   const handleCallButtonClick = () => {
     if (peerConnection && localStream) {
       peerConnection.addStream(localStream);
-      peerConnection.createOffer()
+      peerConnection
+        .createOffer()
         .then((offer) => peerConnection.setLocalDescription(offer))
         .then(() => {
-          signalingSocket.send(JSON.stringify({ type: 'offer', sdp: peerConnection.localDescription }));
+          signalingSocket.send(
+            JSON.stringify({
+              type: "offer",
+              sdp: peerConnection.localDescription
+            })
+          );
         });
       onCallStart();
     }
@@ -145,7 +177,8 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
       const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
       setSpeaking(average > 3); // 임계값 조정 가능
 
-      analyserRef.current.animationFrameId = requestAnimationFrame(detectSpeaking);
+      analyserRef.current.animationFrameId =
+        requestAnimationFrame(detectSpeaking);
     };
 
     detectSpeaking();
@@ -153,7 +186,9 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
 
   const startScreenSharing = async () => {
     try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true
+      });
       if (screenVideoRef.current) {
         screenVideoRef.current.srcObject = stream;
       }
@@ -167,43 +202,62 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
         largeVideoRef.current.srcObject = stream;
       }
     } catch (error) {
-      console.error('Error sharing screen:', error);
-      alert('Error sharing screen. Please check your screen sharing permissions.');
+      console.error("Error sharing screen:", error);
+      alert(
+        "Error sharing screen. Please check your screen sharing permissions."
+      );
     }
   };
 
   return (
-    <div id='consultVideo' className={isTeller ? 'teller' : ''}>
-      <div id='videoOptions'>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(localStream)}>
+    <div id="consultVideo" className={isTeller ? "teller" : ""}>
+      <div id="videoOptions">
+        <div
+          className="videoContainer"
+          onClick={() => handleVideoContainerClick(localStream)}
+        >
           <p>텔러</p>
           {localVideoRef ? (
-            <video className={`video ${isLocalSpeaking ? 'speaking' : ''}`} ref={localVideoRef} autoPlay />
+            <video
+              className={`video ${isLocalSpeaking ? "speaking" : ""}`}
+              ref={localVideoRef}
+              autoPlay
+            />
           ) : (
-            <div className='videoPending'>
-              <img src='/src/assets/images/videoPending.png' />
-              <p>연결 대기중 {'.'.repeat(dotCount)}</p>
+            <div className="videoPending">
+              <img src="/src/assets/images/videoPending.png" />
+              <p>연결 대기중 {".".repeat(dotCount)}</p>
             </div>
           )}
         </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
+        <div
+          className="videoContainer"
+          onClick={() => handleVideoContainerClick(remoteStream)}
+        >
           <p>손님</p>
           {remoteStream ? (
-            <video className={`video ${isRemoteSpeaking ? 'speaking' : ''}`} ref={remoteVideoRef} autoPlay />
+            <video
+              className={`video ${isRemoteSpeaking ? "speaking" : ""}`}
+              ref={remoteVideoRef}
+              autoPlay
+            />
           ) : (
-            <div className='videoPending'>
-              <img src='/src/assets/images/videoPending.png' />
-              <p>연결 대기중 {'.'.repeat(dotCount)}</p>
+            <div className="videoPending">
+              <img src="/src/assets/images/videoPending.png" />
+              <p>연결 대기중 {".".repeat(dotCount)}</p>
             </div>
           )}
         </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(screenStream)}>
+        <div
+          className="videoContainer"
+          onClick={() => handleVideoContainerClick(screenStream)}
+        >
           <p>화면 공유</p>
           {screenStream ? (
-            <video className='video' ref={screenVideoRef} autoPlay />
+            <video className="video" ref={screenVideoRef} autoPlay />
           ) : (
-            <div className='videoPending'>
-              <img src='/src/assets/images/videoPending.png' />
+            <div className="videoPending">
+              <img src="/src/assets/images/videoPending.png" />
             </div>
           )}
         </div>
