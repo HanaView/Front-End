@@ -18,10 +18,15 @@ import ConnectingCustomer from "@/pages/Customer/Consulting/index";
 import ExplainingCustomer from "@/pages/Customer/explaining_customer";
 import LoginCustomer from "@/pages/Login/indexCustomer";
 import LoginTeller from "@/pages/Login/indexTeller";
+
 import AuthCustomer from "@/pages/Auth/auth_complete";
 import Teller from "@/pages/Teller";
 import Finish from "@/pages/Auth/finish";
 
+
+import ConnectingTeller from "@/pages/Teller/";
+import Finish from "@/pages/Auth/finish";
+import AuthCustomer from "@/pages/Auth/auth_complete";
 
 const router = createBrowserRouter([
   {
@@ -35,7 +40,7 @@ const router = createBrowserRouter([
 
     children: [      
       {
-        path: "consulting",
+        path: "consulting/customer/loading",
         children: [
           { index: true, element: <LoadingCustomer /> },
           { path: ":testId", element: <Main /> }
@@ -64,15 +69,13 @@ const router = createBrowserRouter([
       },      
       {
         path: "test",
-        element: <Test />
+        children: [
+          { index: true, element: <Test /> },
+          { path: ":testId", element: <Main /> }
+        ]
       }
     ]
-  },
-  {
-    path: "/home",
-    element: <Footer />,
-    children: [{ index: true, element: <Home /> }]
-  },
+  },  
   {
     path: "/login/customer",     
     children: [

@@ -59,3 +59,76 @@
   height: 100%;
   cursor: pointer;
 }
+
+#consultVideo.teller {
+  // 텔러 전용 스타일
+  #consultVideo {
+    // height: 100%;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center; 
+   // width: 100%;
+   }
+   
+   #videoOptions {
+     display: flex;
+     justify-content: space-between;
+     margin-bottom: 20px;
+     flex-direction: column;
+     width: 100%;
+   }
+   
+   .videoContainer {
+     cursor: pointer;
+     text-align: center;
+     position: relative; /* 자막을 비디오 위에 오버레이하기 위해 position: relative 설정 */
+     width: 200px;
+     height: 150px;
+     // margin-right: 10%;
+   }
+   
+   
+   .videoContainer p {
+     position: absolute; /* 비디오 위에 오버레이하기 위해 position: absolute 설정 */
+     bottom: 10px; /* 자막의 위치 조정 */
+     left: 50%;
+     transform: translateX(-50%);
+     margin: 0;
+     padding: 2px 5px;
+     background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경색 설정 */
+     color: #fff; /* 텍스트 색상 설정 */
+     font-size: 12px; /* 폰트 크기 조정 */
+     border-radius: 3px;
+   }
+   
+   .videoContainer video {
+     width: 100%;
+     height: 150px;
+   }
+   
+   .videoPending {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     width: 100%;
+     height: 100%;
+   }
+   
+   #largeVideoContainer {
+     width: 100%;
+     height: 100%;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+   }
+   
+   #largeVideo {
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+     border-radius: 8px;
+   }
+
+}
