@@ -36,7 +36,7 @@ function Consulting() {
     };
 
     socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
+      const message = JSON.parse(event.data);                                                                                                                                                                                                                                                                                                                                                                                                              
       switch (message.type) {
         case 'offer':
           if (message.sdp) {
@@ -123,13 +123,17 @@ function Consulting() {
           onCallEnd={handleCallEnd} 
           peerConnection={peerConnection}
           signalingSocket={signalingSocket}
+          isTeller={false} // Add the missing isTeller property
         />
       </div>
       <div id="consultRightSection">
         <CallInfo
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
-          duration={callDuration}/>
+          duration={callDuration}
+          isTeller={false}
+          onShareScreen={null} // Add the missing onShareScreen property
+        />
         <Chat/>
       </div>     
     </div>
