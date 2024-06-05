@@ -24,6 +24,7 @@ import Finish from "@/pages/Auth/finish";
 
 
 import ConnectingTeller from "@/pages/Teller/";
+
 import LoadingTeller from "@/pages/Teller/loading_teller";
 
 const router = createBrowserRouter([
