@@ -46,7 +46,7 @@ function LoginTeller() {
         console.log("--------refreshTokenExpirationTime----------");
         console.log(response.data.data.refreshTokenExpirationTime);
 
-        navigate("/consulting/teller/connecting");        
+        navigate("/consulting/teller/loading");        
       } else {
         // Handle authentication failure
         alert(response.data.errorCode.message);
