@@ -49,11 +49,11 @@ function LoadingTeller() {
             <div>예/적금</div>
           </div>
           <div className="boxLine">
-            <div>2.강민주</div>
+            <div>2.이고은</div>
             <div>카드</div>
           </div>
           <div className="boxLine">
-            <div>3.김민표</div>
+            <div>3.임탁균</div>
             <div>대출</div>
           </div>
           <div className="boxLine">
@@ -65,11 +65,11 @@ function LoadingTeller() {
             <div>예/적금</div>
           </div>
           <div className="boxLine">
-            <div>6.이고은</div>
+            <div>6.김민표</div>
             <div>카드</div>
           </div>
           <div className="boxLine">
-            <div>7.임탁균</div>
+            <div>7.강민주</div>
             <div>예/적금</div>
           </div>
         </div>

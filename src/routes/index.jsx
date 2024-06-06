@@ -26,6 +26,7 @@ import Finish from "@/pages/Auth/finish";
 import ConnectingTeller from "@/pages/Teller/";
 
 import LoadingTeller from "@/pages/Teller/loading_teller";
+import OwnCustomer from "@/pages/Customer/own_customer";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,13 @@ const router = createBrowserRouter([
         path: "consulting/customer/explaining",
         children: [
           { index: true, element: <ExplainingCustomer /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
+        path: "consulting/customer/mydata",
+        children: [
+          { index: true, element: <OwnCustomer /> },
           { path: ":testId", element: <Main /> }
         ]
       },
@@ -104,15 +112,15 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "/camera",
+    path: "/auth/mobile/camera",
     element: <Camera />
   },
   {
-    path: "/auth",
+    path: "/auth/mobile/ocr",
     element: <Auth />
   },
   {
-    path: "/authfinish",
+    path: "/auth/mobile/finish",
     element: <Footer />,
     children: [{ index: true, element: <Finish /> }]
   },    

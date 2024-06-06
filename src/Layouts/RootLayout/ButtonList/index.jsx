@@ -8,6 +8,7 @@ import { userTypeAtom } from "@/stores";
 function ButtonList() {
   const { handleNavigation, selectedSideButton } = useRootLayout();
   const [userType] = useAtom(userTypeAtom);
+  const redisKey = localStorage.getItem("key");
 
   const CustomerButtons = React.memo(() => {
     return (
@@ -18,7 +19,7 @@ function ButtonList() {
           })}
           color="default"
           shape="none"
-          onClick={() => handleNavigation("/consulting/customer/loading")}
+          onClick={() => handleNavigation("/consulting/customer/loading?key="+redisKey)}
         >
           화상연결
         </Button>
@@ -28,15 +29,17 @@ function ButtonList() {
           })}
           color="default"
           shape="none"
-          onClick={() => handleNavigation("/consulting/customer/explaining")}
+          onClick={() => handleNavigation("/consulting/customer/explaining?key="+redisKey)}
         >
           상품 연결
         </Button>
         <Button
-          className="side-button"
+          className={classNames("side-button", {
+            selected: selectedSideButton === SideButtonTypes.ASSETS
+          })}
           color="default"
           shape="none"
-          onClick={() => console.log("마이 자산 연결")}
+          onClick={() => handleNavigation("/consulting/customer/mydata?key="+redisKey)}
         >
           마이 자산 연결
         </Button>
@@ -53,7 +56,7 @@ function ButtonList() {
           })}
           color="default"
           shape="none"
-          onClick={() => handleNavigation("/consulting/teller/connecting")}
+          onClick={() => handleNavigation("/consulting/teller/loading?key="+redisKey)}
         >
           화상연결(텔러)
         </Button>

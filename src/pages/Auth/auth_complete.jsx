@@ -22,6 +22,9 @@ function AuthCustomer() {
       console.log(response.data);
 
       if (response.data.state == 200) {
+        // localStorage.setItem("key", key);
+
+
         console.log("--------accessToken----------");
         console.log(response.data.data.accessToken);
         console.log("--------refreshToken----------");

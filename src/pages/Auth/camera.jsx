@@ -4,27 +4,25 @@ import "./camera.scss";
 import { useAtom } from "jotai";
 import { capturedImageAtom } from "@/stores";
 import axios from "axios";
-import imageCompression from "browser-image-compression"; // 이미지 압축 라이브러리
 
 function Camera() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
-  const [file, setFile] = useState(null);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const navigate = useNavigate();
 
-  // const [searchParams] = useSearchParams();
-  // const key = searchParams.get("key");
-  const key = localStorage.getItem("key");
+  const [searchParams] = useSearchParams();
+  const key = searchParams.get("key");
+  const redisKey = localStorage.getItem("key");
 
   useEffect(() => {
     const getCameraStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: { exact: "environment" }, // 후면 카메라 사용 설정
-            // facingMode: "user", // 전면 카메라 사용 설정
+            // facingMode: { exact: "environment" }, // 후면 카메라 사용 설정
+            facingMode: "user", // 전면 카메라 사용 설정
             width: { ideal: 518 }, // 원하는 해상도를 설정
             height: { ideal: 320 } // 원하는 해상도를 설정
           }
@@ -74,17 +72,15 @@ function Camera() {
         // 응답 데이터를 localStorage에 저장
         localStorage.setItem("ocrData", JSON.stringify(response.data));        
 
-        // auth 페이지로 이동하면서 쿼리 파라미터 유지
-        if (key) {
-          // navigate(`/auth?key=${key}`);        
-          navigate("/auth");
-        } else {
-          // key가 없을 경우 기본 페이지로 이동
-          navigate(`/auth`);
-        }
-
-        // // 사진출력 페이지로 이동
-        // navigate("/auth");
+        // ocr확인 페이지로 이동하면서 쿼리 파라미터 유지
+        navigate("/auth/mobile/ocr");
+        // if (key) {
+        //   navigate(`/auth?key=${redisKey}`);        
+        //   // navigate("/auth");
+        // } else {
+        //   // key가 없을 경우 기본 페이지로 이동
+        //   navigate(`/auth`);
+        // }    
       } catch (error) {
         console.error("Error uploading image:", error);
         if (error.response) {
