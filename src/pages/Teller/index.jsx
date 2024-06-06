@@ -13,9 +13,12 @@ function ConnectingTeller() {
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
   const [messages, setMessages] = useState([]);
-  // const [customerInfo, setCustomerInfo] = useState(null);
+  const [localStream, setLocalStream] = useState(null);
+  const [remoteStream, setRemoteStream] = useState(null);
   const [screenStream, setScreenStream] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
+  const [previousVideo, setPreviousVideo] = useState(null); // 이전 비디오 상태 저장
+  const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
 
   const customerInfo = {
     name: "김하나",
@@ -25,7 +28,55 @@ function ConnectingTeller() {
   };
 
   const largeVideoRef = useRef(null);
-  const consultVideoRef = useRef(null); // ConsultVideo 컴포넌트를 참조합니다.
+
+  const startScreenSharing = async () => {
+    console.log('Attempting to start screen sharing...');
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      console.log('Screen sharing stream obtained:', stream);
+      setScreenStream(stream);
+      setPreviousVideo(largeVideoRef.current.srcObject); // 현재 largeVideoRef를 저장
+
+      const videoTrack = stream.getVideoTracks()[0];
+      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      } else {
+        stream.getTracks().forEach((track) => {
+          console.log('Adding track to peer connection:', track);
+          peerConnection.addTrack(track, stream);
+        });
+      }
+      
+      setIsScreenSharing(true);
+
+      // 화면 공유 중지 이벤트 리스너 추가
+      stream.getVideoTracks()[0].onended = () => {
+        console.log('Screen sharing stopped');
+        stopScreenSharing();
+      };
+    } catch (error) {
+      console.error('Error sharing screen:', error);
+      alert('Error sharing screen. Please check your screen sharing permissions.');
+    }
+  };
+
+  const stopScreenSharing = () => {
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => track.stop());
+      setScreenStream(null);
+      setIsScreenSharing(false);
+      if (largeVideoRef.current) {
+        largeVideoRef.current.srcObject = previousVideo;
+      }
+
+      const videoTrack = localStream.getVideoTracks()[0];
+      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      }
+    }
+  };
 
   useEffect(() => {
     const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
@@ -38,12 +89,24 @@ function ConnectingTeller() {
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
+        console.log('Sending ICE candidate:', event.candidate);
         socket.send(
           JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
         );
       }
     };
 
+    pc.ontrack = (event) => {
+      console.log('Received remote track:', event.streams[0]);
+      setRemoteStream(event.streams[0]);
+    };
+
+    pc.oniceconnectionstatechange = () => {
+      console.log('ICE connection state change:', pc.iceConnectionState);
+      if (pc.iceConnectionState === 'failed') {
+        pc.restartIce();
+      }
+    };
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       switch (message.type) {
@@ -98,6 +161,7 @@ function ConnectingTeller() {
     };
   }, []);
 
+
   useEffect(() => {
     let timer;
     if (isCallActive) {
@@ -125,30 +189,15 @@ function ConnectingTeller() {
     setIsMuted(!isMuted);
   };
 
-
-  const startScreenSharing = async () => {
-    console.log('Attempting to start screen sharing...');
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      console.log('Screen sharing stream obtained:', stream);
-      setScreenStream(stream);
-
-      stream.getTracks().forEach((track) => {
-        console.log('Adding track to peer connection:', track);
-        peerConnection.current.addTrack(track, stream);
-      });
-
-      if (largeVideoRef.current) {
-        largeVideoRef.current.srcObject = stream;
-      }
-    } catch (error) {
-      console.error('Error sharing screen:', error);
-      alert('Error sharing screen. Please check your screen sharing permissions.');
-    }
-  };
-
   const handleMessageReceived = (message) => {
     setMessages((prevMessages) => [...prevMessages, message]);
+  };
+
+  const handleVideoContainerClick = (stream) => {
+    setActiveVideo(stream);
+    if (largeVideoRef.current) {
+      largeVideoRef.current.srcObject = stream;
+    }
   };
 
   return (
@@ -164,6 +213,7 @@ function ConnectingTeller() {
             isTeller={true}
             largeVideoRef={largeVideoRef}
             activeVideo={activeVideo}
+            screenStream={screenStream}
 
           />
         </div>
@@ -184,12 +234,13 @@ function ConnectingTeller() {
             </div>
           </div>
           <div id="sideContent">
-          <CallInfo
+            <CallInfo
               onToggleMute={handleToggleMute}
               isMuted={isMuted}
               duration={callDuration}
               isTeller={true}
-              onShareScreen={startScreenSharing}
+              onShareScreen={isScreenSharing ? stopScreenSharing : startScreenSharing}
+              isScreenSharing={isScreenSharing}
             />
             <Chat
               dataChannel={dataChannel}

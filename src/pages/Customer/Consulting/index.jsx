@@ -15,6 +15,9 @@ function Consulting() {
   const [peerConnection, setPeerConnection] = useState(null); // peerConnection State
   const [dataChannel, setDataChannel] = useState(null); // 채팅용 데이터 채널 State
   const [messages, setMessages] = useState([]); // 채팅 메시지 배열
+  const [screenStream, setScreenStream] = useState(null);
+  const screenVideoRef = useRef(null);
+
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
@@ -67,7 +70,14 @@ function Consulting() {
             socket.send(JSON.stringify({ type: 'ice-candidate', candidate: event.candidate }));
         }
     };
-
+    // pc.ontrack = (event) => {
+    //   console.log('Received remote track:', event.streams[0]);
+    //   if (event.track.kind === 'video') {
+    //     setScreenStream(event.streams[0]);
+    //   } else if (event.track.kind === 'audio') {
+    //     // Handle audio track if needed
+    //   }
+    // };
     socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
         switch (message.type) {
@@ -106,11 +116,7 @@ function Consulting() {
                     console.error('Invalid ICE message:', message);
                 }
                 break;
-            case 'screen-share':
-                  if (message.stream) {
-                    largeVideoRef.current.srcObject = message.stream;
-                  }
-                  break;
+        
             default:
                   console.error('알 수 없는 메시지 타입:', message);
                   break;
@@ -160,6 +166,12 @@ function Consulting() {
     setMessages((prevMessages) => [...prevMessages, message]);
   };
 
+  useEffect(() => {
+  
+      screenVideoRef.current.srcObject = screenStream;
+  
+  }, [screenStream]);
+
   return (
     <div className="serviceContainer">
       <div id="consultLeftSection">
@@ -170,19 +182,23 @@ function Consulting() {
           peerConnection={peerConnection}
           signalingSocket={signalingSocket}
           isTeller={false}
-          largeVideoRef={largeVideoRef}  />
+          largeVideoRef={largeVideoRef} activeVideo={undefined} screenStream={screenStream}  />
+              <div id="screenVideoContainer">
+          <video id="screenVideo" ref={screenVideoRef} autoPlay />
+        </div>
       </div>
       <div id="consultRightSection">
         <CallInfo
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
-          duration={callDuration} isTeller={undefined} onShareScreen={undefined}/>
+          duration={callDuration} isTeller={undefined} onShareScreen={undefined} isScreenSharing={false}/>
         <Chat
           dataChannel={dataChannel}
           messages={messages}
           onMessageReceived={handleMessageReceived}/>
            <div id="largeVideoContainer">
           <video id="largeVideo" ref={largeVideoRef} autoPlay />
+      
         </div>
       </div>     
     </div>

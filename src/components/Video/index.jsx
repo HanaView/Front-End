@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "./style.scss";
 
-const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalingSocket, isTeller, largeVideoRef, activeVideo }) => {
+const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalingSocket, isTeller, largeVideoRef, activeVideo, screenStream }) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   // const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
   const [isLocalSpeaking, setIsLocalSpeaking] = useState(false); // 로컬 음성 감지 상태
   const [isRemoteSpeaking, setIsRemoteSpeaking] = useState(false); // 리모트 음성 감지 상태
   const [dotCount, setDotCount] = useState(1); // 연결 대기중 ... 의 . 개수
-  const [screenStream, setScreenStream] = useState(null); // 화면 공유 스트림
+  //const [screenStream, setScreenStream] = useState(null); // 화면 공유 스트림
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -141,26 +141,12 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
     detectSpeaking();
   };
 
-  // const startScreenSharing = async () => {
-  //   try {
-  //     const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-  //     if (screenVideoRef.current) {
-  //       screenVideoRef.current.srcObject = stream;
-  //     }
-  //     setScreenStream(stream);
 
-  //     stream.getTracks().forEach((track) => {
-  //       peerConnection.addTrack(track, stream);
-  //     });
-
-  //     if (largeVideoRef && largeVideoRef.current) {
-  //       largeVideoRef.current.srcObject = stream;
-  //     }
-  //   } catch (error) {
-  //     console.error('Error sharing screen:', error);
-  //     alert('Error sharing screen. Please check your screen sharing permissions.');
-  //   }
-  // };
+  useEffect(() => {
+    if (screenStream && screenVideoRef.current) {
+      screenVideoRef.current.srcObject = screenStream;
+    }
+  }, [screenStream]);
 
   return (
     <div id='consultVideo' className={isTeller ? 'teller' : ''}>
@@ -187,7 +173,7 @@ const ConsultVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signali
             </div>
           )}
         </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(screenStream)}>
+        <div className='videoContainer' onClick={() => handleVideoContainerClick(screenStream)} ref={screenVideoRef} >
           <p>화면 공유</p>
           {screenStream ? (
             <video className='video' ref={screenVideoRef} autoPlay />

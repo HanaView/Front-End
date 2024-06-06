@@ -103,7 +103,7 @@
   }
 
   .videoContainer {
-    width: 100%;
+    width: 180px;
     /* videoContainer의 기본 너비 설정 */
   }
 
@@ -152,7 +152,8 @@
   }
 
   #largeVideo {
-    width: 100%;
+    // 화면 전체를 채우도록 설정(일부 잘림 가능성 있음)
+    // width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 8px;

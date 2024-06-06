@@ -63,12 +63,12 @@
 #consultVideo.teller {
   // 텔러 전용 스타일
   #consultVideo {
-    // height: 100%;
+    height: 100%;
      display: flex;
      flex-direction: column;
      align-items: center;
      justify-content: center; 
-   // width: 100%;
+   //width: 100%;
    }
    
    #videoOptions {
@@ -83,7 +83,7 @@
      cursor: pointer;
      text-align: center;
      position: relative; /* 자막을 비디오 위에 오버레이하기 위해 position: relative 설정 */
-     width: 200px;
+    //  width: 200px;
      height: 150px;
      // margin-right: 10%;
    }
@@ -105,6 +105,9 @@
    .videoContainer video {
      width: 100%;
      height: 150px;
+     justify-content: space-around;
+     object-fit: cover; /* 이 부분을 추가하여 전체 화면을 채우도록 함 */
+
    }
    
    .videoPending {
