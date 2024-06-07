@@ -108,7 +108,7 @@
         const detectSpeaking = () => {
           analyser.getByteFrequencyData(dataArray);
           const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-          setSpeaking(average > 3); // 임계값 조정 가능
+          setSpeaking(average > 10); // 임계값 조정 가능
     
           analyserRef.current.animationFrameId = requestAnimationFrame(detectSpeaking);
         };
