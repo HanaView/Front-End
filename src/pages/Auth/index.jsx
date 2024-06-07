@@ -6,7 +6,6 @@ import Button from "@/components/Button";
 import { useAtom } from "jotai";
 import { capturedImageAtom, globalModalAtom } from "@/stores";
 import axios from "axios";
-import onRequest from "@/utils/axios";
 
 function Auth() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
@@ -17,9 +16,8 @@ function Auth() {
   const [address, setAddress] = useState("");
   const [issueDate, setIssueDate] = useState("");
 
-  // const [searchParams] = useSearchParams();
-  // const key = searchParams.get("key");
-  const key = localStorage.getItem("key");
+  const [searchParams] = useSearchParams();
+  const key = searchParams.get("key");
 
   const ocrData = JSON.parse(localStorage.getItem("ocrData"));
   console.log(ocrData);
@@ -87,9 +85,7 @@ function Auth() {
 
       try {
         const response = await axios.get (
-          "http://127.0.0.1:80/api/login/authComplete?key="+key,
-          null, // 요청 본문이 없는 경우 null을 사용
-          // { params: { key: key } } // 쿼리 파라미터로 key를 전달
+          "http://127.0.0.1:80/api/login/authComplete?key="+key,        
         );       
 
         console.log("--------------------------------------");
@@ -101,7 +97,7 @@ function Auth() {
             isOpen: true,
             content: "본인인증이 완료되었습니다",
             confirmButtonText: "확인",
-            onClickConfirm: () => navigate("/authfinish")
+            onClickConfirm: () => navigate("/auth/mobile/finish?key="+key)
           }));
         } else {
           // Handle authentication failure
