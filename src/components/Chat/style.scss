@@ -11,7 +11,7 @@
 #chatInputContainer {
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    height: 50px;
 }
 
 #chatInputContainer>input {
@@ -22,7 +22,10 @@
 }
 
 #chatContainer {
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 50px);
+    // height: 440px;
     overflow-y: auto;
     padding: 10px;
 }
