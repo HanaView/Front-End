@@ -3,6 +3,8 @@ import "./finish.scss";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "@/components/Button";
 
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></meta>
+
 function Finish() {
   const navigate = useNavigate();
 
