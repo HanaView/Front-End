@@ -17,10 +17,7 @@ function LoginCustomer() {
   // randomKey가 업데이트되면 navigate 호출
   useEffect(() => {
     if (redisKey) {            
-      // localStorage.setItem("key", redisKey);
-
-      // navigate(`/camera?key=${redisKey}`);
-      navigate("/auth/mobile/camera");
+      navigate(`/auth/mobile/camera?key=${redisKey}`);  
       // navigate(`/auth/customer?key=${randomKey}`);               
     }
   }, [redisKey, navigate]);
@@ -47,7 +44,6 @@ function LoginCustomer() {
 
       if (response.data.state == 200) {       
         setRedisKey(response.data.data);
-        localStorage.setItem("key", redisKey); 
       } else {
         // Handle authentication failure
         alert(response.data.errorCode.message);

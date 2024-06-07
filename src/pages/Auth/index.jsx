@@ -18,7 +18,6 @@ function Auth() {
 
   const [searchParams] = useSearchParams();
   const key = searchParams.get("key");
-  const rediskey = localStorage.getItem("key");
 
   const ocrData = JSON.parse(localStorage.getItem("ocrData"));
   console.log(ocrData);

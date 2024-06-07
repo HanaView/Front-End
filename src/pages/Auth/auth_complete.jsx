@@ -21,10 +21,7 @@ function AuthCustomer() {
       console.log("------------------------------");
       console.log(response.data);
 
-      if (response.data.state == 200) {
-        // localStorage.setItem("key", key);
-
-
+      if (response.data.state == 200) {        
         console.log("--------accessToken----------");
         console.log(response.data.data.accessToken);
         console.log("--------refreshToken----------");
@@ -37,6 +34,8 @@ function AuthCustomer() {
           "REFRESH_TOKEN",
           response.data.data.refreshToken
         );
+
+        localStorage.setItem("key", key);
 
         navigate(`/consulting/customer/loading?key=${key}`);
       } else {

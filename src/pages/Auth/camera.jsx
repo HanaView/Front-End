@@ -14,7 +14,6 @@ function Camera() {
 
   const [searchParams] = useSearchParams();
   const key = searchParams.get("key");
-  const redisKey = localStorage.getItem("key");
 
   useEffect(() => {
     const getCameraStream = async () => {
@@ -73,14 +72,13 @@ function Camera() {
         localStorage.setItem("ocrData", JSON.stringify(response.data));        
 
         // ocr확인 페이지로 이동하면서 쿼리 파라미터 유지
-        navigate("/auth/mobile/ocr");
-        // if (key) {
-        //   navigate(`/auth?key=${redisKey}`);        
-        //   // navigate("/auth");
-        // } else {
-        //   // key가 없을 경우 기본 페이지로 이동
-        //   navigate(`/auth`);
-        // }    
+        if (key) {
+          navigate(`/auth/mobile/ocr?key=${key}`);        
+          // navigate("/auth");
+        } else {
+          // key가 없을 경우 기본 페이지로 이동
+          navigate(`/auth/mobile/ocr`);
+        }    
       } catch (error) {
         console.error("Error uploading image:", error);
         if (error.response) {
