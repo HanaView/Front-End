@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import ConsultVideo from "@/components/Video/";
+import TellerVideo from "@/components/TellerVideo";
 import CallInfo from "@/components/CallInfo/";
 import Chat from "@/components/Chat/";
 import "./style.scss";
@@ -13,17 +13,64 @@ function ConnectingTeller() {
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
   const [messages, setMessages] = useState([]);
-  // const [customerInfo, setCustomerInfo] = useState(null);
+  const [localStream, setLocalStream] = useState(null);
+  const [remoteStream, setRemoteStream] = useState(null);
+  const [screenStream, setScreenStream] = useState(null);
+  const [activeVideo, setActiveVideo] = useState(null);
+  const [previousVideo, setPreviousVideo] = useState(null); // 이전 비디오 상태 저장
+  const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
 
   const customerInfo = {
     name: "김하나",
     phoneNumber: "010-0000-0000",
     idNumber: "990000-1234567",
-    idImage: "/src/assets/images/videoPending.png",
+    idImage: "/src/assets/images/videoPending.png"
   };
 
   const largeVideoRef = useRef(null);
-  const consultVideoRef = useRef(null); // ConsultVideo 컴포넌트를 참조합니다.
+  const startScreenSharing = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      setScreenStream(stream);
+      setPreviousVideo(largeVideoRef.current.srcObject);
+
+      const videoTrack = stream.getVideoTracks()[0];
+      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      } else {
+        stream.getTracks().forEach((track) => {
+          peerConnection.addTrack(track, stream);
+        });
+      }
+
+      setIsScreenSharing(true);
+
+      stream.getVideoTracks()[0].onended = () => {
+        stopScreenSharing();
+      };
+    } catch (error) {
+      console.error('Error sharing screen:', error);
+      alert('Error sharing screen. Please check your screen sharing permissions.');
+    }
+  };
+
+  const stopScreenSharing = () => {
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => track.stop());
+      setScreenStream(null);
+      setIsScreenSharing(false);
+      if (largeVideoRef.current) {
+        largeVideoRef.current.srcObject = previousVideo;
+      }
+
+      const videoTrack = localStream.getVideoTracks()[0];
+      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      }
+    }
+  };
 
   useEffect(() => {
     const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
@@ -36,9 +83,22 @@ function ConnectingTeller() {
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
+        console.log('Sending ICE candidate:', event.candidate);
         socket.send(
           JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
         );
+      }
+    };
+
+    pc.ontrack = (event) => {
+      console.log('Received remote track:', event.streams[0]);
+      setRemoteStream(event.streams[0]);
+    };
+
+    pc.oniceconnectionstatechange = () => {
+      console.log('ICE connection state change:', pc.iceConnectionState);
+      if (pc.iceConnectionState === 'failed') {
+        pc.restartIce();
       }
     };
 
@@ -83,6 +143,9 @@ function ConnectingTeller() {
           } else {
             console.error("Invalid ICE message:", message);
           }
+          break;       
+        default:
+          console.error("알 수 없는 메시지 타입:", message);
           break;
       }
     };
@@ -120,9 +183,14 @@ function ConnectingTeller() {
     setIsMuted(!isMuted);
   };
 
-  const handleShareScreen = () => {
-    if (consultVideoRef.current && consultVideoRef.current.startScreenSharing) {
-      consultVideoRef.current.startScreenSharing();
+  const handleMessageReceived = (message) => {
+    setMessages((prevMessages) => [...prevMessages, message]);
+  };
+
+  const handleVideoContainerClick = (stream) => {
+    setActiveVideo(stream);
+    if (largeVideoRef.current) {
+      largeVideoRef.current.srcObject = stream;
     }
   };
 
@@ -130,14 +198,17 @@ function ConnectingTeller() {
     <div className="serviceContainer teller">
       <div id="consultLeftSection">
         <div className="videoContainer">
-          <ConsultVideo
+          <TellerVideo
             isMuted={isMuted}
             onCallStart={handleCallStart}
             onCallEnd={handleCallEnd}
             peerConnection={peerConnection}
             signalingSocket={signalingSocket}
             isTeller={true}
-            largeVideoRef={largeVideoRef}          />
+            largeVideoRef={largeVideoRef}
+            activeVideo={activeVideo}
+            screenStream={screenStream}
+          />
         </div>
         <div className="customerInfoContainer">
           <CustomerInfo
@@ -161,9 +232,14 @@ function ConnectingTeller() {
               isMuted={isMuted}
               duration={callDuration}
               isTeller={true}
-              onShareScreen={handleShareScreen}
+              onShareScreen={isScreenSharing ? stopScreenSharing : startScreenSharing}
+              isScreenSharing={isScreenSharing}
             />
-            <Chat />
+            <Chat
+              dataChannel={dataChannel}
+              messages={messages}
+              onMessageReceived={handleMessageReceived}
+            />
           </div>
         </div>
         <div className="inputSection">필요업무에 맞는 입력창</div>
