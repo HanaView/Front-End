@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 function LoadingTeller() {
   const navigate = useNavigate();
   const [time, setTime] = useState(new Date());
+  const redisKey = localStorage.getItem("key");
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -49,11 +50,11 @@ function LoadingTeller() {
             <div>예/적금</div>
           </div>
           <div className="boxLine">
-            <div>2.강민주</div>
+            <div>2.이고은</div>
             <div>카드</div>
           </div>
           <div className="boxLine">
-            <div>3.김민표</div>
+            <div>3.임탁균</div>
             <div>대출</div>
           </div>
           <div className="boxLine">
@@ -65,11 +66,11 @@ function LoadingTeller() {
             <div>예/적금</div>
           </div>
           <div className="boxLine">
-            <div>6.이고은</div>
+            <div>6.김민표</div>
             <div>카드</div>
           </div>
           <div className="boxLine">
-            <div>7.임탁균</div>
+            <div>7.강민주</div>
             <div>예/적금</div>
           </div>
         </div>
@@ -87,7 +88,7 @@ function LoadingTeller() {
 
         <div className="dummy"></div>
 
-        <Button style={{width:"10%", height:"50px"}} shape="rect" onClick={() => {navigate("/consulting/teller/connecting")}}>
+        <Button style={{width:"10%", height:"50px"}} shape="rect" onClick={() => {navigate("/consulting/teller/connecting?key="+redisKey)}}>
           상담시작
         </Button>
       </div>

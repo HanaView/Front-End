@@ -1,8 +1,8 @@
 import CallInfo from "@/components/CallInfo";
 import Chat from "@/components/Chat";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./index.scss";
-import ConsultVideo from "@/components/Video/index";
+import ConsultVideo from "@/components/CustomerVideo/";
 
 //rcfe
 function Consulting() {
@@ -14,6 +14,11 @@ function Consulting() {
   const [peerConnection, setPeerConnection] = useState(null); // peerConnection State
   const [dataChannel, setDataChannel] = useState(null); // 채팅용 데이터 채널 State
   const [messages, setMessages] = useState([]); // 채팅 메시지 배열
+  const [screenStream, setScreenStream] = useState(null);
+  const [previousStream, setPreviousStream] = useState(null); // 이전 화면 상태 저장
+
+  
+  const largeVideoRef = useRef(null);
 
   useEffect(() => {
     // 시그널링 서버 연결
@@ -66,6 +71,29 @@ function Consulting() {
         socket.send(
           JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
         );
+      }
+    };
+    pc.ontrack = (event) => {
+      // 첫 번째 미디어 스트림(event.streams[0])을 콘솔에 출력
+      console.log("Received remote track:", event.streams[0]);
+      const newStream = event.streams[0];
+
+      // 화면 공유 스트림인지 확인
+      console.log("@@@")
+      console.log(newStream.getVideoTracks()[0].label);
+
+      if (newStream.getVideoTracks()[0].label.includes('screen')) {
+        // 이는 현재 largeVideoRef 비디오 요소에 표시된 스트림을 previousStream 상태로 설정합니다. 이를 통해 화면 공유가 중지되었을 때 이전 스트림으로 복원
+        setPreviousStream(largeVideoRef.current ? largeVideoRef.current.srcObject : null);
+        setScreenStream(newStream);
+        if (largeVideoRef.current) {
+          largeVideoRef.current.srcObject = newStream;
+        }
+      } else {
+        setPreviousStream(newStream);
+        if (!screenStream && largeVideoRef.current) {
+          largeVideoRef.current.srcObject = newStream;
+        }
       }
     };
 
@@ -159,6 +187,20 @@ function Consulting() {
     setMessages((prevMessages) => [...prevMessages, message]);
   };
 
+  useEffect(() => {
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => {
+        track.onended = () => {
+          console.log('Screen sharing stopped');
+          if (largeVideoRef.current) {
+            largeVideoRef.current.srcObject = previousStream;
+          }
+          setScreenStream(null);
+        };
+      });
+    }
+  }, [screenStream, previousStream]);
+
   return (
     <div className="serviceContainer">
       <div id="consultLeftSection">
@@ -168,20 +210,25 @@ function Consulting() {
           onCallEnd={handleCallEnd}
           peerConnection={peerConnection}
           signalingSocket={signalingSocket}
-          isTeller={false} // Add the missing isTeller property
         />
       </div>
       <div id="consultRightSection">
-        <CallInfo
+      <CallInfo
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
           duration={callDuration}
+          isTeller={false}
+          onShareScreen={undefined}
+          isScreenSharing={false}
         />
         <Chat
           dataChannel={dataChannel}
           messages={messages}
           onMessageReceived={handleMessageReceived}
         />
+          <div id="largeVideoContainer">
+          <video id="largeVideo" ref={largeVideoRef} autoPlay />
+        </div>
       </div>
     </div>
   );

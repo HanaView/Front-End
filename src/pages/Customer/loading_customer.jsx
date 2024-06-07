@@ -1,17 +1,20 @@
 import React from "react";
 import "./loading_customer.scss";
 import Button from "@/components/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function LoadingCustomer() {
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const key = searchParams.get("key");
 
   return (
     <>
       <div className="LoadingCustomerContainer">
         <div className="title">원하시는 업무를 선택해주세요</div>     
         <div className="buttonLine">
-          <Button className="button" shape="rect" onClick={() => navigate("")}>
+          <Button className="button" shape="rect" onClick={() => navigate(`/consulting/customer/connecting?key=${key}`)}>
             예/적금
             <br />
             업무

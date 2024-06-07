@@ -15,19 +15,18 @@ function AuthCustomer() {
 
     try {
       const response = await axios.get(
-        "http://127.0.0.1:80/api/login/validate?key=" + key
+        "http://172.16.20.211:80/api/login/validate?key=" + key
       );
 
       console.log("------------------------------");
       console.log(response.data);
 
-      if (response.data.state == 200) {
+      if (response.data.state == 200) {        
         console.log("--------accessToken----------");
         console.log(response.data.data.accessToken);
         console.log("--------refreshToken----------");
         console.log(response.data.data.refreshToken);
         console.log("--------refreshTokenExpirationTime----------");
-
         console.log(response.data.data.refreshTokenExpirationTime);
 
         sessionStorage.setItem("ACCESS_TOKEN", response.data.data.accessToken);
@@ -36,7 +35,9 @@ function AuthCustomer() {
           response.data.data.refreshToken
         );
 
-        navigate("/consulting/customer/loading");
+        localStorage.setItem("key", key);
+
+        navigate(`/consulting/customer/loading?key=${key}`);
       } else {
         // Handle authentication failure
         alert(response.data.errorCode.message);
@@ -93,7 +94,7 @@ function AuthCustomer() {
           <div className="dummy"></div>
           <div className="timer">
             <div className="clock">{formatTime(timeLeft)}</div>
-            <div className="content">이내에</div>
+            <div className="content">&nbsp;이내에</div>
           </div>
           <br />
           <div className="content">인증해주세요</div>
