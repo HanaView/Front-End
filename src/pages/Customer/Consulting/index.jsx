@@ -17,43 +17,44 @@ function Consulting() {
 
   useEffect(() => {
     // 시그널링 서버 연결
-    const socket = new WebSocket('ws://127.0.0.1:8080/WebRTC/signaling');
+    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
     setSignalingSocket(socket);
 
     // 피어 연결 설정
     const pc = new RTCPeerConnection({
-        iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-        ],
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
     });
     setPeerConnection(pc);
 
     // 데이터 채널 생성
-    const dc = pc.createDataChannel('chat');
+    const dc = pc.createDataChannel("chat");
 
     // 데이터 채널 이벤트 리스너 설정
     dc.onopen = () => {
-        console.log('Data channel opened');
+      console.log("Data channel opened");
     };
 
     dc.onclose = () => {
-        console.log('Data channel closed');
+      console.log("Data channel closed");
     };
 
     dc.onerror = (error) => {
-        console.error('Data channel error:', error);
+      console.error("Data channel error:", error);
     };
 
     dc.onmessage = (event) => {
-        console.log('Data channel message received:', event.data);
-        const receivedMessage = JSON.parse(event.data);
-        setMessages((prevMessages) => [...prevMessages, { sender: '텔러', message: receivedMessage.message }]);
+      console.log("Data channel message received:", event.data);
+      const receivedMessage = JSON.parse(event.data);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: "텔러", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
+      ]);
     };
 
     // 데이터 채널 설정이 완료되었을 때 실행되는 함수
     const onDataChannelCreated = (event) => {
-        const dc = event.channel;
-        setDataChannel(dc);
+      const dc = event.channel;
+      setDataChannel(dc);
     };
 
     // 데이터 채널 생성 이벤트 리스너 설정
@@ -61,62 +62,67 @@ function Consulting() {
 
     // 이벤트 리스너 설정
     pc.onicecandidate = (event) => {
-        if (event.candidate) {
-            socket.send(JSON.stringify({ type: 'ice-candidate', candidate: event.candidate }));
-        }
+      if (event.candidate) {
+        socket.send(
+          JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
+        );
+      }
     };
 
     socket.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        switch (message.type) {
-            case 'offer':
-                if (message.sdp) {
-                    pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
-                        .then(() => pc.createAnswer())
-                        .then((answer) => pc.setLocalDescription(answer))
-                        .then(() => {
-                            socket.send(JSON.stringify({ type: 'answer', sdp: pc.localDescription }));
-                        })
-                        .catch((error) => {
-                            console.error('Error setting remote description:', error);
-                        });
-                } else {
-                    console.error('Invalid offer message:', message);
-                }
-                break;
-            case 'answer':
-                if (message.sdp) {
-                    pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
-                        .catch((error) => {
-                            console.error('Error setting remote description:', error);
-                        });
-                } else {
-                    console.error('Invalid answer message:', message);
-                }
-                break;
-            case 'ice-candidate':
-                if (message.candidate) {
-                    pc.addIceCandidate(new RTCIceCandidate(message.candidate))
-                        .catch((error) => {
-                            console.error('Error adding ICE candidate:', error);
-                        });
-                } else {
-                    console.error('Invalid ICE message:', message);
-                }
-                break;
-            default:
-                console.error('알 수 없는 메시지 타입:', message);
-                break;
-        }
+      const message = JSON.parse(event.data);
+      switch (message.type) {
+        case "offer":
+          if (message.sdp) {
+            pc.setRemoteDescription(new RTCSessionDescription(message.sdp))
+              .then(() => pc.createAnswer())
+              .then((answer) => pc.setLocalDescription(answer))
+              .then(() => {
+                socket.send(
+                  JSON.stringify({ type: "answer", sdp: pc.localDescription })
+                );
+              })
+              .catch((error) => {
+                console.error("Error setting remote description:", error);
+              });
+          } else {
+            console.error("Invalid offer message:", message);
+          }
+          break;
+        case "answer":
+          if (message.sdp) {
+            pc.setRemoteDescription(
+              new RTCSessionDescription(message.sdp)
+            ).catch((error) => {
+              console.error("Error setting remote description:", error);
+            });
+          } else {
+            console.error("Invalid answer message:", message);
+          }
+          break;
+        case "ice-candidate":
+          if (message.candidate) {
+            pc.addIceCandidate(new RTCIceCandidate(message.candidate)).catch(
+              (error) => {
+                console.error("Error adding ICE candidate:", error);
+              }
+            );
+          } else {
+            console.error("Invalid ICE message:", message);
+          }
+          break;
+        default:
+          console.error("알 수 없는 메시지 타입:", message);
+          break;
+      }
     };
 
     return () => {
-        // 컴포넌트 언마운트 시 정리
-        pc.close();
-        socket.close();
+      // 컴포넌트 언마운트 시 정리
+      pc.close();
+      socket.close();
     };
-}, []);
-
+  }, []);
 
   // 화상 상담 시작 함수
   const handleCallStart = () => {
@@ -157,9 +163,9 @@ function Consulting() {
     <div className="serviceContainer">
       <div id="consultLeftSection">
         <ConsultVideo
-          isMuted={isMuted} 
-          onCallStart={handleCallStart} 
-          onCallEnd={handleCallEnd} 
+          isMuted={isMuted}
+          onCallStart={handleCallStart}
+          onCallEnd={handleCallEnd}
           peerConnection={peerConnection}
           signalingSocket={signalingSocket}
         />
@@ -168,12 +174,14 @@ function Consulting() {
         <CallInfo
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
-          duration={callDuration}/>
+          duration={callDuration}
+        />
         <Chat
           dataChannel={dataChannel}
           messages={messages}
-          onMessageReceived={handleMessageReceived}/>
-      </div>     
+          onMessageReceived={handleMessageReceived}
+        />
+      </div>
     </div>
   );
 }
