@@ -23,3 +23,4 @@ export const capturedImageAtom = atom(null);
 
 //인증
 export const userTypeAtom = atom(getUserTypeFromStorage());
+
