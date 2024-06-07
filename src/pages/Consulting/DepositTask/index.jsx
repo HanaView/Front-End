@@ -1,10 +1,10 @@
 import { getAllDeposits } from "@/apis/deposit";
-import DepositForm from "@/components/DepositForm";
-import Table from "@/components/Table";
+import DepositForm from "@/components/Form/DepositForm";
+import DepositTable from "@/components/Table/DepositTable";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
-const Task = () => {
+const DepositTask = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleProductClick = (product) => {
@@ -30,7 +30,7 @@ const Task = () => {
         {selectedProduct && DepositProductData ? (
           <DepositForm product={selectedProduct} onBack={handleBack} />
         ) : (
-          <Table
+          <DepositTable
             products={DepositProductData?.data}
             onProductClick={handleProductClick}
           />
@@ -40,4 +40,4 @@ const Task = () => {
   );
 };
 
-export default Task;
+export default DepositTask;
