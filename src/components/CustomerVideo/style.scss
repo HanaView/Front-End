@@ -52,13 +52,11 @@
 }
 
 #largeVideo {
-  
+  flex-grow: 1;
 }
 
 .largeV {
   border-radius: 8px;
-  height: 440px;
-  overflow: hidden; // 오버플로우 숨김
   cursor: pointer;
 }
 }

@@ -226,9 +226,6 @@ function Consulting() {
           messages={messages}
           onMessageReceived={handleMessageReceived}
         />
-          <div id="largeVideoContainer">
-          <video id="largeVideo" ref={largeVideoRef} autoPlay />
-        </div>
       </div>
     </div>
   );

@@ -117,7 +117,6 @@
       };
 
       return (
-
         <div id='consultVideo' className='customerVideo'>
           <div id='videoOptions'>
             <div className='videoContainer' onClick={() => handleVideoContainerClick(localStream)}>
