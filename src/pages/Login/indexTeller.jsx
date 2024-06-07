@@ -30,7 +30,7 @@ function LoginTeller() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:80/api/auth/consultant/login",
+        "http://172.16.20.211:80/api/auth/consultant/login",
         authData
       );
 

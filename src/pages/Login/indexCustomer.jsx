@@ -33,7 +33,7 @@ function LoginCustomer() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:80/api/login/auth",
+        "http://172.16.20.211:80/api/login/auth",
         authData
       );
 
