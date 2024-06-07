@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { useAtom } from "jotai";
-import { getAllDeposits } from "@/apis/deposit";
 import Button from "@/components/Button";
 import { globalModalAtom } from "@/stores";
-import Task from "../Consulting/Task";
+import SavingTask from "../Consulting/SavingTask";
+import DepositTask from "../Consulting/DepositTask";
 
 function Test() {
   const [modalData, setModalData] = useAtom(globalModalAtom);
@@ -33,7 +32,8 @@ function Test() {
 
   return (
     <>
-      <Task />
+      <SavingTask />
+      <DepositTask />
       <div>
         <Button size="large" shape="rect" onClick={onClickButton}>
           go
