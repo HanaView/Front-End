@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import ConsultVideo from "@/components/Video/";
+import TellerVideo from "@/components/TellerVideo";
 import CallInfo from "@/components/CallInfo/";
 import Chat from "@/components/Chat/";
 import "./style.scss";
@@ -28,14 +28,11 @@ function ConnectingTeller() {
   };
 
   const largeVideoRef = useRef(null);
-
   const startScreenSharing = async () => {
-    console.log('Attempting to start screen sharing...');
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      console.log('Screen sharing stream obtained:', stream);
       setScreenStream(stream);
-      setPreviousVideo(largeVideoRef.current.srcObject); // 현재 largeVideoRef를 저장
+      setPreviousVideo(largeVideoRef.current.srcObject);
 
       const videoTrack = stream.getVideoTracks()[0];
       const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
@@ -43,16 +40,13 @@ function ConnectingTeller() {
         sender.replaceTrack(videoTrack);
       } else {
         stream.getTracks().forEach((track) => {
-          console.log('Adding track to peer connection:', track);
           peerConnection.addTrack(track, stream);
         });
       }
-      
+
       setIsScreenSharing(true);
 
-      // 화면 공유 중지 이벤트 리스너 추가
       stream.getVideoTracks()[0].onended = () => {
-        console.log('Screen sharing stopped');
         stopScreenSharing();
       };
     } catch (error) {
@@ -204,7 +198,7 @@ function ConnectingTeller() {
     <div className="serviceContainer teller">
       <div id="consultLeftSection">
         <div className="videoContainer">
-          <ConsultVideo
+          <TellerVideo
             isMuted={isMuted}
             onCallStart={handleCallStart}
             onCallEnd={handleCallEnd}

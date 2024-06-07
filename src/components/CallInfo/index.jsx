@@ -17,8 +17,15 @@ function CallInfo({ onToggleMute, isMuted, duration, isTeller, onShareScreen, is
                     <img className="callBtn" src="/src/assets/images/micOff.png" onClick={onToggleMute} alt="mic"/> 
                 }
                 <img className="callBtn" id="endCallBtn" src="/src/assets/images/endCallBtn.png"/>
-                {isTeller ?
-          <img className="shareBtn" id="shareScBtn" src="/src/assets/images/shareBtnOn.png" onClick={onShareScreen} alt="share screen" /> : null}
+                {isTeller && (
+                    <img
+                        className="shareBtn"
+                        id="shareScBtn"
+                        src={isScreenSharing ? "/src/assets/images/shareBtnOn.png" : "/src/assets/images/shareBtnOff.png"}
+                        onClick={onShareScreen}
+                        alt="share screen"
+                    />
+                )}
             </div>
         </div>
     );
