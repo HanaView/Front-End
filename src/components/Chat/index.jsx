@@ -15,7 +15,8 @@ function Chat({ dataChannel, messages, onMessageReceived }) {
           console.log("새 메시지를 수신했습니다:", receivedMessage);
           onMessageReceived({
             sender: "Remote",
-            message: receivedMessage.message
+            message: receivedMessage.message,
+            timestamp: receivedMessage.timestamp
           });
         }
       };
@@ -32,7 +33,7 @@ function Chat({ dataChannel, messages, onMessageReceived }) {
   }, [dataChannel]);
 
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       handleSendMessage();
     }
   };
@@ -44,10 +45,13 @@ function Chat({ dataChannel, messages, onMessageReceived }) {
     }
 
     if (dataChannel && message.trim() !== "") {
-      const messageObject = { message };
-      dataChannel.send(message);
-      dataChannel.send(JSON.stringify(messageObject)); // 메시지를 JSON 형식으로 전송
-      onMessageReceived({ sender: "나", message });
+      const timestamp = new Date().toLocaleTimeString("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+      const messageObject = { message, timestamp };
+      dataChannel.send(JSON.stringify(messageObject)); // 메시지를 JSON으로 전송
+      onMessageReceived({ sender: "손님", message, timestamp });
       setMessage("");
       console.log(messages);
     }
@@ -61,8 +65,21 @@ function Chat({ dataChannel, messages, onMessageReceived }) {
     <div id="chatDiv">
       <div id="chatContainer">
         {messages.map((msg, index) => (
-          <div key={index} className="message">
-            {msg.sender}: {msg.message}
+          <div
+            key={index}
+            className={`message ${msg.sender === "손님" ? "mine" : "remote"}`}
+          >
+            {msg.sender === "손님" ? (
+              <>
+                <div className="timestamp">{msg.timestamp}</div>
+                <div className="bubble">{msg.message}</div>
+              </>
+            ) : (
+              <>
+                <div className="bubble">{msg.message}</div>
+                <div className="timestamp">{msg.timestamp}</div>
+              </>
+            )}
           </div>
         ))}
       </div>

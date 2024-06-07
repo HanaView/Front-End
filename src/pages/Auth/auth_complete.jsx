@@ -15,13 +15,13 @@ function AuthCustomer() {
 
     try {
       const response = await axios.get(
-        "http://127.0.0.1:80/api/login/validate?key=" + key
+        "http://172.16.20.211:80/api/login/validate?key=" + key
       );
 
       console.log("------------------------------");
       console.log(response.data);
 
-      if (response.data.state == 200) {
+      if (response.data.state == 200) {        
         console.log("--------accessToken----------");
         console.log(response.data.data.accessToken);
         console.log("--------refreshToken----------");
@@ -34,6 +34,8 @@ function AuthCustomer() {
           "REFRESH_TOKEN",
           response.data.data.refreshToken
         );
+
+        localStorage.setItem("key", key);
 
         navigate(`/consulting/customer/loading?key=${key}`);
       } else {

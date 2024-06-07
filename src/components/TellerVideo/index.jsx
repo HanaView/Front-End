@@ -1,31 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./style.scss";
 
-const ConsultVideo = ({
-  isMuted,
-  onCallStart,
-  onCallEnd,
-  peerConnection,
-  signalingSocket,
-  isTeller,
-  largeVideoRef,
-  showLargeVideo = true
-}) => {
+const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalingSocket, isTeller, largeVideoRef, activeVideo,  screenStream}) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
-  const [activeVideo, setActiveVideo] = useState(null); // 클릭된 비디오 State
-  const [isLocalSpeaking, setIsLocalSpeaking] = useState(false); // 로컬 음성 감지 상태
-  const [isRemoteSpeaking, setIsRemoteSpeaking] = useState(false); // 리모트 음성 감지 상태
-  const [dotCount, setDotCount] = useState(1); // 연결 대기중 ... 의 . 개수
-  const [screenStream, setScreenStream] = useState(null); // 화면 공유 스트림
+  const [isLocalSpeaking, setIsLocalSpeaking] = useState(false);
+  const [isRemoteSpeaking, setIsRemoteSpeaking] = useState(false);
+  const [dotCount, setDotCount] = useState(1);
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
-  const screenVideoRef = useRef(null); // 화면 공유 비디오 참조
+  const screenVideoRef = useRef(null);
   const localAudioAnalyserRef = useRef(null);
   const remoteAudioAnalyserRef = useRef(null);
 
-  // 마이크 및 카메라 존재 여부 확인 함수
   const checkMediaDevices = async () => {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -85,6 +73,7 @@ const ConsultVideo = ({
         setRemoteStream(event.streams[0]);
       };
     }
+  
   }, [peerConnection]);
 
   useEffect(() => {
@@ -103,11 +92,7 @@ const ConsultVideo = ({
   useEffect(() => {
     if (remoteStream && remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = remoteStream;
-      setupAudioAnalyser(
-        remoteStream,
-        setIsRemoteSpeaking,
-        remoteAudioAnalyserRef
-      ); // 리모트 오디오 분석 함수 호출
+      setupAudioAnalyser(remoteStream, setIsRemoteSpeaking, remoteAudioAnalyserRef);
     }
   }, [remoteStream]);
 
@@ -119,26 +104,25 @@ const ConsultVideo = ({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDotCount((prevDotCount) => {
-        if (prevDotCount === 3) {
-          return 1;
-
-          // 선택된 비디오를 크게 보여주는 함수
-          const handleVideoContainerClick = (stream) => {
-            setActiveVideo(stream);
-            if (stream === localStream) {
-              largeVideoRef.current.srcObject = localStream;
-            } else if (stream === remoteStream) {
-              largeVideoRef.current.srcObject = remoteStream;
-            }
-            return prevDotCount + 1;
-          };
-        }
-      });
+      setDotCount((prevDotCount) => (prevDotCount === 3 ? 1 : prevDotCount + 1));
     }, 800);
 
     return () => clearInterval(interval);
   }, []);
+  
+  
+  // 선택된 비디오를 크게 보여주는 함수
+  const handleVideoContainerClick = (stream) => {
+    // setActiveVideo(stream);
+    if (stream === localStream) {
+      largeVideoRef.current.srcObject = localStream;
+    } else if (stream === remoteStream) {
+      largeVideoRef.current.srcObject = remoteStream;
+    } else if(stream === screenStream){
+      largeVideoRef.current.srcObject = screenStream;
+    }
+    // return prevDotCount + 1;
+  };        
 
   const handleCallButtonClick = () => {
     if (peerConnection && localStream) {
@@ -158,9 +142,11 @@ const ConsultVideo = ({
     }
   };
 
-  const handleVideoContainerClick = (stream) => {
-    setActiveVideo(stream);
-  };
+  // const handleVideoContainerClick = (stream) => {
+  //   if (largeVideoRef && largeVideoRef.current) {
+  //     largeVideoRef.current.srcObject = stream;
+  //   }
+  // };
 
   const setupAudioAnalyser = (stream, setSpeaking, analyserRef) => {
     const audioContext = new window.AudioContext();
@@ -175,7 +161,7 @@ const ConsultVideo = ({
     const detectSpeaking = () => {
       analyser.getByteFrequencyData(dataArray);
       const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-      setSpeaking(average > 3); // 임계값 조정 가능
+      setSpeaking(average > 3);
 
       analyserRef.current.animationFrameId =
         requestAnimationFrame(detectSpeaking);
@@ -184,39 +170,20 @@ const ConsultVideo = ({
     detectSpeaking();
   };
 
-  const startScreenSharing = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true
-      });
-      if (screenVideoRef.current) {
-        screenVideoRef.current.srcObject = stream;
-      }
-      setScreenStream(stream);
-
-      stream.getTracks().forEach((track) => {
-        peerConnection.addTrack(track, stream);
-      });
-
-      if (largeVideoRef && largeVideoRef.current) {
-        largeVideoRef.current.srcObject = stream;
-      }
-    } catch (error) {
-      console.error("Error sharing screen:", error);
-      alert(
-        "Error sharing screen. Please check your screen sharing permissions."
-      );
+  useEffect(() => {
+    console.log('screenStream:', screenStream);
+    if (screenStream && screenVideoRef.current) {
+      screenVideoRef.current.srcObject = screenStream;
     }
-  };
+  }, [screenStream]);
+
 
   return (
-    <div id="consultVideo" className={isTeller ? "teller" : ""}>
-      <div id="videoOptions">
-        <div
-          className="videoContainer"
-          onClick={() => handleVideoContainerClick(localStream)}
-        >
-          <p>텔러</p>
+    <div id='consultVideo' className={isTeller ? 'teller' : ''}>
+     
+      <div id='videoOptions'>
+        <div className='videoContainer' onClick={() => handleVideoContainerClick(localStream)}>
+          <p>텔러</p> 
           {localVideoRef ? (
             <video
               className={`video ${isLocalSpeaking ? "speaking" : ""}`}
@@ -230,11 +197,8 @@ const ConsultVideo = ({
             </div>
           )}
         </div>
-        <div
-          className="videoContainer"
-          onClick={() => handleVideoContainerClick(remoteStream)}
-        >
-          <p>손님</p>
+        <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
+        <p>손님</p> 
           {remoteStream ? (
             <video
               className={`video ${isRemoteSpeaking ? "speaking" : ""}`}
@@ -248,10 +212,7 @@ const ConsultVideo = ({
             </div>
           )}
         </div>
-        <div
-          className="videoContainer"
-          onClick={() => handleVideoContainerClick(screenStream)}
-        >
+        <div className='videoContainer' onClick={() => handleVideoContainerClick(screenStream)} >
           <p>화면 공유</p>
           {screenStream ? (
             <video className="video" ref={screenVideoRef} autoPlay />
@@ -263,8 +224,9 @@ const ConsultVideo = ({
         </div>
       </div>
       <button onClick={handleCallButtonClick}>시작!</button>
+
     </div>
   );
 };
 
-export default ConsultVideo;
+export default TellerVideo;
