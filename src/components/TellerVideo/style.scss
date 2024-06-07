@@ -6,6 +6,7 @@
 
 #videoOptions {
   display: flex;
+  height: 200px;
 }
 
 .videoContainer {
@@ -52,11 +53,12 @@
 }
 
 #largeVideo {
+  flex-grow: 1;
 }
 
 .largeV {
   border-radius: 8px;
-  height: 440px; // 손님 화면 높이 조정
+  width: 65%;
   cursor: pointer;
 }
 

@@ -14,14 +14,73 @@
     width: 100%;
 }
 
-#chatContainer {
-    height: 90%;
-    overflow-y: scroll;
-    margin-bottom: 10px;
-  }
-
-#chatInputContainer > input {
+#chatInputContainer>input {
     width: 75%;
     padding: 0 10px;
     border-radius: 50px;
+}
+
+#chatContainer {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.message {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+.message .bubble {
+    max-width: 60%;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.message .timestamp {
+    font-size: 0.75em;
+    color: #888;
+    margin-left: 8px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.message .bubble::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+}
+
+.message.mine {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.message.mine .bubble {
+    background-color: #007bff;
+    color: white;
+}
+
+.message.mine .bubble::after {
+    border-bottom-color: #007bff;
+    right: -10px;
+}
+
+.message.remote {
+    justify-content: flex-start;
+}
+
+.message.remote .bubble {
+    background-color: #e5e5ea;
+}
+
+.message.remote .bubble::after {
+    border-bottom-color: #e5e5ea;
+    left: -10px;
 }

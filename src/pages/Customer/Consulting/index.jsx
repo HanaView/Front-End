@@ -19,7 +19,6 @@ function Consulting() {
 
   
   const largeVideoRef = useRef(null);
-  const screenVideoRef = useRef(null);
 
   useEffect(() => {
     // 시그널링 서버 연결
@@ -227,9 +226,6 @@ function Consulting() {
           messages={messages}
           onMessageReceived={handleMessageReceived}
         />
-          <div id="largeVideoContainer">
-          <video id="largeVideo" ref={largeVideoRef} autoPlay />
-        </div>
       </div>
     </div>
   );
