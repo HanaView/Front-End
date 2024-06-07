@@ -7,8 +7,6 @@ import { useAtom } from "jotai";
 import { capturedImageAtom, globalModalAtom } from "@/stores";
 import axios from "axios";
 
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></meta>
-
 function Auth() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
   const [modalData, setModalData] = useAtom(globalModalAtom); // 모달

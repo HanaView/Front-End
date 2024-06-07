@@ -5,8 +5,6 @@ import { useAtom } from "jotai";
 import { capturedImageAtom } from "@/stores";
 import axios from "axios";
 
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></meta>
-
 function Camera() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
 
