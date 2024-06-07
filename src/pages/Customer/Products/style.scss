@@ -1,0 +1,134 @@
+.contentContainer {
+  width: 100%;
+  &.deposit {
+    .item {
+      .first {
+        height: 400px;
+        width: 100%;
+        background: url(@/assets/images/deposit_369.png) no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+      .second {
+        height: 400px;
+        width: 100%;
+        background: url(@/assets/images/deposit_knowhow.png) no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+      .third {
+        height: 400px;
+        width: 100%;
+        background: url(@/assets/images/deposit_term.png) no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+    }
+  }
+  &.loan {
+    .item {
+      .first {
+        height: 400px;
+        width: 100%;
+        background: url(@/assets/images/loan1.png) no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+      .second {
+        height: 400px;
+        width: 100%;
+        background: url(@/assets/images/loan2.png) no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+      .third {
+        height: 400px;
+        width: 100%;
+        background: url(@/assets/images/loan3.png) no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+    }
+  }
+
+  &.card {
+    .item {
+      .first {
+        height: 400px;
+        width: 100%;
+        background: url(@/assets/images/card1.png) no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+      .second {
+        height: 400px;
+        width: 100%;
+        background: url(@/assets/images/card2.png) no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+      .third {
+        height: 400px;
+        width: 100%;
+        background: url(@/assets/images/card3.png) no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+    }
+  }
+
+  .slick-slide > div {
+    padding: 0 30px;
+  }
+  .slick-dots li.slick-active button::before {
+    color: $color-primary;
+    opacity: 1;
+  }
+
+  .slick-dots li button::before {
+    color: $color-gray;
+    opacity: 1;
+  }
+  .slick-list {
+    // 부모
+    margin: 0 -40px;
+    height: 100%;
+    margin: 0 -10px;
+    box-sizing: border-box;
+  }
+
+  .slick-slide > div {
+    // 자식 안에 div
+    margin: 10px;
+    box-sizing: border-box;
+  }
+  .slick-slider {
+    button {
+      width: 10%;
+      z-index: 10;
+
+      &.slick-arrow.slick-prev {
+        background: url(@/assets/images/arrowLeft.svg) no-repeat;
+        background-position: center;
+        background-size: contain;
+        width: 50px;
+        height: 50px;
+      }
+
+      &.slick-arrow.slick-next {
+        background: url(@/assets/images/arrowRight.svg) no-repeat;
+        background-position: center;
+        background-size: contain;
+        width: 50px;
+        height: 50px;
+      }
+    }
+    .slick-prev:before,
+    .slick-next:before {
+      line-height: 1;
+      opacity: 1;
+      color: transparent;
+      -webkit-font-smoothing: antialiased;
+    }
+  }
+}
