@@ -16,13 +16,13 @@ function AfterCustomer() {
   return (
     <>
       <form className="AfterCustomerContainer">
+        <div className="dummy"></div><div className="dummy"></div>
         <div className="title">{customer} 님</div>
         <div className="title">상담은 만족스러우셨나요?</div>
         <div className="dummy"></div>
         <div className="title" style={{ alignItems: "flex-start" }}>
           담당텔러: {teller}
-        </div>
-        <div className="dummy"></div>
+        </div>        
         <div>
           {[...Array(rating)].map((a, i) => (
             <PiStarFill

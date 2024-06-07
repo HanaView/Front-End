@@ -59,7 +59,7 @@ function Camera() {
       console.log(formData);
       try {
         const response = await axios.post(
-          "http://172.16.20.211:80/api/login/ocr",
+          "http://127.0.0.1:80/api/login/ocr",
           formData,
           {
             headers: {
@@ -75,7 +75,7 @@ function Camera() {
 
         // auth 페이지로 이동하면서 쿼리 파라미터 유지
         if (key) {
-          navigate(`/auth?key=${key}`);
+          navigate(`/auth?key=${key}`);        
         } else {
           // key가 없을 경우 기본 페이지로 이동
           navigate(`/auth`);

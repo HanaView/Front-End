@@ -9,8 +9,7 @@ function LoadingCustomer() {
   return (
     <>
       <div className="LoadingCustomerContainer">
-        <div className="title">원하시는 업무를 선택해주세요</div>
-        <div className="dummy"></div>
+        <div className="title">원하시는 업무를 선택해주세요</div>     
         <div className="buttonLine">
           <Button className="button" shape="rect" onClick={() => navigate("")}>
             예/적금
@@ -35,8 +34,7 @@ function LoadingCustomer() {
             업무
           </Button>
         </div>
-        <div className="dummy"></div>
-        <div className="dummy"></div>
+        <div className="dummy"></div>     
 
         <div className="title">각종 발급 업무는 근처 은행에서 진행해주세요</div>        
         <Button       

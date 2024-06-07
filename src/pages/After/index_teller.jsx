@@ -13,13 +13,14 @@ function AfterTeller() {
     setSelectedOption(event.target.value);
   };
 
-  const handleSubmit = (e) => { // '확인'버튼 눌렀을때 전송될 내용
-
-  }
+  const handleSubmit = (e) => {
+    // '확인'버튼 눌렀을때 전송될 내용
+  };
 
   return (
     <>
       <form className="AfterTellerContainer">
+        <div className="dummy"></div>
         <div className="title">상담 내용을 기록해주세요</div>
         <div className="dummy"></div>
         <div className="formContainer">
@@ -81,7 +82,7 @@ function AfterTeller() {
           </label>
         </div>
 
-        <Button type="submit" shape="rect" onClick={handleSubmit} >
+        <Button type="submit" shape="rect" onClick={handleSubmit}>
           확인
         </Button>
       </form>

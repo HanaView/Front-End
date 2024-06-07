@@ -7,6 +7,7 @@ import "@/common/styles/scss/base.scss";
 import { Provider } from "jotai";
 import router from "./routes";
 import GlobalModal from "@/components/Modal";
+import RequestModal from "./pages/_shared/Modal/RequestModal";
 
 function App() {
   const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ function App() {
 
     window.addEventListener("resize", handleResize);
   }, []);
+  
   return (
     <>
       <QueryClientProvider client={queryClient}>
@@ -33,6 +35,7 @@ function App() {
           <ReactQueryDevtools initialIsOpen={false} />
           <RouterProvider router={router} />
           <GlobalModal />
+          <RequestModal />
         </Provider>
       </QueryClientProvider>
     </>
