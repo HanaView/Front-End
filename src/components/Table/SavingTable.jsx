@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import "./style.scss";
 import Button from "../Button";
 
-function Table({ products, onProductClick }) {
-  console.log(">>", products);
-
+function SavingTable({ products, onProductClick }) {
+  if (!products || products.length === 0) {
+    return <div>No products available</div>;
+  }
   const handleProduct = (product) => {
     onProductClick(product);
   };
@@ -31,10 +32,10 @@ function Table({ products, onProductClick }) {
               {product.target}
             </div>
             <div className="cell" data-title="금리(6개월)">
-              {product.depositRates[0].rate}
+              {product.savingRates[0].rate}
             </div>
             <div className="cell" data-title="금리(12개월)">
-              {product.depositRates[1].rate}
+              {product.savingRates[1].rate}
             </div>
             <div className="cell" data-title="금리(12개월)">
               {product.maxJoinAmount.toLocaleString()}
@@ -49,4 +50,4 @@ function Table({ products, onProductClick }) {
   );
 }
 
-export default Table;
+export default SavingTable;
