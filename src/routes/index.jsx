@@ -23,7 +23,7 @@ import AuthCustomer from "@/pages/Auth/auth_complete";
 import Finish from "@/pages/Auth/finish";
 
 
-import ConnectingTeller from "@/pages/Teller/";
+import ConnectingTeller from "@/pages/Teller/Consulting/index";
 
 import LoadingTeller from "@/pages/Teller/loading_teller";
 import OwnCustomer from "@/pages/Customer/own_customer";
