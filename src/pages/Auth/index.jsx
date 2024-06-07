@@ -85,7 +85,7 @@ function Auth() {
 
       try {
         const response = await axios.get (
-          "http://127.0.0.1:80/api/login/authComplete?key="+key,        
+          "http://172.16.20.211:80/api/login/authComplete?key="+key,        
         );       
 
         console.log("--------------------------------------");
