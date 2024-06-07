@@ -107,6 +107,7 @@ function ConnectingTeller() {
         pc.restartIce();
       }
     };
+
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       switch (message.type) {
@@ -161,7 +162,6 @@ function ConnectingTeller() {
     };
   }, []);
 
-
   useEffect(() => {
     let timer;
     if (isCallActive) {
@@ -214,7 +214,6 @@ function ConnectingTeller() {
             largeVideoRef={largeVideoRef}
             activeVideo={activeVideo}
             screenStream={screenStream}
-
           />
         </div>
         <div className="customerInfoContainer">

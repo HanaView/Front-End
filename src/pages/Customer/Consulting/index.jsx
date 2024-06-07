@@ -1,11 +1,9 @@
 import CallInfo from "@/components/CallInfo";
 import Chat from "@/components/Chat";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./index.scss";
 import ConsultVideo from "@/components/Video/index";
-import { useRef } from "react";
 
-//rcfe
 function Consulting() {
   const [isMuted, setIsMuted] = useState(false); // 음소거 State
   const [callDuration, setCallDuration] = useState(0); // 화상 상담 시간 State
@@ -16,9 +14,10 @@ function Consulting() {
   const [dataChannel, setDataChannel] = useState(null); // 채팅용 데이터 채널 State
   const [messages, setMessages] = useState([]); // 채팅 메시지 배열
   const [screenStream, setScreenStream] = useState(null);
-  const screenVideoRef = useRef(null);
+  const [remoteStream, setRemoteStream] = useState(null);
 
   const largeVideoRef = useRef(null);
+  const screenVideoRef = useRef(null);
 
   useEffect(() => {
     // 시그널링 서버 연결
@@ -70,14 +69,16 @@ function Consulting() {
             socket.send(JSON.stringify({ type: 'ice-candidate', candidate: event.candidate }));
         }
     };
-    // pc.ontrack = (event) => {
-    //   console.log('Received remote track:', event.streams[0]);
-    //   if (event.track.kind === 'video') {
-    //     setScreenStream(event.streams[0]);
-    //   } else if (event.track.kind === 'audio') {
-    //     // Handle audio track if needed
-    //   }
-    // };
+
+    pc.ontrack = (event) => {
+      console.log('Received remote track:', event.streams[0]);
+      if (event.track.kind === 'video') {
+        setScreenStream(event.streams[0]);
+      } else if (event.track.kind === 'audio') {
+        // Handle audio track if needed
+      }
+    };
+
     socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
         switch (message.type) {
@@ -167,9 +168,9 @@ function Consulting() {
   };
 
   useEffect(() => {
-  
+    if (screenStream && screenVideoRef.current) {
       screenVideoRef.current.srcObject = screenStream;
-  
+    }
   }, [screenStream]);
 
   return (
@@ -182,7 +183,10 @@ function Consulting() {
           peerConnection={peerConnection}
           signalingSocket={signalingSocket}
           isTeller={false}
-          largeVideoRef={largeVideoRef} activeVideo={undefined} screenStream={screenStream}  />
+          largeVideoRef={largeVideoRef}
+          activeVideo={undefined}
+          screenStream={screenStream}
+        />
               <div id="screenVideoContainer">
           <video id="screenVideo" ref={screenVideoRef} autoPlay />
         </div>
@@ -191,14 +195,18 @@ function Consulting() {
         <CallInfo
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
-          duration={callDuration} isTeller={undefined} onShareScreen={undefined} isScreenSharing={false}/>
+          duration={callDuration}
+          isTeller={false}
+          onShareScreen={undefined}
+          isScreenSharing={false}
+        />
         <Chat
           dataChannel={dataChannel}
           messages={messages}
-          onMessageReceived={handleMessageReceived}/>
-           <div id="largeVideoContainer">
+          onMessageReceived={handleMessageReceived}
+        />
+        <div id="largeVideoContainer">
           <video id="largeVideo" ref={largeVideoRef} autoPlay />
-      
         </div>
       </div>     
     </div>
