@@ -5,6 +5,8 @@ import classNames from "classnames";
 import Button from "@/components/Button";
 import { useAtom } from "jotai";
 import { userTypeAtom } from "@/stores";
+import TaskList from "@/components/TellerTask";
+
 function ButtonList() {
   const { handleNavigation, selectedSideButton } = useRootLayout();
   const [userType] = useAtom(userTypeAtom);
@@ -68,6 +70,8 @@ function ButtonList() {
         >
           텔러 버튼
         </Button> */}
+        <TaskList />
+
       </>
     );
   });
