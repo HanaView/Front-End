@@ -22,7 +22,7 @@ function Consulting() {
 
   useEffect(() => {
     // 시그널링 서버 연결
-    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
+    const socket = new WebSocket("ws://dan-sup.com/rtc/WebRTC/signaling");
     setSignalingSocket(socket);
 
     // 피어 연결 설정

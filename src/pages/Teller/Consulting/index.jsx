@@ -4,6 +4,7 @@ import CallInfo from "@/components/CallInfo/";
 import Chat from "@/components/Chat/";
 import "./style.scss";
 import CustomerInfo from "@/components/CustomerInfo";
+import SavingTask from "@/pages/Consulting/SavingTask";
 
 function ConnectingTeller() {
   const [isMuted, setIsMuted] = useState(false);
@@ -73,7 +74,7 @@ function ConnectingTeller() {
   };
 
   useEffect(() => {
-    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
+    const socket = new WebSocket("ws://dan-sup.com/rtc/WebRTC/signaling");
     setSignalingSocket(socket);
 
     const pc = new RTCPeerConnection({
@@ -240,7 +241,10 @@ function ConnectingTeller() {
             />
           </div>
         </div>
-        <div className="inputSection">필요업무에 맞는 입력창</div>
+        <div className="inputSection">
+        <SavingTask />
+
+        </div>
       </div>
     </div>
   );
