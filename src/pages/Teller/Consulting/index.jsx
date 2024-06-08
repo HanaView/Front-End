@@ -197,19 +197,17 @@ function ConnectingTeller() {
   return (
     <div className="serviceContainer teller">
       <div id="consultLeftSection">
-        <div className="videoContainer">
-          <TellerVideo
-            isMuted={isMuted}
-            onCallStart={handleCallStart}
-            onCallEnd={handleCallEnd}
-            peerConnection={peerConnection}
-            signalingSocket={signalingSocket}
-            isTeller={true}
-            largeVideoRef={largeVideoRef}
-            activeVideo={activeVideo}
-            screenStream={screenStream}
-          />
-        </div>
+        <TellerVideo
+          isMuted={isMuted}
+          onCallStart={handleCallStart}
+          onCallEnd={handleCallEnd}
+          peerConnection={peerConnection}
+          signalingSocket={signalingSocket}
+          isTeller={true}
+          largeVideoRef={largeVideoRef}
+          activeVideo={activeVideo}
+          screenStream={screenStream}
+        />
         <div className="customerInfoContainer">
           <CustomerInfo
             name={customerInfo.name}

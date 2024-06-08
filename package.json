@@ -22,6 +22,8 @@
     "classnames": "^2.5.1",
     "eslint-plugin-prettier": "^5.1.3",
     "express": "^4.19.2",
+    "highcharts": "^11.4.3",
+    "highcharts-react-official": "^3.2.1",
     "jotai": "^2.8.1",
     "msw": "^2.3.0",
     "react": "^18.2.0",
