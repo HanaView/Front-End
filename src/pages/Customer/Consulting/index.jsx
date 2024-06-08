@@ -52,7 +52,7 @@ function Consulting() {
       const receivedMessage = JSON.parse(event.data);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: "텔러", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
+        { sender: "remote", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
       ]);
     };
 
@@ -78,8 +78,6 @@ function Consulting() {
       console.log("Received remote track:", event.streams[0]);
       const newStream = event.streams[0];
 
-      // 화면 공유 스트림인지 확인
-      console.log("@@@")
       console.log(newStream.getVideoTracks()[0].label);
 
       if (newStream.getVideoTracks()[0].label.includes('screen')) {
