@@ -1,7 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./style.scss";
 
-const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalingSocket, isTeller, largeVideoRef, activeVideo,  screenStream}) => {
+const TellerVideo = ({
+  isMuted,
+  onCallStart,
+  onCallEnd,
+  peerConnection,
+  signalingSocket,
+  isTeller,
+  largeVideoRef,
+  activeVideo,
+  screenStream
+}) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [isLocalSpeaking, setIsLocalSpeaking] = useState(false);
@@ -73,7 +83,6 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
         setRemoteStream(event.streams[0]);
       };
     }
-  
   }, [peerConnection]);
 
   useEffect(() => {
@@ -92,7 +101,11 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
   useEffect(() => {
     if (remoteStream && remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = remoteStream;
-      setupAudioAnalyser(remoteStream, setIsRemoteSpeaking, remoteAudioAnalyserRef);
+      setupAudioAnalyser(
+        remoteStream,
+        setIsRemoteSpeaking,
+        remoteAudioAnalyserRef
+      );
     }
   }, [remoteStream]);
 
@@ -104,13 +117,14 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDotCount((prevDotCount) => (prevDotCount === 3 ? 1 : prevDotCount + 1));
+      setDotCount((prevDotCount) =>
+        prevDotCount === 3 ? 1 : prevDotCount + 1
+      );
     }, 800);
 
     return () => clearInterval(interval);
   }, []);
-  
-  
+
   // 선택된 비디오를 크게 보여주는 함수
   const handleVideoContainerClick = (stream) => {
     // setActiveVideo(stream);
@@ -118,13 +132,16 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
       largeVideoRef.current.srcObject = localStream;
     } else if (stream === remoteStream) {
       largeVideoRef.current.srcObject = remoteStream;
-    } else if(stream === screenStream){
+    } else if (stream === screenStream) {
       largeVideoRef.current.srcObject = screenStream;
     }
     // return prevDotCount + 1;
-  };        
+  };
 
   const handleCallButtonClick = () => {
+    const res  = confirm("상담을 시작하시겠습니까?");
+    if(!res) return;
+
     if (peerConnection && localStream) {
       peerConnection.addStream(localStream);
       peerConnection
@@ -161,7 +178,7 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
     const detectSpeaking = () => {
       analyser.getByteFrequencyData(dataArray);
       const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-      setSpeaking(average > 3);
+      setSpeaking(average > 15);
 
       analyserRef.current.animationFrameId =
         requestAnimationFrame(detectSpeaking);
@@ -171,25 +188,28 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
   };
 
   useEffect(() => {
-    console.log('screenStream:', screenStream);
+    console.log("screenStream:", screenStream);
     if (screenStream && screenVideoRef.current) {
       screenVideoRef.current.srcObject = screenStream;
     }
   }, [screenStream]);
 
-
   return (
-    <div id='consultVideo' className={isTeller ? 'teller' : ''}>
-     
-      <div id='videoOptions'>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(localStream)}>
-          <p>텔러</p> 
+    <div id="consultVideo" className={isTeller ? "teller" : ""}>
+      <div id="videoOptions">
+        <div
+          className="videoContainer"
+          onClick={() => handleVideoContainerClick(localStream)}
+        >
           {localVideoRef ? (
-            <video
-              className={`video ${isLocalSpeaking ? "speaking" : ""}`}
-              ref={localVideoRef}
-              autoPlay
-            />
+            <div>
+              <p>텔러</p>
+              <video
+                className={`video ${isLocalSpeaking ? "speaking" : ""}`}
+                ref={localVideoRef}
+                autoPlay
+              />
+            </div>
           ) : (
             <div className="videoPending">
               <img src="/src/assets/images/videoPending.png" />
@@ -197,14 +217,19 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
             </div>
           )}
         </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(remoteStream)}>
-        <p>손님</p> 
+        <div
+          className="videoContainer"
+          onClick={() => handleVideoContainerClick(remoteStream)}
+        >
           {remoteStream ? (
-            <video
-              className={`video ${isRemoteSpeaking ? "speaking" : ""}`}
-              ref={remoteVideoRef}
-              autoPlay
-            />
+            <div>
+              <p>손님</p>
+              <video
+                className={`video ${isRemoteSpeaking ? "speaking" : ""}`}
+                ref={remoteVideoRef}
+                autoPlay
+              />
+            </div>
           ) : (
             <div className="videoPending">
               <img src="/src/assets/images/videoPending.png" />
@@ -212,7 +237,10 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
             </div>
           )}
         </div>
-        <div className='videoContainer' onClick={() => handleVideoContainerClick(screenStream)} >
+        <div
+          className="videoContainer"
+          onClick={() => handleVideoContainerClick(screenStream)}
+        >
           <p>화면 공유</p>
           {screenStream ? (
             <video className="video" ref={screenVideoRef} autoPlay />
@@ -223,8 +251,7 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
           )}
         </div>
       </div>
-      <button onClick={handleCallButtonClick}>시작!</button>
-
+      <button onClick={handleCallButtonClick}>상담 시작</button>
     </div>
   );
 };
