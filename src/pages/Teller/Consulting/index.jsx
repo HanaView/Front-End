@@ -29,49 +29,6 @@ function ConnectingTeller() {
   };
 
   const largeVideoRef = useRef(null);
-  const startScreenSharing = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      setScreenStream(stream);
-      setPreviousVideo(largeVideoRef.current.srcObject);
-
-      const videoTrack = stream.getVideoTracks()[0];
-      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
-      if (sender) {
-        sender.replaceTrack(videoTrack);
-      } else {
-        stream.getTracks().forEach((track) => {
-          peerConnection.addTrack(track, stream);
-        });
-      }
-
-      setIsScreenSharing(true);
-
-      stream.getVideoTracks()[0].onended = () => {
-        stopScreenSharing();
-      };
-    } catch (error) {
-      console.error('Error sharing screen:', error);
-      alert('Error sharing screen. Please check your screen sharing permissions.');
-    }
-  };
-
-  const stopScreenSharing = () => {
-    if (screenStream) {
-      screenStream.getTracks().forEach(track => track.stop());
-      setScreenStream(null);
-      setIsScreenSharing(false);
-      if (largeVideoRef.current) {
-        largeVideoRef.current.srcObject = previousVideo;
-      }
-
-      const videoTrack = localStream.getVideoTracks()[0];
-      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
-      if (sender) {
-        sender.replaceTrack(videoTrack);
-      }
-    }
-  };
 
   useEffect(() => {
     const socket = new WebSocket("ws://dan-sup.com/rtc/WebRTC/signaling");
@@ -81,6 +38,40 @@ function ConnectingTeller() {
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
     });
     setPeerConnection(pc);
+
+    // 데이터 채널 생성
+    const dc = pc.createDataChannel("chat");
+
+    // 데이터 채널 이벤트 리스너 설정
+    dc.onopen = () => {
+      console.log("Data channel opened");
+    };
+
+    dc.onclose = () => {
+      console.log("Data channel closed");
+    };
+
+    dc.onerror = (error) => {
+      console.error("Data channel error:", error);
+    };
+
+    dc.onmessage = (event) => {
+      console.log("Data channel message received:", event.data);
+      const receivedMessage = JSON.parse(event.data);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: "remote", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
+      ]);
+    };
+
+    // 데이터 채널 설정이 완료되었을 때 실행되는 함수
+    const onDataChannelCreated = (event) => {
+      const dc = event.channel;
+      setDataChannel(dc);
+    };
+
+    // 데이터 채널 생성 이벤트 리스너 설정
+    pc.ondatachannel = onDataChannelCreated;
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
@@ -171,6 +162,50 @@ function ConnectingTeller() {
       clearInterval(timer);
     };
   }, [isCallActive]);
+
+  const startScreenSharing = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      setScreenStream(stream);
+      setPreviousVideo(largeVideoRef.current.srcObject);
+
+      const videoTrack = stream.getVideoTracks()[0];
+      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      } else {
+        stream.getTracks().forEach((track) => {
+          peerConnection.addTrack(track, stream);
+        });
+      }
+
+      setIsScreenSharing(true);
+
+      stream.getVideoTracks()[0].onended = () => {
+        stopScreenSharing();
+      };
+    } catch (error) {
+      console.error('Error sharing screen:', error);
+      alert('Error sharing screen. Please check your screen sharing permissions.');
+    }
+  };
+
+  const stopScreenSharing = () => {
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => track.stop());
+      setScreenStream(null);
+      setIsScreenSharing(false);
+      if (largeVideoRef.current) {
+        largeVideoRef.current.srcObject = previousVideo;
+      }
+
+      const videoTrack = localStream.getVideoTracks()[0];
+      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      }
+    }
+  };
 
   const handleCallStart = () => {
     setIsCallActive(true);
