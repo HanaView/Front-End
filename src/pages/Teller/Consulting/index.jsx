@@ -5,6 +5,9 @@ import Chat from "@/components/Chat/";
 import "./style.scss";
 import CustomerInfo from "@/components/CustomerInfo";
 import SavingTask from "@/pages/Consulting/SavingTask";
+import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
+import { passwordRequestlModalAtom } from "@/stores";
+import { useAtom } from "jotai";
 
 function ConnectingTeller() {
   const [isMuted, setIsMuted] = useState(false);
@@ -20,6 +23,8 @@ function ConnectingTeller() {
   const [activeVideo, setActiveVideo] = useState(null);
   const [previousVideo, setPreviousVideo] = useState(null); // 이전 비디오 상태 저장
   const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
+  const [receivedInfo, setReceivedInfo] = useState(null); // 받은 정보 저장
+  const [passWordmodalData, setPasswordModalData] = useAtom(passwordRequestlModalAtom); // jotai를 사용한 상태 관리
 
   const customerInfo = {
     name: "김하나",
@@ -230,6 +235,22 @@ function ConnectingTeller() {
     }
   };
 
+  const handleTestButtonClick = () => {
+    setPasswordModalData({
+      isOpen: true,
+      children: null,
+      content: <input type="password" placeholder="Enter password" />,
+      confirmButtonText: "확인",
+      onClickConfirm: (password) => {
+        if (dataChannel) {
+          dataChannel.send(JSON.stringify({ type: "info-request", data: password }));
+        }
+        // 정보를 전송한 후에 모달을 닫습니다.
+        // setPasswordModalData({ isOpen: false });
+      }
+    });
+  };
+
   return (
     <div className="serviceContainer teller">
       <div id="consultLeftSection">
@@ -277,8 +298,9 @@ function ConnectingTeller() {
           </div>
         </div>
         <div className="inputSection">
-        <SavingTask />
-
+          <SavingTask />
+          <button onClick={handleTestButtonClick}>테스트</button>
+          <PasswordModal/>
         </div>
       </div>
     </div>
