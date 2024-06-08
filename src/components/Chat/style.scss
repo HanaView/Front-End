@@ -22,10 +22,11 @@
 }
 
 #chatContainer {
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 50px);
     overflow-y: auto;
     padding: 10px;
-    max-height: calc(100% - 50px); /* 부모 요소의 높이에서 입력 컨테이너의 높이를 뺀 값 */
 }
 
 .message {
