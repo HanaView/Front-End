@@ -161,7 +161,7 @@ const TellerVideo = ({ isMuted, onCallStart, onCallEnd, peerConnection, signalin
     const detectSpeaking = () => {
       analyser.getByteFrequencyData(dataArray);
       const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-      setSpeaking(average > 3);
+      setSpeaking(average > 15);
 
       analyserRef.current.animationFrameId =
         requestAnimationFrame(detectSpeaking);
