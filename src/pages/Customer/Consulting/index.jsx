@@ -27,7 +27,7 @@ function Consulting() {
 
   useEffect(() => {
     // 시그널링 서버 연결
-    const socket = new WebSocket("ws://dan-sup.com/rtc/WebRTC/signaling");
+    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
     setSignalingSocket(socket);
 
     // 피어 연결 설정
@@ -258,8 +258,6 @@ function Consulting() {
       });
     }
   }, [screenStream, previousStream]);
-
-
 
   return (
     <div className="serviceContainer">

@@ -17,7 +17,7 @@ const customStyles = {
     transform: "translate(-50%, -50%)",
     backgroundColor: "#ffffff",
     width: "406px",
-    height: "400px", // 높이를 조정했습니다.
+    height: "400px",
     borderRadius: "22px"
   }
 };
