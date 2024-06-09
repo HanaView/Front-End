@@ -2,6 +2,8 @@
   margin: 0 auto;
   padding: 40px;
   max-width: 800px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .table {
@@ -71,7 +73,10 @@
 .cell {
   padding: 6px 12px;
   display: table-cell;
-
+  min-width: 90px;
+  button {
+    min-width: 70px;
+  }
   @media screen and (max-width: 580px) {
     padding: 2px 16px;
     display: block;

@@ -12,7 +12,7 @@ const DailyWorks = () => {
             align: 'left'
         },
         xAxis: {
-            categories: ['6.7', '6.10', '6.11', '6.12']
+            categories: ['6.4', '6.5', '6.7', '6.10', '6.11', '6.12']
         },
         yAxis: {
             min: 0,
@@ -48,13 +48,13 @@ const DailyWorks = () => {
         },
         series: [{
             name: '카드',
-            data: [3, 5, 1, 13]
+            data: [12, 8, 3, 5, 11, 13]
         }, {
             name: '예금',
-            data: [14, 8, 8, 12]
+            data: [8, 11, 14, 8, 8, 12]
         }, {
             name: '적금',
-            data: [0, 2, 6, 3]
+            data: [4, 21, 10, 12, 16, 13]
         }]
     };
 
