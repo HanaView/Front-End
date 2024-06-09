@@ -9,7 +9,7 @@ import { useAtom } from "jotai";
 
 //rcfe
 function Consulting() {
-  const [isMuted, setIsMuted] = useState(false); // 음소거 State
+  const [isMuted, setIsMuted] = useState(true); // 음소거 State
   const [callDuration, setCallDuration] = useState(0); // 화상 상담 시간 State
   const [isCallActive, setIsCallActive] = useState(false); // 화상 상담 활성 여부 State
 
@@ -238,7 +238,7 @@ function Consulting() {
 
   // 음소거 전환 함수
   const handleToggleMute = () => {
-    setIsMuted(!isMuted);
+    setIsMuted(isMuted);
   };
 
   const handleMessageReceived = (message) => {
@@ -258,6 +258,8 @@ function Consulting() {
       });
     }
   }, [screenStream, previousStream]);
+
+
 
   return (
     <div className="serviceContainer">
