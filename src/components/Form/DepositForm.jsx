@@ -127,7 +127,6 @@ const DepositForm = ({ product, onBack }) => {
 
     // WebSocket 메시지 전송
     if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
-      // Open the modal with the password prompt message
       setMessageModalData({
         isOpen: true,
         children: null,
@@ -160,9 +159,7 @@ const DepositForm = ({ product, onBack }) => {
   const handleRequirePasswordButtonClick = () => {
     console.log("@@@ signalingSocket", signalingSocket);
 
-    // Check if the signalingSocket is open and send the message
     if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
-      // Open the modal with the password prompt message
       setMessageModalData({
         isOpen: true,
         children: null,

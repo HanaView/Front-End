@@ -13,6 +13,7 @@ import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
 import MessageModal from "@/pages/_shared/Modal/MessageModal ";
 import CryptoJS from "crypto-js"; // crypto-js 라이브러리 import
+import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
 
 function ConnectingTeller() {
   const [isMuted, setIsMuted] = useState(true);
@@ -160,13 +161,16 @@ function ConnectingTeller() {
             console.error("Invalid ICE message:", message);
           }
           break;
-          case "password":
-            try {
-              const decryptedPassword = CryptoJS.AES.decrypt(message.data, 'secret-key').toString(CryptoJS.enc.Utf8);
-              console.log('Decrypted Password:', decryptedPassword);
-              setReceivedInfo(decryptedPassword);
+        case "password":
+          try {
+            const decryptedPassword = CryptoJS.AES.decrypt(
+              message.data,
+              "secret-key"
+            ).toString(CryptoJS.enc.Utf8);
+            console.log("Decrypted Password:", decryptedPassword);
+            setReceivedInfo(decryptedPassword);
 
-               // 비밀번호 인증을 완료
+            // 비밀번호 인증을 완료
             setMessageModalData({
               isOpen: true,
               children: null,
@@ -188,10 +192,33 @@ function ConnectingTeller() {
                 });
               }
             });
-            } catch (error) {
-              console.error("Error decrypting password:", error);
+          } catch (error) {
+            console.error("Error decrypting password:", error);
+          }
+          break;
+        case "agreements_completed":
+          // 약관 동의 완료 모달
+          setMessageModalData({
+            isOpen: true,
+            children: null,
+            content: (
+              <div id="modalDiv">
+                <div id="modalContent">
+                  <p id="modalInfo">손님이 동의서 작성을 완료했습니다.</p>
+                </div>
+              </div>
+            ),
+            confirmButtonText: "확인",
+            onClickConfirm: () => {
+              setMessageModalData({
+                isOpen: false,
+                children: null,
+                content: null,
+                confirmButtonText: "",
+                onClickConfirm: null
+              });
             }
-            break;
+          });
         default:
           console.error("알 수 없는 메시지 타입:", message);
           break;
@@ -368,6 +395,8 @@ function ConnectingTeller() {
             <p>받은 비밀번호: {receivedInfo}</p>
           </div>
         )}
+                <AgreementModal signalingSocket={signalingSocket} />
+
       </div>
     </div>
   );
