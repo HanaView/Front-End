@@ -56,9 +56,7 @@ function Camera() {
       console.log("###");
       console.log(formData);
       try {
-        const response = await axios.post(
-          // "http://172.16.20.211:80/api/login/ocr",
-          // "http://192.168.0.24:80/api/login/ocr",
+        const response = await axios.post(         
           "https://hanaview.shop/api/login/ocr",
           formData,
           {

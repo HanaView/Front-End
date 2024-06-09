@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./style.scss";
+import { taskAtom } from '@/stores/index'
+import { useAtom } from "jotai";
 
 const tasks = [
   { id: 1000, name: "계좌 조회" },
@@ -17,6 +19,7 @@ const tasks = [
 
 function TaskList() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [, setTaskId] = useAtom(taskAtom);
 
   const filteredTasks = tasks.filter(task =>
     task.name.includes(searchTerm) || task.id.toString().includes(searchTerm)
@@ -31,10 +34,10 @@ function TaskList() {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="task-search"
       />
-      <ul>
+  <ul>
         {filteredTasks.map(task => (
-          <li key={task.id}>
-            {task.name}({task.id})
+          <li key={task.id} onClick={() => setTaskId(task.id)}>
+            {task.name} ({task.id})
           </li>
         ))}
       </ul>
