@@ -158,7 +158,7 @@ const SavingForm = ({ product, onBack }) => {
     <div>
       <Button onClick={onBack}>⬅️</Button>
       <div className="depositForm">
-        <h2 className="title">예금</h2>
+        <h2 className="title">적금</h2>
         <div className="depositInfo column">
           <div className="name">
             <p className="lableBox">상품정보:</p>
@@ -181,12 +181,15 @@ const SavingForm = ({ product, onBack }) => {
               onChange={handleAccountChange}
             >
               <option value="">계좌를 선택하세요</option>
-              {/* todo: 실제 유저 계좌 데이터 */}
               {userDeposits?.data
-                .filter((item) => !item.isLoss || !item.isHuman)
+                .filter(
+                  (item) =>
+                    (!item.isLoss || !item.isHuman) &&
+                    item.depositInfo.depositCategoryId == 1
+                )
                 .map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.accountNumber} - 하나은행
+                    {item.accountNumber} - {item.depositInfo.name}
                   </option>
                 ))}
             </select>

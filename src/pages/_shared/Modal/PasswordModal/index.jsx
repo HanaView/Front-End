@@ -30,6 +30,13 @@ function PasswordModal() {
     passWordmodalData.onClickConfirm();
   };
 
+  const closeModal = () => {
+    setPasswordModalData((prevData) => ({
+      ...prevData,
+      isOpen: false,
+    }));
+  };
+
   return (
     <Modal
       isOpen={passWordmodalData.isOpen}
@@ -38,6 +45,13 @@ function PasswordModal() {
       overlayClassName={"global-modal-overlay"}
     >
       <div className="center">
+        <Button
+          color="default"
+          className="right close-btn"
+          onClick={closeModal}
+        >
+          x
+        </Button>
         {passWordmodalData.content}
       </div>
       <Button

@@ -1,6 +1,21 @@
+.global-modal-overlay {
+  position: relative;
+}
+
 .center {
   height: 100%;
   width: 100%;
+}
+
+.close-btn {
+  position: absolute;
+  top: -0px;
+  right: 5px;
+  color: #666666 !important;
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 #modalDiv {
@@ -35,5 +50,10 @@
 }
 
 .global-modal-button {
+  font-size: 1.5rem;
+}
+
+#modalInfo {
+  color: #666666;
   font-size: 1.5rem;
 }

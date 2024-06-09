@@ -16,6 +16,7 @@ function DepositTable({ products, onProductClick }) {
       <div className="table">
         <div className="row header green">
           <div className="cell">상품명</div>
+          <div className="cell">분류</div>
           <div className="cell">가입 대상</div>
           <div className="cell">금리(6개월)</div>
           <div className="cell">금리(12개월)</div>
@@ -26,6 +27,9 @@ function DepositTable({ products, onProductClick }) {
           <div className="row" key={index}>
             <div className="cell" data-title="상품명">
               {product.name}
+            </div>
+            <div className="cell" data-title="분류">
+              {product.depositCategoryId == 1 ? "입출금자유예금" : "정기예금"}
             </div>
             <div className="cell" data-title="가입 대상">
               {product.target ?? "누구나"}
