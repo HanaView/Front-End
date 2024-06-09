@@ -4,6 +4,46 @@
 }
 
 .agreement-modal {
+  .center {
+    height: 100%;
+    width: 100%;
+  }
+  
+  #modalDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+  
+  #modalInfo {
+    color: #008E71;
+    font-size: 1.5rem;
+  }
+  
+  #modalContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .joinPasswordInput {
+    padding: 30px;
+    border-radius: 15px;
+    background-color: #f8f8fa;
+    height: 40px;
+    width: 100%;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+  
+  .global-modal-button {
+    font-size: 1.5rem;
+  }
+  
   .header {
     display: flex;
     justify-content: space-between;
@@ -36,11 +76,5 @@
         }
       }
     }
-  }
-
-  .global-modal-button {
-    width: 100%;
-    height: 40px;
-    margin-top: 20px;
   }
 }
