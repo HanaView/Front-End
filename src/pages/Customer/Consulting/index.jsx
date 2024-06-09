@@ -154,19 +154,30 @@ function Consulting() {
             console.error("Invalid ICE message:", message);
           }
           break;
-        case "SHOW_MODAL":
+        case "show_pwInputModal":
           setPasswordModalData({
             isOpen: true,
             children: null,
             content: (
-              <input
-                className="joinPasswordInput"
-                type="password"
-                placeholder="비밀번호를 입력해주세요"
-              />
+              <div id="modalDiv">
+                <h1 id="modalInfo">비밀번호 입력</h1>
+                <div id="modalContent">
+                  <input
+                    className="joinPasswordInput"
+                    type="password"
+                    placeholder="계좌 비밀번호 4자리"
+                  />
+                </div>
+              </div>
             ),
             confirmButtonText: "확인",
-            onClickConfirm: () => {
+            onClickConfirm: (password) => {
+              if (dataChannel) {
+                dataChannel.send(
+                  JSON.stringify({ type: "info-request", data: password })
+                );
+              }
+              // 정보를 전송한 후에 모달을 닫습니다.
               setPasswordModalData({
                 isOpen: false,
                 children: null,
