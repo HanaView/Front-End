@@ -158,19 +158,8 @@ function Consulting() {
           setPasswordModalData({
             isOpen: true,
             children: null,
-            content: (
-              <div id="modalDiv">
-                <h1 id="modalInfo">비밀번호 입력</h1>
-                <div id="modalContent">
-                  <input
-                    className="joinPasswordInput"
-                    type="password"
-                    placeholder="계좌 비밀번호 4자리"
-                  />
-                </div>
-              </div>
-            ),
             confirmButtonText: "확인",
+            content: "",
             onClickConfirm: (password) => {
               if (dataChannel) {
                 dataChannel.send(
