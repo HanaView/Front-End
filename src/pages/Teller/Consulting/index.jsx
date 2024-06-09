@@ -253,18 +253,23 @@ function ConnectingTeller() {
     }
   };
 
-  const requestPassword = () => {
-    if (dataChannel) {
-      dataChannel.send(JSON.stringify({ type: "open-modal" }));
-    }
-  };
-
   // 테스트 버튼 클릭 시 실행되는 함수
   const handleTestButtonClick = () => {
     setPasswordModalData({
       isOpen: true,
       children: null,
-      content: <input type="password" placeholder="Enter password" />,
+      content: (
+        <div id="modalDiv">
+          <h1 id="modalInfo">비밀번호 입력</h1>
+          <div id="modalContent">
+          <input
+            className="joinPasswordInput"
+            type="password"
+            placeholder="계좌 비밀번호 4자리"
+          />
+          </div>
+        </div>
+      ),
       confirmButtonText: "확인",
       onClickConfirm: (password) => {
         if (dataChannel) {
