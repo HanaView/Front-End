@@ -182,12 +182,15 @@ const DepositForm = ({ product, onBack }) => {
               onChange={handleAccountChange}
             >
               <option value="">계좌를 선택하세요</option>
-              {/* todo: 실제 유저 계좌 데이터 */}
               {userDeposits?.data
-                .filter((item) => !item.isLoss || !item.isHuman)
+                .filter(
+                  (item) =>
+                    (!item.isLoss || !item.isHuman) &&
+                    item.depositInfo.depositCategoryId == 1
+                )
                 .map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.accountNumber} - 하나은행
+                    {item.accountNumber} - {item.depositInfo.name}
                   </option>
                 ))}
             </select>
