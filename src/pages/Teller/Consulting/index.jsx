@@ -250,6 +250,15 @@ function ConnectingTeller() {
         setPasswordModalData({ isOpen: false, children: null, content: null, confirmButtonText: "", onClickConfirm: null });
       }
     });
+    showCustomerModal(); // 버튼 클릭 시 고객에게 모달을 띄우도록 메시지 전송
+
+  };
+
+  // 모달 통신 테스트
+  const showCustomerModal = () => {
+    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      signalingSocket.send(JSON.stringify({ type: 'SHOW_MODAL', message: 'This is a message for the customer' }));
+    }
   };
 
   return (
@@ -296,12 +305,12 @@ function ConnectingTeller() {
               messages={messages}
               onMessageReceived={handleMessageReceived}
             />
+                      <button onClick={handleTestButtonClick}>테스트</button>
+          <PasswordModal/>
           </div>
         </div>
         <div className="inputSection">
           <SavingTask />
-          <button onClick={handleTestButtonClick}>테스트</button>
-          <PasswordModal/>
         </div>
       </div>
     </div>
