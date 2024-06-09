@@ -27,7 +27,7 @@ const DepositTask = () => {
   return (
     <>
       {selectedProduct && DepositProductData ? (
-        <DepositForm product={selectedProduct} onBack={handleBack} />
+        <DepositForm product={selectedProduct} onBack={handleBack}/>
       ) : (
         <DepositTable
           products={DepositProductData?.data}
