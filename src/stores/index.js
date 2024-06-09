@@ -24,3 +24,8 @@ export const capturedImageAtom = atom(null);
 //인증
 export const userTypeAtom = atom(getUserTypeFromStorage());
 
+// 약관 모달
+export const agreementModalAtom = atom({
+  isOpen: false,
+  onClickConfirm: (agreements) => {}
+});
