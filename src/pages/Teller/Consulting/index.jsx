@@ -4,10 +4,13 @@ import CallInfo from "@/components/CallInfo/";
 import Chat from "@/components/Chat/";
 import "./style.scss";
 import CustomerInfo from "@/components/CustomerInfo";
+import TaskList from "@/components/TellerTask";
 import SavingTask from "@/pages/Consulting/SavingTask";
+import DepositTask from "@/pages/Consulting/DepositTask";
 import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
-import { passwordRequestlModalAtom, agreementModalAtom } from "@/stores";
+import { passwordRequestlModalAtom, agreementModalAtom, taskAtom } from "@/stores";
 import { useAtom } from "jotai";
+import Card from "@/pages/Consulting/Card";
 
 function ConnectingTeller() {
   const [isMuted, setIsMuted] = useState(true);
@@ -29,7 +32,8 @@ function ConnectingTeller() {
   ); // jotai를 사용한 상태 관리
   const [agreementModalData, setAgreementModalData] =
     useAtom(agreementModalAtom);
-  const [showSavingTask, setShowSavingTask] = useState(false); // `SavingTask`를 보여줄지 여부를 관리하는 상태 추가
+
+  const [activeTask] = useAtom(taskAtom);
 
   const customerInfo = {
     name: "김하나",
@@ -302,30 +306,32 @@ function ConnectingTeller() {
   };
 
   // 약관 동의 버튼 클릭 시 실행되는 함수
-  const handleAgreementButtonClick = () => {
-    setAgreementModalData({
-      isOpen: true,
-      children: null,
-      content: <input type="password" placeholder="Enter password" />,
-      confirmButtonText: "확인",
-      onClickConfirm: (password) => {
-        if (dataChannel) {
-          dataChannel.send(
-            JSON.stringify({ type: "info-request", data: password })
-          );
-        }
-        // 정보를 전송한 후에 모달을 닫습니다.
-        setAgreementModalData({
-          isOpen: false,
-          children: null,
-          content: null,
-          confirmButtonText: "",
-          onClickConfirm: null
-        });
-      }
-    });
-    // showCustomerModal(); // 버튼 클릭 시 고객에게 모달을 띄우도록 메시지 전송
-  };
+  // const handleAgreementButtonClick = () => {
+  //   setAgreementModalData({
+  //     isOpen: true,
+  //     children: null,
+  //     content: (
+  //     <input type="password" placeholder="Enter password" />
+  //   ),
+  //     confirmButtonText: "확인",
+  //     onClickConfirm: (password) => {
+  //       if (dataChannel) {
+  //         dataChannel.send(
+  //           JSON.stringify({ type: "info-request", data: password })
+  //         );
+  //       }
+  //       // 정보를 전송한 후에 모달을 닫습니다.
+  //       setAgreementModalData({
+  //         isOpen: false,
+  //         children: null,
+  //         content: null,
+  //         confirmButtonText: "",
+  //         onClickConfirm: null
+  //       });
+  //     }
+  //   });
+  //   // showCustomerModal(); // 버튼 클릭 시 고객에게 모달을 띄우도록 메시지 전송
+  // };
 
   const handleRequirePasswordButtonClick = () => {
     setPasswordModalData({
@@ -357,6 +363,41 @@ function ConnectingTeller() {
     });
     showRequirePasswordModal();
   };
+
+  // 약관 동의 버튼 클릭 시 실행되는 함수
+  const handleAgreementButtonClick = () => {
+    setAgreementModalData({
+      isOpen: true,
+      children: null,
+      content: "상품 동의를 보냈어요", // "상품 동의를 보냈어요" 메시지로 모달을 띄움
+      confirmButtonText: "확인",
+      onClickConfirm: () => {
+        setAgreementModalData({ isOpen: false, children: null, content: null, confirmButtonText: "", onClickConfirm: null });
+        // 손님 화면에 약관 동의 체크 모달을 띄우도록 메시지 전송
+        if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+          signalingSocket.send(JSON.stringify({ type: 'SHOW_AGREEMENT_MODAL', message: '상품 동의가 필요합니다.' }));
+        }
+      }
+    });
+  };
+  
+  // 업무 클릭 시 실행되는 함수
+  const renderActiveTask = () => {
+    switch (activeTask) {
+      case 1002:
+        return <DepositTask />;
+      case 1004:
+        return <SavingTask />;
+      case 1008:
+        return <Card/>;
+      case 1009:
+        return <Card/>;
+      default:
+        // 손님의 전체 하나은행 가입 상품 정보를 띄워함
+        return null;
+    }
+  };
+
 
   return (
     <div className="serviceContainer teller">
@@ -414,8 +455,7 @@ function ConnectingTeller() {
           </div>
         </div>
         <div className="inputSection">
-        <SavingTask />
-          {/* {showSavingTask && <SavingTask />} */}
+          {renderActiveTask()}
         </div>
       </div>
     </div>
