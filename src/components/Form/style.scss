@@ -75,6 +75,12 @@
   }
   .accountList {
     display: flex;
+    &.address {
+      align-items: center;
+      .boxContent {
+        padding: 18px 0;
+      }
+    }
   }
   .account {
     display: flex;

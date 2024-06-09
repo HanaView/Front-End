@@ -50,6 +50,7 @@ function ExplainingCustomer() {
             shape="rect"
             onClick={() => setProductBtn(ProductType.Service)}
           >
+            전자금융
             <br />
             업무
           </Button>

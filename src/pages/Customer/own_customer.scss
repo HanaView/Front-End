@@ -1,24 +1,30 @@
 .OwnCustomerContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;  
-    height: 100%;
-    
-    .title {
-      font-size: 25px;      
-    }
-    
-    .dummy {
-      margin-top: 20px;
-      margin-bottom: 20px;
-    }
-    
-   .contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+
+  .title {
+    font-size: 25px;
+  }
+
+  .dummy {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .ownCustomerTable {
+    //여기서 테이블 수정
+  }
+
+  .contentContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-   }
   }
-  
+  .pieContainer {
+    width: 400px;
+    height: 400px;
+  }
+}
