@@ -63,10 +63,18 @@ function ConnectingTeller() {
     dc.onmessage = (event) => {
       console.log("Data channel message received:", event.data);
       const receivedMessage = JSON.parse(event.data);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: "remote", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
-      ]);
+      if (receivedMessage.type === "info-request") {
+        setReceivedInfo(receivedMessage.data);
+      } else {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            sender: "remote",
+            message: receivedMessage.message,
+            timestamp: receivedMessage.timestamp
+          }
+        ]);
+      }
     };
 
     // 데이터 채널 설정이 완료되었을 때 실행되는 함수
@@ -235,6 +243,12 @@ function ConnectingTeller() {
     }
   };
 
+  const requestPassword = () => {
+    if (dataChannel) {
+      dataChannel.send(JSON.stringify({ type: 'open-modal' }));
+    }
+  };
+
   // 테스트 버튼 클릭 시 실행되는 함수
   const handleTestButtonClick = () => {
     setPasswordModalData({
@@ -300,8 +314,12 @@ function ConnectingTeller() {
         </div>
         <div className="inputSection">
           <SavingTask />
-          <button onClick={handleTestButtonClick}>테스트</button>
-          <PasswordModal/>
+          {passWordmodalData.isOpen && (
+          <PasswordModal
+            {...passWordmodalData}
+            onClickConfirm={() => passWordmodalData.onClickConfirm(receivedInfo)}
+          />
+        )}
         </div>
       </div>
     </div>
