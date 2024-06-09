@@ -22,7 +22,7 @@ const customStyles = {
   }
 };
 
-function RequestModal() {
+function AgreementModal() {
   const [agreementModalData, setAgreementModalData] = useAtom(agreementModalAtom);
   const [agreements, setAgreements] = useState({
     basic: false,
@@ -110,4 +110,4 @@ function RequestModal() {
     </Modal>
   );
 }
-export default RequestModal;
+export default AgreementModal;
