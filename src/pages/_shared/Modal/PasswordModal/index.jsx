@@ -25,8 +25,8 @@ function PasswordModal() {
   const [passWordmodalData, setPasswordModalData] = useAtom(
     passwordRequestlModalAtom
   );
+
   const onClickConfirmButton = () => {
-    console.log("???");
     passWordmodalData.onClickConfirm();
   };
 
@@ -37,20 +37,15 @@ function PasswordModal() {
       style={customStyles}
       overlayClassName={"global-modal-overlay"}
     >
-      {/* <Button color="default" className="right close-btn" onClick={closeModal}>
-        x
-      </Button> */}
       <div className="center">
-        <span>
-          <input className="joinPasswordInput" />
-        </span>
+        {passWordmodalData.content}
       </div>
       <Button
         className="global-modal-button"
         shape="rect"
         onClick={onClickConfirmButton}
       >
-        확인
+        {passWordmodalData.confirmButtonText}
       </Button>
     </Modal>
   );

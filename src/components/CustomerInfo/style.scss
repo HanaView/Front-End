@@ -1,24 +1,27 @@
 .customerInfo {
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-  
-    h2 {
-      margin-bottom: 10px;
-      font-size: 1.5em;
-      color: #333;
-    }
-  
-    p {
-      margin-bottom: 10px;
-      font-size: 1em;
-      color: #666;
-    }
-  
-    img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+
+  h2 {
+    margin-bottom: 10px;
+    font-size: 1.3em;
+    color: #333;
   }
-  
+
+  p {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: #666;
+  }
+
+  #idContainer {
+    text-align: center;
+  }
+
+  img {
+    max-width: 80px;
+    border-radius: 8px;
+  }
+}

@@ -2,6 +2,8 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import "./style.scss";
 import ButtonList from "./ButtonList";
+import TaskList from "@/components/TellerTask";
+
 function RootLayout() {
   return (
     <div className="root-layout">
