@@ -176,6 +176,29 @@ function ConnectingTeller() {
               const decryptedPassword = CryptoJS.AES.decrypt(message.data, 'secret-key').toString(CryptoJS.enc.Utf8);
               console.log('Decrypted Password:', decryptedPassword);
               setReceivedInfo(decryptedPassword);
+
+               // 비밀번호 인증을 완료
+            setMessageModalData({
+              isOpen: true,
+              children: null,
+              content: (
+                <div id="modalDiv">
+                  <div id="modalContent">
+                    <p id="modalInfo">손님이 비밀번호 인증을 완료했습니다.</p>
+                  </div>
+                </div>
+              ),
+              confirmButtonText: "확인",
+              onClickConfirm: () => {
+                setMessageModalData({
+                  isOpen: false,
+                  children: null,
+                  content: null,
+                  confirmButtonText: "",
+                  onClickConfirm: null
+                });
+              }
+            });
             } catch (error) {
               console.error("Error decrypting password:", error);
             }
@@ -282,45 +305,6 @@ function ConnectingTeller() {
     }
   };
 
-  // 모달 통신 테스트
-  const showRequirePasswordModal = () => {
-    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
-      signalingSocket.send(
-        JSON.stringify({
-          type: "show_pwInputModal",
-          message: "This is a message for the customer"
-        })
-      );
-    }
-  };
-
-  const handleRequirePasswordButtonClick = () => {
-    setMessageModalData({
-      isOpen: true,
-      children: null,
-      content: (
-        <div id="modalDiv">
-          <div id="modalContent">
-            <p id="modalInfo">비밀번호 입력 화면을 띄웠습니다.</p>
-          </div>
-        </div>
-      ),
-      confirmButtonText: "확인",
-      onClickConfirm: () => {
-        // 정보를 전송한 후에 모달을 닫습니다.
-        setMessageModalData({
-          isOpen: false,
-          children: null,
-          content: null,
-          confirmButtonText: "",
-          onClickConfirm: null
-        });
-      }
-    });
-
-    // 상태 업데이트 후 모달을 띄우는 함수 호출
-    showRequirePasswordModal();
-  };
 
   // 업무 클릭 시 실행되는 함수
   const renderActiveTask = () => {
@@ -334,7 +318,7 @@ function ConnectingTeller() {
       case 1009:
         return <Card />;
       default:
-        // 손님의 전체 하나은행 가입 상품 정보를 띄워함
+        // TODO손님의 전체 하나은행 가입 상품 정보를 띄워함
         return null;
     }
   };
@@ -385,15 +369,13 @@ function ConnectingTeller() {
               messages={messages}
               onMessageReceived={handleMessageReceived}
             />
-            <button onClick={handleRequirePasswordButtonClick}>
-              비밀번호 요청
-            </button>
             <MessageModal />
           </div>
         </div>
         <div className="inputSection">{renderActiveTask()}</div>
         {receivedInfo && (
           <div className="receivedInfoContainer">
+        
             <p>받은 비밀번호: {receivedInfo}</p>
           </div>
         )}
