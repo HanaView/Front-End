@@ -1,59 +1,55 @@
 .global-modal-overlay {
   position: relative;
-}
 
-.center {
-  height: 100%;
-  width: 100%;
-}
+  .center {
+    height: 100%;
+    width: 100%;
+  }
 
-.close-btn {
-  position: absolute;
-  top: -0px;
-  right: 5px;
-  color: #666666 !important;
-  background-color: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
+  .close-btn {
+    position: absolute;
+    top: -0px;
+    right: 5px;
+    color: #666666 !important;
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
 
-#modalDiv {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-}
+  #modalDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
 
-#modalInfo {
-  color: #008E71;
-  font-size: 1.5rem;
-}
+  #modalMsg {
+    color: #666666;
+    font-size: 1.5rem;
+  }
 
-#modalContent {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-}
+  #modalContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding: 15px 0;
+  }
 
-.joinPasswordInput {
-  padding: 30px;
-  border-radius: 15px;
-  background-color: #f8f8fa;
-  height: 40px;
-  width: 100%;
-  font-size: 1.8rem;
-  text-align: center;
-}
+  .joinPasswordInput {
+    padding: 30px;
+    border-radius: 15px;
+    background-color: #f8f8fa;
+    height: 40px;
+    width: 100%;
+    font-size: 1.8rem;
+    text-align: center;
+  }
 
-.global-modal-button {
-  font-size: 1.5rem;
-}
-
-#modalInfo {
-  color: #666666;
-  font-size: 1.5rem;
+  .global-modal-button {
+    font-size: 1.5rem;
+  }
 }

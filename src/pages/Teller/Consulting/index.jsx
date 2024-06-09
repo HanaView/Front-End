@@ -70,6 +70,7 @@ function ConnectingTeller() {
     };
 
     dc.onmessage = (event) => {
+      console.log(event)
       console.log("Data channel message received:", event.data);
       const receivedMessage = JSON.parse(event.data);
       console.log(receivedMessage)
@@ -78,6 +79,7 @@ function ConnectingTeller() {
         const decryptedPassword = CryptoJS.AES.decrypt(receivedMessage.data, 'secret-key').toString(CryptoJS.enc.Utf8);
         console.log('Decrypted Password:', decryptedPassword);
       }
+
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -309,7 +311,7 @@ function ConnectingTeller() {
       content: (
         <div id="modalDiv">
           <div id="modalContent">
-            <p id="modalInfo">비밀번호 입력 화면을 띄웠습니다.</p>
+            <p id="modalMsg">비밀번호 입력 화면을 띄웠습니다.</p>
           </div>
         </div>
       ),

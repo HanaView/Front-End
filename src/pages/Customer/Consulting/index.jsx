@@ -162,11 +162,20 @@ function Consulting() {
             confirmButtonText: "확인",
             content: "",
             onClickConfirm: (password) => {
-              const encryptedPassword = CryptoJS.AES.encrypt(password, 'secret-key').toString();
+              const encryptedPassword = CryptoJS.AES.encrypt(
+                password,
+                "secret-key"
+              ).toString();
               if (dc) {
-                dc.send(
-                  JSON.stringify({ type: "info-request", encryptedPassword })
-                );
+                console.log(dc);
+                console.log("Sending data to remote peer:", encryptedPassword);
+                try {
+                  dc.send(
+                    JSON.stringify({ type: "info-request", data: encryptedPassword })
+                  );
+                } catch (error) {
+                  console.error("데이터 전송 중 오류 발생:", error);
+                }
               }
               // 정보를 전송한 후에 모달을 닫습니다.
               setPasswordModalData({
