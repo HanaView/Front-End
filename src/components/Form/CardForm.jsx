@@ -101,10 +101,12 @@ const CardForm = ({ product, onBack }) => {
   }, [account, withdrawalDay]);
 
   return (
-    <div>
-      <Button onClick={onBack}>⬅️</Button>
-      <div className="depositForm">
-        <h2 className="title">카드</h2>
+    <div className="joinFormWrapper">
+      <div className="joinForm">
+        <div className="backButtonWrapper">
+          <button onClick={onBack} className="backBtn" />
+          <h2 className="title">카드</h2>
+        </div>
         <div className="depositInfo column">
           <div className="name">
             <p className="lableBox">상품정보:</p>

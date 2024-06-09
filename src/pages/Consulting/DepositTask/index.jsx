@@ -26,16 +26,14 @@ const DepositTask = () => {
 
   return (
     <>
-      <div style={{ width: "850px", height: "410px" }}>
-        {selectedProduct && DepositProductData ? (
-          <DepositForm product={selectedProduct} onBack={handleBack} />
-        ) : (
-          <DepositTable
-            products={DepositProductData?.data}
-            onProductClick={handleProductClick}
-          />
-        )}
-      </div>
+      {selectedProduct && DepositProductData ? (
+        <DepositForm product={selectedProduct} onBack={handleBack} />
+      ) : (
+        <DepositTable
+          products={DepositProductData?.data}
+          onProductClick={handleProductClick}
+        />
+      )}
     </>
   );
 };
