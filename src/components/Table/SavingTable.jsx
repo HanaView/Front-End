@@ -3,6 +3,7 @@ import "./style.scss";
 import Button from "../Button";
 
 function SavingTable({ products, onProductClick }) {
+  console.log("SavingTable", products);
   if (!products || products.length === 0) {
     return <div>No products available</div>;
   }
@@ -29,16 +30,20 @@ function SavingTable({ products, onProductClick }) {
               {product.name}
             </div>
             <div className="cell" data-title="가입 대상">
-              {product.target}
+              {product.target ?? "누구나"}
             </div>
             <div className="cell" data-title="금리(6개월)">
-              {product.savingRates[0].rate}
+              {product.savingRates[0].rate == 0
+                ? "-"
+                : product.savingRates[0].rate}
             </div>
             <div className="cell" data-title="금리(12개월)">
               {product.savingRates[1].rate}
             </div>
             <div className="cell" data-title="금리(12개월)">
-              {product.maxJoinAmount.toLocaleString()}
+              {product.maxJoinAmount
+                ? product.maxJoinAmount.toLocaleString()
+                : "제한없음"}
             </div>
             <div className="cell" data-title="가입하기">
               <Button onClick={() => handleProduct(product)}>가입</Button>
