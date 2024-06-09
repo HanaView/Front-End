@@ -31,8 +31,6 @@ const data = {
   ]
 };
 
-
-
 function OwnCustomer() {
   return (
     <>
@@ -40,8 +38,14 @@ function OwnCustomer() {
         <div className="title">마이 자산</div>
         <div className="dummy"></div>
         <div className="contentContainer">
-          <Pie data={data} />
-          
+          <div className="pieContainer">
+            <Pie style={{ width: "400px", height: "400px" }} data={data} />
+          </div>
+          <div className="rightContainer">
+            <div>가입한 예금상품: </div>
+            <div>가입한 적금상품: </div>
+            <div>가입한 카드: </div>
+          </div>
         </div>
       </div>
     </>

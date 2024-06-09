@@ -2,7 +2,7 @@ import { http, HttpResponse } from "msw";
 import depositHandler from "./handler/deposit";
 
 // Describe the network.
-const handlers = [
+export const handlers = [
   ...depositHandler,
   http.get("https://acme.com/product/:id", ({ params }) => {
     return HttpResponse.json({
