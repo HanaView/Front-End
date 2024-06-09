@@ -36,3 +36,12 @@ export const taskAtom = atom(
     set(taskAtom, newTaskId);
   }
 );
+
+// WebSocket 연결 정보를 저장할 atom
+// socketAtom을 쓰기 가능한 Atom으로 설정
+export const socketAtom = atom(
+  null, // 초기 값
+  (get, set, newSocket) => {
+    set(socketAtom, newSocket);
+  }
+);
