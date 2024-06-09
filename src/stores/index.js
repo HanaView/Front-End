@@ -26,3 +26,11 @@ export const userTypeAtom = atom(getUserTypeFromStorage());
 
 // 약관 모달
 export const agreementModalAtom = atom(initialModalState);
+
+// 텔러 업무창
+export const taskAtom = atom(
+  null, // 초기 값
+  (get, set, newTaskId) => {
+    set(taskAtom, newTaskId);
+  }
+);
