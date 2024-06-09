@@ -75,8 +75,10 @@ function AgreementModal() {
   }, [agreements]);
 
   const onClickConfirmButton = () => {
+    // TODO 서버가 null 임 ㅠㅠ
     console.log("@@@ signalingSocket", signalingSocket);
 
+    
     if (isAllChecked()) {
       agreementModalData.onClickConfirm(agreements);
       setAgreementModalData((prevData) => ({
