@@ -72,21 +72,10 @@ function ConnectingTeller() {
     };
 
     dc.onmessage = (event) => {
+      console.log(event)
       console.log("Data channel message received:", event.data);
       const receivedMessage = JSON.parse(event.data);
       console.log(receivedMessage);
-      // console.log(receivedMessage.type);
-
-
-      // if (receivedMessage.type === 'info-request') {
-      //   try {
-      //     const decryptedPassword = CryptoJS.AES.decrypt(receivedMessage.encryptedPassword, 'secret-key').toString(CryptoJS.enc.Utf8);
-      //     console.log('Decrypted Password:', decryptedPassword);
-      //     setReceivedInfo(decryptedPassword);
-      //   } catch (error) {
-      //     console.error("Error decrypting password:", error);
-      //   }
-      // }
 
       setMessages((prevMessages) => [
         ...prevMessages,
