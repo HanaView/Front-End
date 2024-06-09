@@ -121,22 +121,7 @@ const DepositForm = ({ product, onBack }) => {
 
   const handleAgreementButtonClick = () => {
     console.log('ㅎㅎㅎ즐거운코딩')
-
-    setAgreementModalData((prevState) => {
-      console.log('Setting modal data', prevState);
-      return {
-        ...prevState,
-        isOpen: true,
-        children: null,
-        content: "상품 가입 동의 화면을 띄웠습니다.",
-        confirmButtonText: "확인",
-        onClickConfirm: () => {
-          setAgreementModalData({ isOpen: false, children: null, content: null, confirmButtonText: "", onClickConfirm: null });
-        }
-      };
-    });
-  
-
+    console.log('@@@ signalingSocket', signalingSocket)
     // WebSocket 메시지 전송
     if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
       console.log("Sending SHOW_AGREEMENT_MODAL message");
@@ -260,8 +245,7 @@ const DepositForm = ({ product, onBack }) => {
               원
             </div>
           </div>
-          <Button size="medium" onClick={() => { console.log('Button clicked'); handleAgreementButtonClick(); }}>
-
+          <Button size="medium" onClick={handleAgreementButtonClick}>
             동의서 전송
           </Button>
         </div>
