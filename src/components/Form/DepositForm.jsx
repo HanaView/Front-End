@@ -6,6 +6,8 @@ import { useAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits, postJoin } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSetAtom } from "jotai";
+import { agreementModalAtom, socketAtom } from '@/stores';
 
 const DepositForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -111,6 +113,35 @@ const DepositForm = ({ product, onBack }) => {
         handleJoinDeposit();
       }
     }));
+  };
+
+  const [signalingSocket] = useAtom(socketAtom);
+
+  const setAgreementModalData = useSetAtom(agreementModalAtom);
+
+  const handleAgreementButtonClick = () => {
+    console.log('ㅎㅎㅎ즐거운코딩')
+
+    setAgreementModalData((prevState) => {
+      console.log('Setting modal data', prevState);
+      return {
+        ...prevState,
+        isOpen: true,
+        children: null,
+        content: "상품 가입 동의 화면을 띄웠습니다.",
+        confirmButtonText: "확인",
+        onClickConfirm: () => {
+          setAgreementModalData({ isOpen: false, children: null, content: null, confirmButtonText: "", onClickConfirm: null });
+        }
+      };
+    });
+  
+
+    // WebSocket 메시지 전송
+    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      console.log("Sending SHOW_AGREEMENT_MODAL message");
+      signalingSocket.send(JSON.stringify({ type: 'SHOW_AGREEMENT_MODAL' }));
+    }
   };
 
   const InfoItem = ({ label, value }) => (
@@ -229,7 +260,8 @@ const DepositForm = ({ product, onBack }) => {
               원
             </div>
           </div>
-          <Button size="medium" onClick={handleJoin}>
+          <Button size="medium" onClick={() => { console.log('Button clicked'); handleAgreementButtonClick(); }}>
+
             동의서 전송
           </Button>
         </div>
