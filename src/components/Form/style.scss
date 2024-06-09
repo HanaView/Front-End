@@ -1,4 +1,25 @@
-.depositForm {
+.joinFormWrapper {
+  font-size: 16px;
+  width: calc(100% - 30px);
+  height: calc(100% - 30px);
+  padding: 30px;
+  border-radius: 20px;
+  border: 5px solid $color-primary;
+  background-color: #ffffff;
+  .backButtonWrapper {
+    display: flex;
+  }
+  .backBtn {
+    background: url(@/assets/images/arrowLeft.svg) no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+}
+
+.joinForm {
   width: 100%;
   height: 100%;
   span {
@@ -11,6 +32,7 @@
   }
   .title {
   }
+
   select {
     border: 2px solid $color-gray;
     border-radius: 15px;
@@ -32,7 +54,7 @@
   }
   .lableBox {
     margin-right: 10px;
-    width: 70px;
+    min-width: 70px;
   }
   .rateBox {
     border: 2px solid $color-primary;
@@ -45,7 +67,7 @@
   }
 
   .column {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
   }
   .interestRate {
     height: 45px;

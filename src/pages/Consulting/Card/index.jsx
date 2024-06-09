@@ -26,16 +26,14 @@ const CardTask = () => {
 
   return (
     <>
-      <div style={{ width: "850px", height: "410px" }}>
-        {selectedProduct && DepositProductData ? (
-          <CardForm product={selectedProduct} onBack={handleBack} />
-        ) : (
-          <CardTable
-            products={DepositProductData?.data}
-            onProductClick={handleProductClick}
-          />
-        )}
-      </div>
+      {selectedProduct && DepositProductData ? (
+        <CardForm product={selectedProduct} onBack={handleBack} />
+      ) : (
+        <CardTable
+          products={DepositProductData?.data}
+          onProductClick={handleProductClick}
+        />
+      )}
     </>
   );
 };
