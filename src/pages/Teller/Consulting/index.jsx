@@ -235,6 +235,7 @@ function ConnectingTeller() {
     }
   };
 
+  // 테스트 버튼 클릭 시 실행되는 함수
   const handleTestButtonClick = () => {
     setPasswordModalData({
       isOpen: true,
@@ -246,7 +247,7 @@ function ConnectingTeller() {
           dataChannel.send(JSON.stringify({ type: "info-request", data: password }));
         }
         // 정보를 전송한 후에 모달을 닫습니다.
-        // setPasswordModalData({ isOpen: false });
+        setPasswordModalData({ isOpen: false, children: null, content: null, confirmButtonText: "", onClickConfirm: null });
       }
     });
   };
