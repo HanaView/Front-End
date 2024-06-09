@@ -22,7 +22,7 @@ function Consulting() {
 
   useEffect(() => {
     // 시그널링 서버 연결
-    const socket = new WebSocket("wss://172.16.21.235:8080/WebRTC/signaling");
+    const socket = new WebSocket("ws://dan-sup.com/rtc/WebRTC/signaling");
     setSignalingSocket(socket);
 
     // 피어 연결 설정
@@ -52,7 +52,7 @@ function Consulting() {
       const receivedMessage = JSON.parse(event.data);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: "텔러", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
+        { sender: "remote", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
       ]);
     };
 
@@ -78,8 +78,6 @@ function Consulting() {
       console.log("Received remote track:", event.streams[0]);
       const newStream = event.streams[0];
 
-      // 화면 공유 스트림인지 확인
-      console.log("@@@")
       console.log(newStream.getVideoTracks()[0].label);
 
       if (newStream.getVideoTracks()[0].label.includes('screen')) {
@@ -89,7 +87,13 @@ function Consulting() {
         if (largeVideoRef.current) {
           largeVideoRef.current.srcObject = newStream;
         }
+        newStream.getVideoTracks()[0].onended = () => {
+          stopScreenSharing();
+        };
       } else {
+        console.log("###")
+        console.log(newStream.getVideoTracks()[0].label);
+        
         setPreviousStream(newStream);
         if (!screenStream && largeVideoRef.current) {
           largeVideoRef.current.srcObject = newStream;
@@ -152,6 +156,16 @@ function Consulting() {
     };
   }, []);
 
+  const stopScreenSharing = () => {
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => track.stop());
+      setScreenStream(null);
+      if (largeVideoRef.current) {
+        largeVideoRef.current.srcObject = previousStream;
+      }
+      
+    }
+  };
   // 화상 상담 시작 함수
   const handleCallStart = () => {
     setIsCallActive(true);
