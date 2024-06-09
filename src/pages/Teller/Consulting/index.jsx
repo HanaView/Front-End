@@ -12,6 +12,7 @@ import { messageModalAtom, agreementModalAtom, taskAtom } from "@/stores";
 import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
 import MessageModal from "@/pages/_shared/Modal/MessageModal ";
+import CryptoJS from "crypto-js"; // crypto-js 라이브러리 import
 
 function ConnectingTeller() {
   const [isMuted, setIsMuted] = useState(true);
@@ -71,6 +72,12 @@ function ConnectingTeller() {
     dc.onmessage = (event) => {
       console.log("Data channel message received:", event.data);
       const receivedMessage = JSON.parse(event.data);
+      console.log(receivedMessage)
+      if (receivedMessage.type === 'info-request') {
+        // 암호화된 비밀번호를 수신
+        const decryptedPassword = CryptoJS.AES.decrypt(receivedMessage.data, 'secret-key').toString(CryptoJS.enc.Utf8);
+        console.log('Decrypted Password:', decryptedPassword);
+      }
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -419,7 +426,6 @@ function ConnectingTeller() {
               비밀번호 요청
             </button>
             <MessageModal />
-            <PasswordModal />
           </div>
         </div>
         <div className="inputSection">{renderActiveTask()}</div>
