@@ -25,7 +25,4 @@ export const capturedImageAtom = atom(null);
 export const userTypeAtom = atom(getUserTypeFromStorage());
 
 // 약관 모달
-export const agreementModalAtom = atom({
-  isOpen: false,
-  onClickConfirm: (agreements) => {}
-});
+export const agreementModalAtom = atom(initialModalState);
