@@ -7,7 +7,7 @@ import "@/common/styles/scss/base.scss";
 import { Provider } from "jotai";
 import router from "./routes";
 import GlobalModal from "@/components/Modal";
-import RequestModal from "./pages/_shared/Modal/RequestModal";
+import RequestModal from "./pages/_shared/Modal/AgreementModal";
 
 function App() {
   const queryClient = new QueryClient();
