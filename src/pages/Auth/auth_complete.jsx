@@ -16,7 +16,8 @@ function AuthCustomer() {
     try {
       const response = await axios.get(
         // "http://172.16.20.211:80/api/login/validate?key=" + key
-        "http://192.168.0.24:80/api/login/validate?key=" + key
+        // "http://192.168.0.24:80/api/login/validate?key=" + key
+        "https://hanaview.shop/api/login/validate?key=" + key
       );
 
       console.log("------------------------------");

@@ -86,7 +86,8 @@ function Auth() {
       try {
         const response = await axios.get(
           // "http://172.16.20.211:80/api/login/authComplete?key="+key,
-          "http://192.168.0.24:80/api/login/authComplete?key=" + key
+          // "http://192.168.0.24:80/api/login/authComplete?key=" + key
+          "https://hanaview.shop/api/login/authComplete?key=" + key
         );
 
         console.log("--------------------------------------");
