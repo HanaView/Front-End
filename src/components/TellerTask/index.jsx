@@ -9,13 +9,17 @@ const tasks = [
   { id: 1006, name: "계좌 제신고" },
   { id: 1007, name: "전자금융" },
   { id: 1008, name: "체크카드 상담" },
+  { id: 1009, name: "신용카드 상담" },
+  { id: 1010, name: "대출 상담" },
+  { id: 1011, name: "펀드 상담" },
+  { id: 1012, name: "방카슈랑스 상담" }
 ];
 
 function TaskList() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredTasks = tasks.filter(task =>
-    task.name.includes(searchTerm)
+    task.name.includes(searchTerm) || task.id.toString().includes(searchTerm)
   );
 
   return (
