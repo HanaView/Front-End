@@ -9,7 +9,7 @@ import { useAtom } from "jotai";
 
 //rcfe
 function Consulting() {
-  const [isMuted, setIsMuted] = useState(false); // 음소거 State
+  const [isMuted, setIsMuted] = useState(true); // 음소거 State
   const [callDuration, setCallDuration] = useState(0); // 화상 상담 시간 State
   const [isCallActive, setIsCallActive] = useState(false); // 화상 상담 활성 여부 State
 
@@ -154,19 +154,30 @@ function Consulting() {
             console.error("Invalid ICE message:", message);
           }
           break;
-        case "SHOW_MODAL":
+        case "show_pwInputModal":
           setPasswordModalData({
             isOpen: true,
             children: null,
             content: (
-              <input
-                className="joinPasswordInput"
-                type="password"
-                placeholder="비밀번호를 입력해주세요"
-              />
+              <div id="modalDiv">
+                <h1 id="modalInfo">비밀번호 입력</h1>
+                <div id="modalContent">
+                  <input
+                    className="joinPasswordInput"
+                    type="password"
+                    placeholder="계좌 비밀번호 4자리"
+                  />
+                </div>
+              </div>
             ),
             confirmButtonText: "확인",
-            onClickConfirm: () => {
+            onClickConfirm: (password) => {
+              if (dataChannel) {
+                dataChannel.send(
+                  JSON.stringify({ type: "info-request", data: password })
+                );
+              }
+              // 정보를 전송한 후에 모달을 닫습니다.
               setPasswordModalData({
                 isOpen: false,
                 children: null,
@@ -227,7 +238,7 @@ function Consulting() {
 
   // 음소거 전환 함수
   const handleToggleMute = () => {
-    setIsMuted(!isMuted);
+    setIsMuted(isMuted);
   };
 
   const handleMessageReceived = (message) => {
@@ -247,6 +258,8 @@ function Consulting() {
       });
     }
   }, [screenStream, previousStream]);
+
+
 
   return (
     <div className="serviceContainer">

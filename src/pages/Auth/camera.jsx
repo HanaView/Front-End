@@ -5,8 +5,6 @@ import { useAtom } from "jotai";
 import { capturedImageAtom } from "@/stores";
 import axios from "axios";
 
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></meta>
-
 function Camera() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
 
@@ -23,7 +21,7 @@ function Camera() {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { exact: "environment" }, // 후면 카메라 사용 설정
-            //facingMode: "user", // 전면 카메라 사용 설정
+            // facingMode: "user", // 전면 카메라 사용 설정
             width: { ideal: 518 }, // 원하는 해상도를 설정
             height: { ideal: 320 } // 원하는 해상도를 설정
           }
@@ -59,7 +57,9 @@ function Camera() {
       console.log(formData);
       try {
         const response = await axios.post(
-          "http://172.16.20.211:80/api/login/ocr",
+          // "http://172.16.20.211:80/api/login/ocr",
+          // "http://192.168.0.24:80/api/login/ocr",
+          "https://hanaview.shop/api/login/ocr",
           formData,
           {
             headers: {

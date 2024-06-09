@@ -61,7 +61,12 @@ function OwnCustomer() {
         <div className="title">마이 자산</div>
         <div className="dummy"></div>
         <div className="contentContainer">
+
+          <div className="pieContainer">
+         
           <Pie data={data} />
+          </div>
+
         </div>
         <>
           <div className="wrapper ownCustomerTable">
