@@ -38,7 +38,7 @@ const SavingTask = () => {
   //   if (SavingProductData?.data) return <></>;
   return (
     <>
-      <div style={{ width: "850px", height: "410px" }}>
+      <div>
         {selectedProduct && SavingProductData ? (
           <SavingForm product={selectedProduct} onBack={handleBack} />
         ) : (

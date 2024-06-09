@@ -27,8 +27,6 @@ function Consulting() {
 
   useEffect(() => {
     // 시그널링 서버 연결
-    // const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
-
     const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
     setSignalingSocket(socket);
 
@@ -260,8 +258,6 @@ function Consulting() {
       });
     }
   }, [screenStream, previousStream]);
-
-
 
   return (
     <div className="serviceContainer">
