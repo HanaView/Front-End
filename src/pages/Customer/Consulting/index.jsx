@@ -3,6 +3,9 @@ import Chat from "@/components/Chat";
 import React, { useState, useEffect, useRef } from "react";
 import "./index.scss";
 import ConsultVideo from "@/components/CustomerVideo/";
+import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
+import { passwordRequestlModalAtom } from "@/stores";
+import { useAtom } from "jotai";
 
 //rcfe
 function Consulting() {
@@ -16,6 +19,7 @@ function Consulting() {
   const [messages, setMessages] = useState([]); // 채팅 메시지 배열
   const [screenStream, setScreenStream] = useState(null);
   const [previousStream, setPreviousStream] = useState(null); // 이전 화면 상태 저장
+  const [passWordmodalData, setPasswordModalData] = useAtom(passwordRequestlModalAtom); // jotai를 사용한 상태 관리
 
   
   const largeVideoRef = useRef(null);
@@ -143,6 +147,17 @@ function Consulting() {
             console.error("Invalid ICE message:", message);
           }
           break;
+          case "SHOW_MODAL":
+            setPasswordModalData({
+              isOpen: true,
+              children: null,
+              content: <input type="password" placeholder="Enter password" />,
+              confirmButtonText: "확인",
+              onClickConfirm: () => {
+                setPasswordModalData({ isOpen: false, children: null, content: null, confirmButtonText: "", onClickConfirm: null });
+              }
+            });
+            break;
         default:
           console.error("알 수 없는 메시지 타입:", message);
           break;
@@ -241,6 +256,8 @@ function Consulting() {
           onMessageReceived={handleMessageReceived}
         />
       </div>
+      <PasswordModal />
+
     </div>
   );
 }
