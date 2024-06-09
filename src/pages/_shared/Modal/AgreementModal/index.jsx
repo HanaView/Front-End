@@ -45,6 +45,7 @@ function AgreementModal() {
   return (
     <Modal
       isOpen={agreementModalData.isOpen}
+      // @ts-ignore
       style={customStyles}
       overlayClassName={"global-modal-overlay"}
     >
