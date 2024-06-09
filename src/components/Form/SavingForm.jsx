@@ -158,7 +158,7 @@ const SavingForm = ({ product, onBack }) => {
     <div>
       <Button onClick={onBack}>⬅️</Button>
       <div className="depositForm">
-        <h2 className="title">예금</h2>
+        <h2 className="title">적금</h2>
         <div className="depositInfo column">
           <div className="name">
             <p className="lableBox">상품정보:</p>
