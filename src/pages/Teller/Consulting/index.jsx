@@ -256,49 +256,12 @@ function ConnectingTeller() {
     }
   };
 
-  // 테스트 버튼 클릭 시 실행되는 함수
-  const handleTestButtonClick = () => {
-    setPasswordModalData({
-      isOpen: true,
-      children: null,
-      content: (
-        <div id="modalDiv">
-          <h1 id="modalInfo">비밀번호 입력</h1>
-          <div id="modalContent">
-            <input
-              className="joinPasswordInput"
-              type="password"
-              placeholder="계좌 비밀번호 4자리"
-            />
-          </div>
-        </div>
-      ),
-      confirmButtonText: "확인",
-      onClickConfirm: (password) => {
-        if (dataChannel) {
-          dataChannel.send(
-            JSON.stringify({ type: "info-request", data: password })
-          );
-        }
-        // 정보를 전송한 후에 모달을 닫습니다.
-        setPasswordModalData({
-          isOpen: false,
-          children: null,
-          content: null,
-          confirmButtonText: "",
-          onClickConfirm: null
-        });
-      }
-    });
-    // showCustomerModal(); // 버튼 클릭 시 고객에게 모달을 띄우도록 메시지 전송
-  };
-
   // 모달 통신 테스트
   const showRequirePasswordModal = () => {
     if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
       signalingSocket.send(
         JSON.stringify({
-          type: "Sshow_pwInputModal",
+          type: "show_pwInputModal",
           message: "This is a message for the customer"
         })
       );
@@ -445,7 +408,6 @@ function ConnectingTeller() {
               messages={messages}
               onMessageReceived={handleMessageReceived}
             />
-            <button onClick={handleTestButtonClick}>테스트</button>
             <button onClick={handleAgreementButtonClick}>약관 동의</button>
             <button onClick={handleRequirePasswordButtonClick}>
               비밀번호 요청
