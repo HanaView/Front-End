@@ -168,7 +168,7 @@ const SavingForm = ({ product, onBack }) => {
           </div>
 
           <div className="rateBox">
-            6개월:<span>{interestRate6Months}</span>% 12개월 :
+            6개월: <span>{interestRate6Months}</span>% 12개월:
             <span>{interestRate12Months}</span>% (세전)
           </div>
         </div>
