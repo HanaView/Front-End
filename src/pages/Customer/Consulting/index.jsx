@@ -3,10 +3,11 @@ import CallInfo from "@/components/CallInfo";
 import Chat from "@/components/Chat";
 import ConsultVideo from "@/components/CustomerVideo/";
 import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
-import { passwordRequestlModalAtom } from "@/stores";
+import { passwordRequestlModalAtom, agreementModalAtom } from "@/stores";
 import { useAtom } from "jotai";
 import CryptoJS from "crypto-js";
 import "./index.scss";
+import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
 
 function Consulting() {
   const [isMuted, setIsMuted] = useState(true);
@@ -19,6 +20,10 @@ function Consulting() {
   const [screenStream, setScreenStream] = useState(null);
   const [previousStream, setPreviousStream] = useState(null);
   const [passWordmodalData, setPasswordModalData] = useAtom(passwordRequestlModalAtom);
+  const [agreementModalData, setAgreementModalData] = useAtom(agreementModalAtom);
+
+
+
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
@@ -161,6 +166,24 @@ function Consulting() {
               }
             });
             break;
+          // 약관 모달 띄우기
+          case "SHOW_AGREEMENT_MODAL":
+            setAgreementModalData({
+              isOpen: true,
+              children: null,
+              confirmButtonText: "확인",
+              content: "",
+              onClickConfirm: () => {
+
+                setAgreementModalData({
+                  isOpen: false,
+                  children: null,
+                  content: null,
+                  confirmButtonText: "",
+                  onClickConfirm: null
+                });
+              }});
+            break;
         default:
           console.error("알 수 없는 메시지 타입:", message);
           break;
@@ -255,6 +278,7 @@ function Consulting() {
         />
       </div>
       <PasswordModal />
+      <AgreementModal/>
     </div>
   );
 }

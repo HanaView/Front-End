@@ -7,7 +7,7 @@ import { closeModal } from "../Modal";
 import { getUserDeposits, postJoin } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSetAtom } from "jotai";
-import { agreementModalAtom, socketAtom } from '@/stores';
+import { messageModalAtom, agreementModalAtom, socketAtom } from "@/stores";
 
 const DepositForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -118,29 +118,79 @@ const DepositForm = ({ product, onBack }) => {
   const [signalingSocket] = useAtom(socketAtom);
 
   const setAgreementModalData = useSetAtom(agreementModalAtom);
+  const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
 
+  // 동의서 버튼 클릭
   const handleAgreementButtonClick = () => {
-    console.log('ㅎㅎㅎ즐거운코딩')
-
-    setAgreementModalData((prevState) => {
-      console.log('Setting modal data', prevState);
-      return {
-        ...prevState,
-        isOpen: true,
-        children: null,
-        content: "상품 가입 동의 화면을 띄웠습니다.",
-        confirmButtonText: "확인",
-        onClickConfirm: () => {
-          setAgreementModalData({ isOpen: false, children: null, content: null, confirmButtonText: "", onClickConfirm: null });
-        }
-      };
-    });
-  
+    console.log("ㅎㅎㅎ즐거운코딩");
+    console.log("@@@ signalingSocket", signalingSocket);
 
     // WebSocket 메시지 전송
     if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      // Open the modal with the password prompt message
+      setMessageModalData({
+        isOpen: true,
+        children: null,
+        content: (
+          <div id="modalDiv">
+            <div id="modalContent">
+              <p id="modalInfo">동의서 작성 화면을 띄웠습니다.</p>
+            </div>
+          </div>
+        ),
+        confirmButtonText: "확인",
+        onClickConfirm: () => {
+          // Close the modal
+          setMessageModalData({
+            isOpen: false,
+            children: null,
+            content: null,
+            confirmButtonText: "",
+            onClickConfirm: null
+          });
+        }
+      });
+
       console.log("Sending SHOW_AGREEMENT_MODAL message");
-      signalingSocket.send(JSON.stringify({ type: 'SHOW_AGREEMENT_MODAL' }));
+      signalingSocket.send(JSON.stringify({ type: "SHOW_AGREEMENT_MODAL" }));
+    }
+  };
+
+  // 비밀번호 입력 요청 버튼 클릭
+  const handleRequirePasswordButtonClick = () => {
+    console.log("@@@ signalingSocket", signalingSocket);
+
+    // Check if the signalingSocket is open and send the message
+    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      // Open the modal with the password prompt message
+      setMessageModalData({
+        isOpen: true,
+        children: null,
+        content: (
+          <div id="modalDiv">
+            <div id="modalContent">
+              <p id="modalInfo">비밀번호 입력 화면을 띄웠습니다.</p>
+            </div>
+          </div>
+        ),
+        confirmButtonText: "확인",
+        onClickConfirm: () => {
+          // Close the modal
+          setMessageModalData({
+            isOpen: false,
+            children: null,
+            content: null,
+            confirmButtonText: "",
+            onClickConfirm: null
+          });
+        }
+      });
+
+      signalingSocket.send(
+        JSON.stringify({
+          type: "show_pwInputModal"
+        })
+      );
     }
   };
 
@@ -228,8 +278,8 @@ const DepositForm = ({ product, onBack }) => {
                 ))}
             </select>
           </div>
-          <Button size="medium" onClick={handleJoin}>
-            비밀번호 입력 요청
+          <Button size="medium" onClick={handleRequirePasswordButtonClick}>
+            비밀번호 입력 요청!
           </Button>
         </div>
         <div className="column">
@@ -260,9 +310,8 @@ const DepositForm = ({ product, onBack }) => {
               원
             </div>
           </div>
-          <Button size="medium" onClick={() => { console.log('Button clicked'); handleAgreementButtonClick(); }}>
-
-            동의서 전송
+          <Button size="medium" onClick={handleAgreementButtonClick}>
+            동의서 전송!
           </Button>
         </div>
         <div className="depositInfo">
