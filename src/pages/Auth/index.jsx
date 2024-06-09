@@ -84,9 +84,7 @@ function Auth() {
       console.log("본인인증이 완료되었습니다!!!");
 
       try {
-        const response = await axios.get(
-          // "http://172.16.20.211:80/api/login/authComplete?key="+key,
-          // "http://192.168.0.24:80/api/login/authComplete?key=" + key
+        const response = await axios.get(       
           "https://hanaview.shop/api/login/authComplete?key=" + key
         );
 
@@ -162,7 +160,7 @@ function Auth() {
     setRegistNumber("");
     setAddress("");
     setIssueDate("");
-    navigate("/camera");
+    navigate("/auth/mobile/camera?key=" + key);
   };
 
   return (

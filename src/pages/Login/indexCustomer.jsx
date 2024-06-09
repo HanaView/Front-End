@@ -17,8 +17,8 @@ function LoginCustomer() {
   // randomKey가 업데이트되면 navigate 호출
   useEffect(() => {
     if (redisKey) {            
-      navigate(`/auth/mobile/camera?key=${redisKey}`);  
-      // navigate(`/auth/customer?key=${randomKey}`);               
+      // navigate(`/auth/mobile/camera?key=${redisKey}`);  
+      navigate(`/auth/customer?key=${redisKey}`);               
     }
   }, [redisKey, navigate]);
 
@@ -32,9 +32,7 @@ function LoginCustomer() {
     };
 
     try {
-      const response = await axios.post(
-        // "http://172.16.20.211:80/api/login/auth",
-        // "http://192.168.0.24:80/api/login/auth",
+      const response = await axios.post(      
         "https://hanaview.shop/api/login/auth",
         authData
       );
