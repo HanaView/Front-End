@@ -151,7 +151,7 @@ const DepositForm = ({ product, onBack }) => {
 
   //가입버튼 비활성화
   useEffect(() => {
-    const isDisable = !principal || !account;
+    const isDisable = !principal;
     setDisableJoin(isDisable);
   }, [principal, account]);
 
