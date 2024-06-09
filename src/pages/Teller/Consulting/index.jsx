@@ -8,9 +8,10 @@ import TaskList from "@/components/TellerTask";
 import SavingTask from "@/pages/Consulting/SavingTask";
 import DepositTask from "@/pages/Consulting/DepositTask";
 import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
-import { passwordRequestlModalAtom, agreementModalAtom, taskAtom } from "@/stores";
+import { messageModalAtom, agreementModalAtom, taskAtom } from "@/stores";
 import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
+import MessageModal from "@/pages/_shared/Modal/MessageModal ";
 
 function ConnectingTeller() {
   const [isMuted, setIsMuted] = useState(true);
@@ -27,9 +28,7 @@ function ConnectingTeller() {
   const [previousVideo, setPreviousVideo] = useState(null); // 이전 비디오 상태 저장
   const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
   const [receivedInfo, setReceivedInfo] = useState(null); // 받은 정보 저장
-  const [passWordmodalData, setPasswordModalData] = useAtom(
-    passwordRequestlModalAtom
-  ); // jotai를 사용한 상태 관리
+  const [meesageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
   const [agreementModalData, setAgreementModalData] =
     useAtom(agreementModalAtom);
 
@@ -297,7 +296,7 @@ function ConnectingTeller() {
   // };
 
   const handleRequirePasswordButtonClick = () => {
-    setPasswordModalData({
+    setMessageModalData({
       isOpen: true,
       children: null,
       content: (
@@ -308,14 +307,9 @@ function ConnectingTeller() {
         </div>
       ),
       confirmButtonText: "확인",
-      onClickConfirm: (password) => {
-        if (dataChannel) {
-          dataChannel.send(
-            JSON.stringify({ type: "info-request", data: password })
-          );
-        }
+      onClickConfirm: () => {
         // 정보를 전송한 후에 모달을 닫습니다.
-        setAgreementModalData({
+        setMessageModalData({
           isOpen: false,
           children: null,
           content: null,
@@ -324,6 +318,8 @@ function ConnectingTeller() {
         });
       }
     });
+
+    // 상태 업데이트 후 모달을 띄우는 함수 호출
     showRequirePasswordModal();
   };
 
@@ -335,15 +331,26 @@ function ConnectingTeller() {
       content: "상품 동의를 보냈어요", // "상품 동의를 보냈어요" 메시지로 모달을 띄움
       confirmButtonText: "확인",
       onClickConfirm: () => {
-        setAgreementModalData({ isOpen: false, children: null, content: null, confirmButtonText: "", onClickConfirm: null });
+        setAgreementModalData({
+          isOpen: false,
+          children: null,
+          content: null,
+          confirmButtonText: "",
+          onClickConfirm: null
+        });
         // 손님 화면에 약관 동의 체크 모달을 띄우도록 메시지 전송
         if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
-          signalingSocket.send(JSON.stringify({ type: 'SHOW_AGREEMENT_MODAL', message: '상품 동의가 필요합니다.' }));
+          signalingSocket.send(
+            JSON.stringify({
+              type: "SHOW_AGREEMENT_MODAL",
+              message: "상품 동의가 필요합니다."
+            })
+          );
         }
       }
     });
   };
-  
+
   // 업무 클릭 시 실행되는 함수
   const renderActiveTask = () => {
     switch (activeTask) {
@@ -352,15 +359,14 @@ function ConnectingTeller() {
       case 1004:
         return <SavingTask />;
       case 1008:
-        return <Card/>;
+        return <Card />;
       case 1009:
-        return <Card/>;
+        return <Card />;
       default:
         // 손님의 전체 하나은행 가입 상품 정보를 띄워함
         return null;
     }
   };
-
 
   return (
     <div className="serviceContainer teller">
@@ -412,13 +418,11 @@ function ConnectingTeller() {
             <button onClick={handleRequirePasswordButtonClick}>
               비밀번호 요청
             </button>
-
+            <MessageModal />
             <PasswordModal />
           </div>
         </div>
-        <div className="inputSection">
-          {renderActiveTask()}
-        </div>
+        <div className="inputSection">{renderActiveTask()}</div>
       </div>
     </div>
   );
