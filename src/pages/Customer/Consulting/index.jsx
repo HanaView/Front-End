@@ -6,6 +6,7 @@ import ConsultVideo from "@/components/CustomerVideo/";
 import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
 import { passwordRequestlModalAtom } from "@/stores";
 import { useAtom } from "jotai";
+import CryptoJS from "crypto-js";
 
 //rcfe
 function Consulting() {
@@ -161,9 +162,10 @@ function Consulting() {
             confirmButtonText: "확인",
             content: "",
             onClickConfirm: (password) => {
-              if (dataChannel) {
-                dataChannel.send(
-                  JSON.stringify({ type: "info-request", data: password })
+              const encryptedPassword = CryptoJS.AES.encrypt(password, 'secret-key').toString();
+              if (dc) {
+                dc.send(
+                  JSON.stringify({ type: "info-request", encryptedPassword })
                 );
               }
               // 정보를 전송한 후에 모달을 닫습니다.
