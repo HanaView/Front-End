@@ -2,6 +2,7 @@
 import React from "react";
 import "./style.scss";
 import Button from "../Button";
+import pdfIcon from "../../assets/images/pdfIcon.png"
 
 function CardTable({ products, onProductClick }) {
   console.log("CardTable", products);
@@ -39,7 +40,11 @@ function CardTable({ products, onProductClick }) {
             </div>
             <div className="cell" data-title="정보">
               <a target="_blank" href={product.link ?? "#"} rel="noreferrer">
-                pdf
+                <img
+                  src={pdfIcon}
+                  alt="PDF"
+                  style={{ width: "24px", height: "24px" }}
+                />
               </a>
             </div>
             <div className="cell" data-title="가입하기">
