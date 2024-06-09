@@ -23,7 +23,7 @@ const useRootLayout = () => {
       setSelectedSideButton(SideButtonTypes.CONSULTING);
     } else if (location.pathname.includes("/consulting/customer/explaining")) {
       setSelectedSideButton(SideButtonTypes.PRODUCT);
-    } else if (location.pathname.includes("/assets")) {
+    } else if (location.pathname.includes("/consulting/customer/mydata")) {
       setSelectedSideButton(SideButtonTypes.ASSETS);
     } else if (location.pathname.includes("/consulting/teller/connecting")) {
       setSelectedSideButton(SideButtonTypes.CONSULTING);
