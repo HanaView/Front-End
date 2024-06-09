@@ -3,6 +3,9 @@ import Chat from "@/components/Chat";
 import React, { useState, useEffect, useRef } from "react";
 import "./index.scss";
 import ConsultVideo from "@/components/CustomerVideo/";
+import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
+import { passwordRequestlModalAtom } from "@/stores";
+import { useAtom } from "jotai";
 
 //rcfe
 function Consulting() {
@@ -16,8 +19,10 @@ function Consulting() {
   const [messages, setMessages] = useState([]); // 채팅 메시지 배열
   const [screenStream, setScreenStream] = useState(null);
   const [previousStream, setPreviousStream] = useState(null); // 이전 화면 상태 저장
+  const [passWordmodalData, setPasswordModalData] = useAtom(
+    passwordRequestlModalAtom
+  ); // jotai를 사용한 상태 관리
 
-  
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
@@ -52,7 +57,11 @@ function Consulting() {
       const receivedMessage = JSON.parse(event.data);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: "remote", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
+        {
+          sender: "remote",
+          message: receivedMessage.message,
+          timestamp: receivedMessage.timestamp
+        }
       ]);
     };
 
@@ -80,9 +89,11 @@ function Consulting() {
 
       console.log(newStream.getVideoTracks()[0].label);
 
-      if (newStream.getVideoTracks()[0].label.includes('screen')) {
+      if (newStream.getVideoTracks()[0].label.includes("screen")) {
         // 이는 현재 largeVideoRef 비디오 요소에 표시된 스트림을 previousStream 상태로 설정합니다. 이를 통해 화면 공유가 중지되었을 때 이전 스트림으로 복원
-        setPreviousStream(largeVideoRef.current ? largeVideoRef.current.srcObject : null);
+        setPreviousStream(
+          largeVideoRef.current ? largeVideoRef.current.srcObject : null
+        );
         setScreenStream(newStream);
         if (largeVideoRef.current) {
           largeVideoRef.current.srcObject = newStream;
@@ -91,9 +102,9 @@ function Consulting() {
           stopScreenSharing();
         };
       } else {
-        console.log("###")
+        console.log("###");
         console.log(newStream.getVideoTracks()[0].label);
-        
+
         setPreviousStream(newStream);
         if (!screenStream && largeVideoRef.current) {
           largeVideoRef.current.srcObject = newStream;
@@ -143,6 +154,29 @@ function Consulting() {
             console.error("Invalid ICE message:", message);
           }
           break;
+        case "SHOW_MODAL":
+          setPasswordModalData({
+            isOpen: true,
+            children: null,
+            content: (
+              <input
+                className="joinPasswordInput"
+                type="password"
+                placeholder="비밀번호를 입력해주세요"
+              />
+            ),
+            confirmButtonText: "확인",
+            onClickConfirm: () => {
+              setPasswordModalData({
+                isOpen: false,
+                children: null,
+                content: null,
+                confirmButtonText: "",
+                onClickConfirm: null
+              });
+            }
+          });
+          break;
         default:
           console.error("알 수 없는 메시지 타입:", message);
           break;
@@ -158,12 +192,11 @@ function Consulting() {
 
   const stopScreenSharing = () => {
     if (screenStream) {
-      screenStream.getTracks().forEach(track => track.stop());
+      screenStream.getTracks().forEach((track) => track.stop());
       setScreenStream(null);
       if (largeVideoRef.current) {
         largeVideoRef.current.srcObject = previousStream;
       }
-      
     }
   };
   // 화상 상담 시작 함수
@@ -203,9 +236,9 @@ function Consulting() {
 
   useEffect(() => {
     if (screenStream) {
-      screenStream.getTracks().forEach(track => {
+      screenStream.getTracks().forEach((track) => {
         track.onended = () => {
-          console.log('Screen sharing stopped');
+          console.log("Screen sharing stopped");
           if (largeVideoRef.current) {
             largeVideoRef.current.srcObject = previousStream;
           }
@@ -227,7 +260,7 @@ function Consulting() {
         />
       </div>
       <div id="consultRightSection">
-      <CallInfo
+        <CallInfo
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
           duration={callDuration}
@@ -241,6 +274,7 @@ function Consulting() {
           onMessageReceived={handleMessageReceived}
         />
       </div>
+      <PasswordModal />
     </div>
   );
 }

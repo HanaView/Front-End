@@ -24,7 +24,9 @@ function ConnectingTeller() {
   const [previousVideo, setPreviousVideo] = useState(null); // 이전 비디오 상태 저장
   const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
   const [receivedInfo, setReceivedInfo] = useState(null); // 받은 정보 저장
-  const [passWordmodalData, setPasswordModalData] = useAtom(passwordRequestlModalAtom); // jotai를 사용한 상태 관리
+  const [passWordmodalData, setPasswordModalData] = useAtom(
+    passwordRequestlModalAtom
+  ); // jotai를 사용한 상태 관리
 
   const customerInfo = {
     name: "김하나",
@@ -63,10 +65,18 @@ function ConnectingTeller() {
     dc.onmessage = (event) => {
       console.log("Data channel message received:", event.data);
       const receivedMessage = JSON.parse(event.data);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: "remote", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
-      ]);
+      if (receivedMessage.type === "info-request") {
+        setReceivedInfo(receivedMessage.data);
+      } else {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            sender: "remote",
+            message: receivedMessage.message,
+            timestamp: receivedMessage.timestamp
+          }
+        ]);
+      }
     };
 
     // 데이터 채널 설정이 완료되었을 때 실행되는 함수
@@ -80,7 +90,7 @@ function ConnectingTeller() {
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
-        console.log('Sending ICE candidate:', event.candidate);
+        console.log("Sending ICE candidate:", event.candidate);
         socket.send(
           JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
         );
@@ -88,13 +98,13 @@ function ConnectingTeller() {
     };
 
     pc.ontrack = (event) => {
-      console.log('Received remote track:', event.streams[0]);
+      console.log("Received remote track:", event.streams[0]);
       setRemoteStream(event.streams[0]);
     };
 
     pc.oniceconnectionstatechange = () => {
-      console.log('ICE connection state change:', pc.iceConnectionState);
-      if (pc.iceConnectionState === 'failed') {
+      console.log("ICE connection state change:", pc.iceConnectionState);
+      if (pc.iceConnectionState === "failed") {
         pc.restartIce();
       }
     };
@@ -140,7 +150,7 @@ function ConnectingTeller() {
           } else {
             console.error("Invalid ICE message:", message);
           }
-          break;       
+          break;
         default:
           console.error("알 수 없는 메시지 타입:", message);
           break;
@@ -170,12 +180,16 @@ function ConnectingTeller() {
 
   const startScreenSharing = async () => {
     try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true
+      });
       setScreenStream(stream);
       setPreviousVideo(largeVideoRef.current.srcObject);
 
       const videoTrack = stream.getVideoTracks()[0];
-      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      const sender = peerConnection
+        .getSenders()
+        .find((s) => s.track.kind === videoTrack.kind);
       if (sender) {
         sender.replaceTrack(videoTrack);
       } else {
@@ -190,14 +204,16 @@ function ConnectingTeller() {
         stopScreenSharing();
       };
     } catch (error) {
-      console.error('Error sharing screen:', error);
-      alert('Error sharing screen. Please check your screen sharing permissions.');
+      console.error("Error sharing screen:", error);
+      alert(
+        "Error sharing screen. Please check your screen sharing permissions."
+      );
     }
   };
 
   const stopScreenSharing = () => {
     if (screenStream) {
-      screenStream.getTracks().forEach(track => track.stop());
+      screenStream.getTracks().forEach((track) => track.stop());
       setScreenStream(null);
       setIsScreenSharing(false);
       if (largeVideoRef.current) {
@@ -205,7 +221,9 @@ function ConnectingTeller() {
       }
 
       const videoTrack = localStream.getVideoTracks()[0];
-      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      const sender = peerConnection
+        .getSenders()
+        .find((s) => s.track.kind === videoTrack.kind);
       if (sender) {
         sender.replaceTrack(videoTrack);
       }
@@ -240,16 +258,48 @@ function ConnectingTeller() {
     setPasswordModalData({
       isOpen: true,
       children: null,
-      content: <input type="password" placeholder="Enter password" />,
+      content: (
+        <div id="modalDiv">
+          <h1 id="modalInfo">비밀번호 입력</h1>
+          <div id="modalContent">
+          <input
+            className="joinPasswordInput"
+            type="password"
+            placeholder="계좌 비밀번호 4자리"
+          />
+          </div>
+        </div>
+      ),
       confirmButtonText: "확인",
       onClickConfirm: (password) => {
         if (dataChannel) {
-          dataChannel.send(JSON.stringify({ type: "info-request", data: password }));
+          dataChannel.send(
+            JSON.stringify({ type: "info-request", data: password })
+          );
         }
         // 정보를 전송한 후에 모달을 닫습니다.
-        setPasswordModalData({ isOpen: false, children: null, content: null, confirmButtonText: "", onClickConfirm: null });
+        setPasswordModalData({
+          isOpen: false,
+          children: null,
+          content: null,
+          confirmButtonText: "",
+          onClickConfirm: null
+        });
       }
     });
+    showCustomerModal(); // 버튼 클릭 시 고객에게 모달을 띄우도록 메시지 전송
+  };
+
+  // 모달 통신 테스트
+  const showCustomerModal = () => {
+    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      signalingSocket.send(
+        JSON.stringify({
+          type: "SHOW_MODAL",
+          message: "This is a message for the customer"
+        })
+      );
+    }
   };
 
   return (
@@ -288,7 +338,9 @@ function ConnectingTeller() {
               isMuted={isMuted}
               duration={callDuration}
               isTeller={true}
-              onShareScreen={isScreenSharing ? stopScreenSharing : startScreenSharing}
+              onShareScreen={
+                isScreenSharing ? stopScreenSharing : startScreenSharing
+              }
               isScreenSharing={isScreenSharing}
             />
             <Chat
@@ -296,12 +348,12 @@ function ConnectingTeller() {
               messages={messages}
               onMessageReceived={handleMessageReceived}
             />
+            <button onClick={handleTestButtonClick}>테스트</button>
+            <PasswordModal />
           </div>
         </div>
         <div className="inputSection">
           <SavingTask />
-          <button onClick={handleTestButtonClick}>테스트</button>
-          <PasswordModal/>
         </div>
       </div>
     </div>
