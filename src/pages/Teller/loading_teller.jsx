@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function LoadingTeller() {
   const navigate = useNavigate();
-  const [time, setTime] = useState(new Date());
-  const redisKey = localStorage.getItem("key");
+  const [time, setTime] = useState(new Date());  
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -88,7 +87,7 @@ function LoadingTeller() {
 
         <div className="dummy"></div>
 
-        <Button style={{width:"10%", height:"50px"}} shape="rect" onClick={() => {navigate("/consulting/teller/connecting?key="+redisKey)}}>
+        <Button style={{width:"10%", height:"50px"}} shape="rect" onClick={() => {navigate("/consulting/teller/connecting")}}>
           상담시작
         </Button>
       </div>
