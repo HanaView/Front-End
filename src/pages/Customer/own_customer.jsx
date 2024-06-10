@@ -9,29 +9,6 @@ import { getUserSavings } from "@/apis/saving";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const data = {
-  labels: ["예금", "적금", "대출", "카드"],
-  datasets: [
-    {
-      label: "# of Votes",
-      data: [12, 19, 3, 5],
-      backgroundColor: [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(255, 206, 86, 0.2)",
-        "rgba(75, 192, 192, 0.2)"
-      ],
-      borderColor: [
-        "rgba(255, 99, 132, 1)",
-        "rgba(54, 162, 235, 1)",
-        "rgba(255, 206, 86, 1)",
-        "rgba(75, 192, 192, 1)"
-      ],
-      borderWidth: 2
-    }
-  ]
-};
-
 function OwnCustomer() {
   const { data: userDeposits } = useQuery({
     queryKey: ["getUserDeposits"],
@@ -47,6 +24,33 @@ function OwnCustomer() {
     queryKey: ["getUserSavings"],
     queryFn: () => getUserSavings(1)
   });
+  const data = {
+    labels: ["예금", "적금", "대출", "카드"],
+    datasets: [
+      {
+        label: "# of Votes",
+        data: [
+          userDeposits?.data?.length,
+          userSavings?.data?.length,
+          1,
+          userCards?.data?.length
+        ],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)"
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)"
+        ],
+        borderWidth: 2
+      }
+    ]
+  };
 
   useEffect(() => {
     console.log("userDeposits", userDeposits);
@@ -66,26 +70,53 @@ function OwnCustomer() {
           </div>
           <div className="dummy"></div>
           <div className="productContainer">
-            <div className="productTitle">예금</div>
-            <div className="product">
-              {userDeposits.data?.map((product, index) => (
-                <div key={index}>{product.depositInfo?.name}</div>
-              ))}
+            <div className="first">
+              <div className="productWrapper">
+                <div className="productTitle">예금</div>
+                <div className="product">
+                  {userDeposits.data?.map((product, index) => (
+                    <div key={index}>
+                      <p>{product.depositInfo?.name}</p>
+                      <p className="num">
+                        {product?.balance.toLocaleString()}원
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="productWrapper">
+                <div className="productTitle">적금</div>
+                <div className="product">
+                  {userSavings.data?.map((product, index) => (
+                    <div key={index}>
+                      <p>{product.parent?.depositInfo.name}</p>
+                      <p className="num">
+                        {product?.balance.toLocaleString()}원
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="productTitle">적금</div>
-            <div className="product">
-              {userSavings.data?.map((product, index) => (
-                <div key={index}>{product.parent?.depositInfo.name}</div>
-              ))}
+            <div>
+              <div className="productWrapper">
+                <div className="productTitle">대출</div>
+                <div className="product">
+                  <div>
+                    <p>학자금대출</p>
+                    <p className="num">2,500,000원</p>
+                  </div>
+                </div>
+              </div>
+              <div className="productWrapper">
+                <div className="productTitle">카드</div>
+                <div className="product">
+                  {userCards.data?.map((product, index) => (
+                    <div key={index}>{product.cardInfo?.name}</div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="productTitle">카드</div>
-            <div className="product">
-              {userCards.data?.map((product, index) => (
-                <div key={index}>{product.cardInfo?.name}</div>
-              ))}
-            </div>
-            <div className="productTitle">대출</div>
-            <div className="product"></div>
           </div>
         </div>
       </div>
