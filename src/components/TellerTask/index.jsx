@@ -5,7 +5,7 @@ import { useAtom } from "jotai";
 
 const tasks = [
   { id: 1000, name: "계좌 조회" },
-  { id: 1001, name: "자유입출금 예금 업무" },
+  { id: 1001, name: "자유입출금 업무" },
   { id: 1002, name: "예금 업무" },
   { id: 1004, name: "적금 업무" },
   { id: 1006, name: "계좌 제신고" },
