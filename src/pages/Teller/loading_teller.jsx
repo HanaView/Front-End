@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./loading_teller.scss";
 import Button from "@/components/Button";
 import { useNavigate } from "react-router-dom";
+import { PiFootprintsFill } from "react-icons/pi";
 
 function LoadingTeller() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ function LoadingTeller() {
   return (
     <>
       <div className="LoadingTellerContainer">
-        <Button className="titleButton" shape="rect" onClick={() => {}}>
+        <Button style={{fontSize:"20px"}} className="titleButton" shape="rect" onClick={() => {}}>
           대기현황판
         </Button>
 
@@ -45,31 +46,31 @@ function LoadingTeller() {
 
         <div className="box">
           <div className="boxLine">
-            <div>1.박병철</div>
+            <div>1. 박병철</div>
             <div>예/적금</div>
           </div>
           <div className="boxLine">
-            <div>2.이고은</div>
+            <div>2. 이고은</div>
             <div>카드</div>
           </div>
           <div className="boxLine">
-            <div>3.임탁균</div>
+            <div>3. 임탁균</div>
             <div>대출</div>
           </div>
           <div className="boxLine">
-            <div>4.김서윤</div>
+            <div>4. 김서윤</div>
             <div>전자금융</div>
           </div>
           <div className="boxLine">
-            <div>5.유다영</div>
+            <div>5. 유다영</div>
             <div>예/적금</div>
           </div>
           <div className="boxLine">
-            <div>6.김민표</div>
+            <div>6. 김민표</div>
             <div>카드</div>
           </div>
           <div className="boxLine">
-            <div>7.강민주</div>
+            <div>7. 강민주</div>
             <div>예/적금</div>
           </div>
         </div>
@@ -87,7 +88,7 @@ function LoadingTeller() {
 
         <div className="dummy"></div>
 
-        <Button style={{width:"10%", height:"50px"}} shape="rect" onClick={() => {navigate("/consulting/teller/connecting")}}>
+        <Button style={{width:"10%", height:"50px", fontSize:"20px"}} shape="rect" onClick={() => {navigate("/consulting/teller/connecting")}}>
           상담시작
         </Button>
       </div>

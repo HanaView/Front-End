@@ -21,10 +21,13 @@ const useRootLayout = () => {
   useEffect(() => {
     if (location.pathname.includes("/consulting/customer/loading")) {
       setSelectedSideButton(SideButtonTypes.CONSULTING);
+      setUserType("USER");
     } else if (location.pathname.includes("/consulting/customer/explaining")) {
       setSelectedSideButton(SideButtonTypes.PRODUCT);
+      setUserType("USER");
     } else if (location.pathname.includes("/consulting/customer/mydata")) {
       setSelectedSideButton(SideButtonTypes.ASSETS);
+      setUserType("USER");
     } else if (location.pathname.includes("/consulting/teller/connecting")) {
       setSelectedSideButton(SideButtonTypes.CONSULTING);
       setUserType("TELLER");
