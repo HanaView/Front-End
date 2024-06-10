@@ -90,6 +90,26 @@ function ButtonList() {
         >
           업무 기록 관리
         </Button>
+        <Button
+          className={classNames("side-button", {
+            selected: selectedSideButton === SideButtonTypes.TELLER_LOG
+          })}
+          color="default"
+          shape="none"
+          onClick={() => handleNavigation("/admin/tellerLog")}
+        >
+          텔러 업무 기록 관리
+        </Button>
+        <Button
+          className={classNames("side-button", {
+            selected: selectedSideButton === SideButtonTypes.CUSTOMER_LOG
+          })}
+          color="default"
+          shape="none"
+          onClick={() => handleNavigation("/admin/customerLog")}
+        >
+          손님 업무 기록 관리
+        </Button>
         {selectedSideButton === SideButtonTypes.CONSULTING && <TaskList />}
       </>
     );

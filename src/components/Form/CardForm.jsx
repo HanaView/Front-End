@@ -125,11 +125,7 @@ const CardForm = ({ product, onBack }) => {
             >
               <option value="">계좌를 선택하세요</option>
               {userDeposits?.data
-                .filter(
-                  (item) =>
-                    (!item.isLoss || !item.isHuman) &&
-                    item.depositInfo.depositCategoryId == 1
-                )
+                .filter((item) => !item.isLoss && !item.isHuman)
                 .map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.accountNumber} - {item.depositInfo.name}
