@@ -45,7 +45,8 @@ function ConnectingTeller() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [image, setImage] = useState("");
-  const redisKey = localStorage.getItem("key");
+  // const redisKey = localStorage.getItem("key");
+  const redisKey = "b03830ce-b";
 
   const customerInfo = async (e) => {
     // e.preventDefault();
