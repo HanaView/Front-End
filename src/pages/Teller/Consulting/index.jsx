@@ -20,6 +20,7 @@ import Card from "@/pages/Consulting/Card";
 import MessageModal from "@/pages/_shared/Modal/MessageModal";
 import CryptoJS from "crypto-js"; // crypto-js 라이브러리 import
 import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
+import CustomerTask from "@/pages/Consulting/CustomerTask";
 import axios from "axios";
 
 function ConnectingTeller() {
@@ -42,15 +43,13 @@ function ConnectingTeller() {
   const [activeTask] = useAtom(taskAtom);
   const [, setSocketAtom] = useAtom(socketAtom); // atom을 사용하여 WebSocket 저장
 
-
-
-  const [name,setName] = useState("");
+  const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [image, setImage] = useState("");
-  const redisKey = localStorage.getItem("key");  
+  const redisKey = localStorage.getItem("key");
   console.log("-------------------------------------");
-  console.log(redisKey); 
+  console.log(redisKey);
   const customerInfo = async (e) => {
     // e.preventDefault();
 
@@ -62,10 +61,10 @@ function ConnectingTeller() {
       console.log("------------------------------");
       console.log(response.data);
 
-      if (response.data.state == 200) { 
+      if (response.data.state == 200) {
         setName(response.data.data.user.name);
         setPhoneNumber(response.data.data.user.tele);
-        setIdNumber(response.data.data.user.socialNumber);      
+        setIdNumber(response.data.data.user.socialNumber);
         setImage(response.data.data.image);
       } else {
         // Handle authentication failure
@@ -389,7 +388,7 @@ function ConnectingTeller() {
         return <Card />;
       default:
         // TODO손님의 전체 하나은행 가입 상품 정보를 띄워함
-        return null;
+        return <CustomerTask />;
     }
   };
 
@@ -411,7 +410,7 @@ function ConnectingTeller() {
           <CustomerInfo
             name={name}
             phoneNumber={phoneNumber}
-            idNumber={idNumber}           
+            idNumber={idNumber}
             image={image}
           />
         </div>
