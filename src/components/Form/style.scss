@@ -1,23 +1,21 @@
 .joinFormWrapper {
   font-size: 16px;
-  width: calc(100% - 30px);
-  height: calc(100% - 30px);
-  // padding: 30px;
+  width: 100%;
+  height: 100%;
   border-radius: 20px;
-  // border: 5px solid $color-primary;
   background-color: #ffffff;
 
   .backButtonWrapper {
     display: flex;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
 
   .backBtn {
     background: url(@/assets/images/arrowLeft.svg) no-repeat;
     background-position: center;
     background-size: contain;
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     margin-right: 10px;
   }
 }
@@ -25,6 +23,8 @@
 .joinForm {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 
   span {
     color: $color-primary;
@@ -36,7 +36,9 @@
     align-items: center;
   }
 
-  .title {}
+  .title {
+    font-size: 1.2rem;
+  }
 
   select {
     border: 2px solid $color-gray;
@@ -80,7 +82,7 @@
   }
 
   .column {
-    margin-bottom: 10px;
+    margin: 8px 0;
   }
 
   .interestRate {
@@ -118,6 +120,7 @@
 
     &.address {
       align-items: center;
+      width: 100%;
 
       .boxContent {
         padding: 18px 0;
@@ -149,7 +152,7 @@
     min-width: 300px;
     border-radius: 15px;
     width: fit-content;
-    height: inherit;
+    height: 80%;
 
     .boxContent {
       display: flex;

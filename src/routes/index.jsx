@@ -27,8 +27,9 @@ import ConnectingTeller from "@/pages/Teller/Consulting/index";
 import LoadingTeller from "@/pages/Teller/loading_teller";
 import OwnCustomer from "@/pages/Customer/own_customer";
 
-import DailyWorks from "@/pages/Admin/DailyWorks";
-import DailyScore from "@/pages/Admin/DailyScore";
+import DailyWorks from '@/pages/Admin/DailyWorks';
+import DailyScore from '@/pages/Admin/DailyScore';
+import Works from '@/pages/Admin/Works';
 
 const router = createBrowserRouter([
   {
@@ -159,7 +160,13 @@ const router = createBrowserRouter([
         ]
       }
     ]
-  }
+  },{
+    path: "/admin/works",     
+    children: [
+      { index: true, element: <Works /> },
+      { path: ":testId", element: <Main /> }
+    ]
+  },
 ]);
 
 export default router;
