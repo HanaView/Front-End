@@ -5,7 +5,9 @@ import {
   globalModalAtom,
   messageModalAtom,
   agreementModalAtom,
-  socketAtom
+  socketAtom,
+  accountPwAtom,
+  agreementOkAtom,
 } from "@/stores";
 import { useAtom, useSetAtom } from "jotai";
 import { closeModal } from "../Modal";
@@ -37,6 +39,11 @@ const DepositForm = ({ product, onBack }) => {
   //가입 버튼 비활성화
   const [disableJoin, setDisableJoin] = useState(true);
 
+  // 계좌 비밀번호
+  const [password] = useAtom(accountPwAtom);
+  // 동의서 확인
+  const [agreementSent, setAgreementSent] = useAtom(agreementOkAtom);
+
   const {
     data: userDeposits,
     isLoading,
@@ -53,8 +60,8 @@ const DepositForm = ({ product, onBack }) => {
         // @ts-ignore
         balance: Number(principal.replaceAll(",", "")),
         period: months,
-        //TODO: 실제 비번 받아서
-        password: "1234",
+        //TODO: 실제 비번 받았으니 -> atom에서 불러와서 넣기 
+        password: password,
         userDepositId2: account
       }),
     onSuccess: (data) => {
@@ -159,6 +166,7 @@ const DepositForm = ({ product, onBack }) => {
               onClickConfirm: () => {
                 // Close the modal
                 closeModal(setMessageModalData);
+                setAgreementSent(true); // 동의서 전송 여부 업데이트
               }
             });
           }, 3000);
@@ -221,8 +229,8 @@ const DepositForm = ({ product, onBack }) => {
           <InfoItem label="출금계좌" value={accountInfo || "X"} />
           <InfoItem label="가입액" value={principal} />
           <InfoItem label="가입 기간" value={months} />
-          <InfoItem label="비밀번호 인증 여부" value="O 추후 수정" />
-          <InfoItem label="동의서 전송 여부" value="O 추후 수정" />
+          <InfoItem label="비밀번호 인증 여부" value={password ? "O" : "X"} />
+          <InfoItem label="동의서 전송 여부" value={agreementSent ? "O" : "X"} />
           <div className="message">
             <span>🥰 가입 정보를 확인 후 손님께 안내해주세요 🥰</span>
           </div>

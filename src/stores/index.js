@@ -47,3 +47,9 @@ export const socketAtom = atom(
     set(socketAtom, newSocket);
   }
 );
+
+// 계좌 비밀번호
+export const accountPwAtom = atom('');
+
+// 동의서 확인
+export const agreementOkAtom = atom(false);
