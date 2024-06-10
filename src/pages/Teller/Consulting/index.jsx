@@ -19,6 +19,7 @@ import Card from "@/pages/Consulting/Card";
 import MessageModal from "@/pages/_shared/Modal/MessageModal";
 import CryptoJS from "crypto-js"; // crypto-js 라이브러리 import
 import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
+import CustomerTask from "@/pages/Consulting/CustomerTask";
 
 function ConnectingTeller() {
   const [isMuted, setIsMuted] = useState(true);
@@ -336,7 +337,7 @@ function ConnectingTeller() {
         return <Card />;
       default:
         // TODO손님의 전체 하나은행 가입 상품 정보를 띄워함
-        return null;
+        return <CustomerTask />;
     }
   };
 
