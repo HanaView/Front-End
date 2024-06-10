@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Button";
 import "./style.scss";
-import { globalModalAtom } from "@/stores";
+import { agreementModalAtom, globalModalAtom, messageModalAtom, socketAtom } from "@/stores";
 import { useAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { postJoinSaving } from "@/apis/saving";
+import { useSetAtom } from "jotai";
 
 const SavingForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -113,6 +114,95 @@ const SavingForm = ({ product, onBack }) => {
     }));
   };
 
+  const [signalingSocket] = useAtom(socketAtom);
+
+  const setAgreementModalData = useSetAtom(agreementModalAtom);
+  const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
+
+  // 동의서 버튼 클릭
+  const handleAgreementButtonClick = () => {
+    console.log("ㅎㅎㅎ즐거운코딩");
+    console.log("@@@ signalingSocket", signalingSocket);
+
+    // WebSocket 메시지 전송
+    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      setMessageModalData({
+        isOpen: true,
+        children: null,
+        content: (
+          <div id="modalDiv">
+            <div id="modalContent">
+              <p id="modalInfo">동의서 작성 화면을 띄웠습니다.</p>
+            </div>
+          </div>
+        ),
+        confirmButtonText: "확인", // 확인 누르고 customer로 이동
+        onClickConfirm: () => {
+          // Close the modal
+          closeModal(setMessageModalData);
+          setTimeout(() => { 
+            setMessageModalData({
+              isOpen: true,
+              children: null,
+              content: (
+                <div id="modalDiv">
+                  <div id="modalContent">
+                    <p id="modalInfo">동의서 작성이 완료되었습니다.</p>
+                  </div>
+                </div>
+              ),
+              confirmButtonText: "확인",
+              onClickConfirm: () => {
+                // Close the modal
+                closeModal(setMessageModalData);
+              }
+            });
+          }, 3000);
+
+        }
+      });
+
+      console.log("Sending SHOW_AGREEMENT_MODAL message");
+      signalingSocket.send(JSON.stringify({ type: "SHOW_AGREEMENT_MODAL" }));
+    }
+  };
+
+  // 비밀번호 입력 요청 버튼 클릭
+  const handleRequirePasswordButtonClick = () => {
+    console.log("@@@ signalingSocket", signalingSocket);
+
+    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      setMessageModalData({
+        isOpen: true,
+        children: null,
+        content: (
+          <div id="modalDiv">
+            <div id="modalContent">
+              <p id="modalInfo">비밀번호 입력 화면을 띄웠습니다.</p>
+            </div>
+          </div>
+        ),
+        confirmButtonText: "확인",
+        onClickConfirm: () => {
+          // Close the modal
+          setMessageModalData({
+            isOpen: false,
+            children: null,
+            content: null,
+            confirmButtonText: "",
+            onClickConfirm: null
+          });
+        }
+      });
+
+      signalingSocket.send(
+        JSON.stringify({
+          type: "show_pwInputModal"
+        })
+      );
+    }
+  };
+  
   const InfoItem = ({ label, value }) => (
     <div className="info">
       <div className="label">{label} : </div>
@@ -196,7 +286,7 @@ const SavingForm = ({ product, onBack }) => {
                 ))}
             </select>
           </div>
-          <Button size="medium" onClick={handleJoin}>
+          <Button size="medium" onClick={handleRequirePasswordButtonClick}>
             비밀번호 입력 요청
           </Button>
         </div>
@@ -228,7 +318,7 @@ const SavingForm = ({ product, onBack }) => {
               원
             </div>
           </div>
-          <Button size="medium" onClick={handleJoin}>
+          <Button size="medium" onClick={handleAgreementButtonClick}>
             동의서 전송
           </Button>
         </div>
