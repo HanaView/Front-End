@@ -120,6 +120,7 @@
 
     &.address {
       align-items: center;
+      width: 100%;
 
       .boxContent {
         padding: 18px 0;
@@ -151,7 +152,7 @@
     min-width: 300px;
     border-radius: 15px;
     width: fit-content;
-    height: inherit;
+    height: 80%;
 
     .boxContent {
       display: flex;

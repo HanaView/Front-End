@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Button from "../Button";
+import "./style.scss";
 
 const AddressInput = ({
   postcode,
@@ -57,21 +58,23 @@ const AddressInput = ({
         우편번호 찾기
       </Button>
       <br />
-      <input
-        type="text"
-        id="sample6_address"
-        placeholder="주소"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-      />
-      <br />
-      <input
-        type="text"
-        id="sample6_detailAddress"
-        placeholder="상세주소"
-        value={detailAddress}
-        onChange={(e) => setDetailAddress(e.target.value)}
-      />
+      <div id="addressDiv">
+        <input
+          type="text"
+          id="sample6_address"
+          placeholder="주소"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
+        <br/>
+        <input
+          type="text"
+          id="sample6_detailAddress"
+          placeholder="상세주소"
+          value={detailAddress}
+          onChange={(e) => setDetailAddress(e.target.value)}
+        />
+      </div>
     </div>
   );
 };
