@@ -379,12 +379,15 @@ function ConnectingTeller() {
   const renderActiveTask = () => {
     switch (activeTask) {
       case 1002:
+        // 예금
         return <DepositTask />;
-      case 1004:
+      case 1003:
+        // 적금
         return <SavingTask />;
-      case 1008:
+      case 1006:
+        // 카드
         return <Card />;
-      case 1009:
+      case 1007:
         return <Card />;
       default:
         // TODO손님의 전체 하나은행 가입 상품 정보를 띄워함
