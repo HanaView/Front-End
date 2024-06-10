@@ -16,7 +16,7 @@ import {
 } from "@/stores";
 import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
-import MessageModal from "@/pages/_shared/Modal/MessageModal ";
+import MessageModal from "@/pages/_shared/Modal/MessageModal";
 import CryptoJS from "crypto-js"; // crypto-js 라이브러리 import
 import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
 
