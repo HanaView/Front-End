@@ -137,16 +137,29 @@ const DepositForm = ({ product, onBack }) => {
             </div>
           </div>
         ),
-        confirmButtonText: "확인",
+        confirmButtonText: "확인", // 확인 누르고 customer로 이동
         onClickConfirm: () => {
           // Close the modal
-          setMessageModalData({
-            isOpen: false,
-            children: null,
-            content: null,
-            confirmButtonText: "",
-            onClickConfirm: null
-          });
+          closeModal(setMessageModalData);
+          setTimeout(() => { 
+            setMessageModalData({
+              isOpen: true,
+              children: null,
+              content: (
+                <div id="modalDiv">
+                  <div id="modalContent">
+                    <p id="modalInfo">동의서 작성이 완료되었습니다.</p>
+                  </div>
+                </div>
+              ),
+              confirmButtonText: "확인",
+              onClickConfirm: () => {
+                // Close the modal
+                closeModal(setMessageModalData);
+              }
+            });
+          }, 3000);
+
         }
       });
 
@@ -276,7 +289,7 @@ const DepositForm = ({ product, onBack }) => {
             </select>
           </div>
           <Button size="medium" onClick={handleRequirePasswordButtonClick}>
-            비밀번호 입력 요청!
+            비밀번호 입력 요청
           </Button>
         </div>
         <div className="column">
@@ -308,7 +321,7 @@ const DepositForm = ({ product, onBack }) => {
             </div>
           </div>
           <Button size="medium" onClick={handleAgreementButtonClick}>
-            동의서 전송!
+            동의서 전송
           </Button>
         </div>
         <div className="depositInfo">

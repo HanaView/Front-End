@@ -67,6 +67,12 @@ function LoginCustomer() {
     } 
   };
 
+  // enter 키로 로그인
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && isFormValid) {
+      handleSubmit(e);
+    }
+  };
   return (
     <>
       <div className="loginContainer">
@@ -85,6 +91,7 @@ function LoginCustomer() {
                 placeholder="이름을 입력해주세요"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </label>
             <label>
@@ -95,6 +102,7 @@ function LoginCustomer() {
                 placeholder="'-'빼고 입력해주세요"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </label>
           </div>
