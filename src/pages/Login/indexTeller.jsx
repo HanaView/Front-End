@@ -67,7 +67,12 @@ function LoginTeller() {
       }
     }
   };
-
+  // enter 키로 로그인
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && isFormValid) {
+      handleSubmit(e);
+    }
+  };
   return (
     <>
       <div className="loginContainer">
@@ -86,6 +91,7 @@ function LoginTeller() {
                 placeholder="아이디를 입력해주세요"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </label>
             <label>
@@ -96,6 +102,7 @@ function LoginTeller() {
                 placeholder="비밀번호를 입력해주세요"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </label>
           </div>
