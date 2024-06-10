@@ -52,11 +52,11 @@ function ConnectingTeller() {
   console.log("-------------------------------------");
   console.log(redisKey); 
   const customerInfo = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     try {
       const response = await axios.get(
-        "https://hanaview.shop/api/login/validate?key=" + redisKey     
+        "https://hanaview.shop/api/login/getUserInfo?key=" + redisKey     
       );
 
       console.log("------------------------------");
