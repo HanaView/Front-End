@@ -22,8 +22,6 @@ function Consulting() {
   const [passWordmodalData, setPasswordModalData] = useAtom(passwordRequestlModalAtom);
   const [agreementModalData, setAgreementModalData] = useAtom(agreementModalAtom);
 
-
-
   const largeVideoRef = useRef(null);
 
   useEffect(() => {

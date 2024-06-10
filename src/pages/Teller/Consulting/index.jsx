@@ -48,8 +48,7 @@ function ConnectingTeller() {
   const [idNumber, setIdNumber] = useState("");
   const [image, setImage] = useState("");
   const redisKey = localStorage.getItem("key");
-  console.log("-------------------------------------");
-  console.log(redisKey);
+
   const customerInfo = async (e) => {
     // e.preventDefault();
 
@@ -57,9 +56,6 @@ function ConnectingTeller() {
       const response = await axios.get(
         "https://hanaview.shop/api/login/getUserInfo?key=" + redisKey     
       );
-
-      console.log("------------------------------");
-      console.log(response.data);
 
       if (response.data.state == 200) {
         setName(response.data.data.user.name);
@@ -444,11 +440,6 @@ function ConnectingTeller() {
         <div className="inputSection">
           <div id="task">{renderActiveTask()}</div>
         </div>
-        {/* {receivedInfo && (
-          <div className="receivedInfoContainer">
-            <p>받은 비밀번호: {receivedInfo}</p>
-          </div>
-        )} */}
         <AgreementModal />
       </div>
     </div>
