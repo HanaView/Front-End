@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Button";
 import "./style.scss";
-import { globalModalAtom } from "@/stores";
-import { useAtom } from "jotai";
+import {
+  globalModalAtom,
+  messageModalAtom,
+  agreementModalAtom,
+  socketAtom
+} from "@/stores";
+import { useAtom, useSetAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits, postJoin } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSetAtom } from "jotai";
-import { messageModalAtom, agreementModalAtom, socketAtom } from "@/stores";
 
 const DepositForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -141,7 +144,7 @@ const DepositForm = ({ product, onBack }) => {
         onClickConfirm: () => {
           // Close the modal
           closeModal(setMessageModalData);
-          setTimeout(() => { 
+          setTimeout(() => {
             setMessageModalData({
               isOpen: true,
               children: null,
@@ -159,7 +162,6 @@ const DepositForm = ({ product, onBack }) => {
               }
             });
           }, 3000);
-
         }
       });
 
@@ -276,11 +278,7 @@ const DepositForm = ({ product, onBack }) => {
             >
               <option value="">계좌를 선택하세요</option>
               {userDeposits?.data
-                .filter(
-                  (item) =>
-                    (!item.isLoss || !item.isHuman) &&
-                    item.depositInfo.depositCategoryId == 1
-                )
+                .filter((item) => !item.isLoss && !item.isHuman)
                 .map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.accountNumber} - {item.depositInfo.name}
