@@ -13,7 +13,8 @@ import {
   agreementModalAtom,
   taskAtom,
   socketAtom,
-  capturedImageAtom
+  capturedImageAtom,
+  accountPwAtom
 } from "@/stores";
 import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
@@ -37,18 +38,18 @@ function ConnectingTeller() {
   const [activeVideo, setActiveVideo] = useState(null);
   const [previousVideo, setPreviousVideo] = useState(null); // 이전 비디오 상태 저장
   const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
-  const [receivedInfo, setReceivedInfo] = useState(null); // 받은 정보 저장
+  const [accountPw, setAccountPw] = useState(null); // 받은 정보 저장
   const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
 
   const [activeTask] = useAtom(taskAtom);
   const [, setSocketAtom] = useAtom(socketAtom); // atom을 사용하여 WebSocket 저장
 
+  const [password, setPassword] = useAtom(accountPwAtom); // 계좌 비밀번호 저장
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [image, setImage] = useState("");
   const redisKey = localStorage.getItem("key");
-
   const customerInfo = async (e) => {
     // e.preventDefault();
 
@@ -98,7 +99,7 @@ function ConnectingTeller() {
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
-    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
     setSignalingSocket(socket);
     setSocketAtom(socket); // atom 저장
 
@@ -218,7 +219,8 @@ function ConnectingTeller() {
               "secret-key"
             ).toString(CryptoJS.enc.Utf8);
             console.log("Decrypted Password:", decryptedPassword);
-            setReceivedInfo(decryptedPassword);
+            // TODO: 비밀번호 전역 저장
+            setPassword(decryptedPassword);
 
             // 비밀번호 인증을 완료
             setMessageModalData({
@@ -375,12 +377,15 @@ function ConnectingTeller() {
   const renderActiveTask = () => {
     switch (activeTask) {
       case 1002:
+        // 예금
         return <DepositTask />;
-      case 1004:
+      case 1003:
+        // 적금
         return <SavingTask />;
-      case 1008:
+      case 1006:
+        // 카드
         return <Card />;
-      case 1009:
+      case 1007:
         return <Card />;
       default:
         // TODO손님의 전체 하나은행 가입 상품 정보를 띄워함
