@@ -8,7 +8,12 @@ import TaskList from "@/components/TellerTask";
 import SavingTask from "@/pages/Consulting/SavingTask";
 import DepositTask from "@/pages/Consulting/DepositTask";
 import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
-import { messageModalAtom, agreementModalAtom, taskAtom, socketAtom } from "@/stores";
+import {
+  messageModalAtom,
+  agreementModalAtom,
+  taskAtom,
+  socketAtom
+} from "@/stores";
 import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
 import MessageModal from "@/pages/_shared/Modal/MessageModal ";
@@ -31,11 +36,11 @@ function ConnectingTeller() {
   const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
   const [receivedInfo, setReceivedInfo] = useState(null); // 받은 정보 저장
   const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
-  const [agreementModalData, setAgreementModalData] = useAtom(agreementModalAtom);
+  const [agreementModalData, setAgreementModalData] =
+    useAtom(agreementModalAtom);
 
   const [activeTask] = useAtom(taskAtom);
   const [, setSocketAtom] = useAtom(socketAtom); // atom을 사용하여 WebSocket 저장
-
 
   const customerInfo = {
     name: "김하나",
@@ -73,7 +78,7 @@ function ConnectingTeller() {
     };
 
     dc.onmessage = (event) => {
-      console.log(event)
+      console.log(event);
       console.log("Data channel message received:", event.data);
       const receivedMessage = JSON.parse(event.data);
       console.log(receivedMessage);
@@ -87,7 +92,6 @@ function ConnectingTeller() {
         }
       ]);
     };
-  
 
     // 데이터 채널 설정이 완료되었을 때 실행되는 함수
     const onDataChannelCreated = (event) => {
@@ -321,7 +325,6 @@ function ConnectingTeller() {
     }
   };
 
-
   // 업무 클릭 시 실행되는 함수
   const renderActiveTask = () => {
     switch (activeTask) {
@@ -389,14 +392,12 @@ function ConnectingTeller() {
           </div>
         </div>
         <div className="inputSection">{renderActiveTask()}</div>
-        {receivedInfo && (
+        {/* {receivedInfo && (
           <div className="receivedInfoContainer">
-        
             <p>받은 비밀번호: {receivedInfo}</p>
           </div>
-        )}
-                <AgreementModal signalingSocket={signalingSocket} />
-
+        )} */}
+        <AgreementModal />
       </div>
     </div>
   );

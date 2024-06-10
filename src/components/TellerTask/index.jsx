@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./style.scss";
-import { taskAtom } from '@/stores/index'
+import { taskAtom } from "@/stores/index";
 import { useAtom } from "jotai";
 
 const tasks = [
@@ -21,8 +21,9 @@ function TaskList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [, setTaskId] = useAtom(taskAtom);
 
-  const filteredTasks = tasks.filter(task =>
-    task.name.includes(searchTerm) || task.id.toString().includes(searchTerm)
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.name.includes(searchTerm) || task.id.toString().includes(searchTerm)
   );
 
   return (
@@ -34,8 +35,8 @@ function TaskList() {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="task-search"
       />
-  <ul>
-        {filteredTasks.map(task => (
+      <ul>
+        {filteredTasks.map((task) => (
           <li key={task.id} onClick={() => setTaskId(task.id)}>
             {task.name} ({task.id})
           </li>

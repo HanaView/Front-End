@@ -1,5 +1,6 @@
 .task-list {
     padding: 16px;
+    height: 55%;
   }
   
   .task-search {
@@ -14,6 +15,8 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow-y: auto;
+    height: calc(100% - 40.5px);
   }
   
   li {
