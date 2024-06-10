@@ -28,10 +28,10 @@ const useRootLayout = () => {
     } else if (location.pathname.includes("/consulting/teller/connecting")) {
       setSelectedSideButton(SideButtonTypes.CONSULTING);
       setUserType("TELLER");
-    } else if (location.pathname.includes("/dailyWorks")) {
+    } else if (location.pathname.includes("/admin/dailyWorks")) {
       setSelectedSideButton(SideButtonTypes.DAILY_SCORE);
       setUserType("TELLER");
-    } else if (location.pathname.includes("/dailyScore")) {
+    } else if (location.pathname.includes("/admin/dailyScore")) {
       setSelectedSideButton(SideButtonTypes.DAILY_SCORE);
       setUserType("TELLER");
     } else {
