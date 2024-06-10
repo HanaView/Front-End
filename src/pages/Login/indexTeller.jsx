@@ -10,7 +10,6 @@ function LoginTeller() {
   const navigate = useNavigate();
 
   const isFormValid = name.trim() !== "" && password.trim() !== "";
-  const redisKey = localStorage.getItem("key");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +43,7 @@ function LoginTeller() {
           response.data.data.refreshToken
         );
 
-        navigate("/consulting/teller/loading?key"+redisKey);
+        navigate("/consulting/teller/loading");
       } else {
         // Handle authentication failure
         alert(response.data.errorCode.message);
