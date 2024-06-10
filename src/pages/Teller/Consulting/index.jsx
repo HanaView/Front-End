@@ -390,10 +390,8 @@ function ConnectingTeller() {
           </div>
         </div>
         <div className="inputSection">
-          <div id="task">
-          {renderActiveTask()}
-          </div>
-          </div>
+          <div id="task">{renderActiveTask()}</div>
+        </div>
         {/* {receivedInfo && (
           <div className="receivedInfoContainer">
             <p>받은 비밀번호: {receivedInfo}</p>
