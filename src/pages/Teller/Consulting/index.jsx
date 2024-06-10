@@ -36,8 +36,6 @@ function ConnectingTeller() {
   const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
   const [receivedInfo, setReceivedInfo] = useState(null); // 받은 정보 저장
   const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
-  const [agreementModalData, setAgreementModalData] =
-    useAtom(agreementModalAtom);
 
   const [activeTask] = useAtom(taskAtom);
   const [, setSocketAtom] = useAtom(socketAtom); // atom을 사용하여 WebSocket 저장
@@ -391,7 +389,11 @@ function ConnectingTeller() {
             <MessageModal />
           </div>
         </div>
-        <div className="inputSection">{renderActiveTask()}</div>
+        <div className="inputSection">
+          <div id="task">
+          {renderActiveTask()}
+          </div>
+          </div>
         {/* {receivedInfo && (
           <div className="receivedInfoContainer">
             <p>받은 비밀번호: {receivedInfo}</p>

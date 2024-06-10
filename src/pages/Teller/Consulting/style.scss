@@ -74,6 +74,12 @@
     width: 100%;
   }
 
+  #task {
+    height: 100%;
+    overflow-y: auto;
+    text-align: center;
+  }
+
   #consultLeftSection #videoOptions {
     display: flex;
     justify-content: space-between;
