@@ -41,7 +41,7 @@ function Camera() {
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0, 518, 320);
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     const dataURL = canvas.toDataURL("image/jpg");
     console.log(dataURL);
