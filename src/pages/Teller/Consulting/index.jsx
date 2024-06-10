@@ -48,8 +48,8 @@ function ConnectingTeller() {
   const [idNumber, setIdNumber] = useState("");
   const [image, setImage] = useState("");
   const redisKey = localStorage.getItem("key");
-  console.log("-------------------------------------");
-  console.log(redisKey);
+  // console.log("-------------------------------------");
+  // console.log(redisKey);
   const customerInfo = async (e) => {
     // e.preventDefault();
 
@@ -58,8 +58,8 @@ function ConnectingTeller() {
         "https://hanaview.shop/api/login/getUserInfo?key=" + redisKey     
       );
 
-      console.log("------------------------------");
-      console.log(response.data);
+      // console.log("------------------------------");
+      // console.log(response.data);
 
       if (response.data.state == 200) {
         setName(response.data.data.user.name);
@@ -102,7 +102,7 @@ function ConnectingTeller() {
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
-    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
     setSignalingSocket(socket);
     setSocketAtom(socket); // atom 저장
 
