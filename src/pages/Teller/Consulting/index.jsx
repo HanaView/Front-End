@@ -13,7 +13,8 @@ import {
   agreementModalAtom,
   taskAtom,
   socketAtom,
-  capturedImageAtom
+  capturedImageAtom,
+  accountPwAtom
 } from "@/stores";
 import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
@@ -37,12 +38,13 @@ function ConnectingTeller() {
   const [activeVideo, setActiveVideo] = useState(null);
   const [previousVideo, setPreviousVideo] = useState(null); // 이전 비디오 상태 저장
   const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
-  const [receivedInfo, setReceivedInfo] = useState(null); // 받은 정보 저장
+  const [accountPw, setAccountPw] = useState(null); // 받은 정보 저장
   const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
 
   const [activeTask] = useAtom(taskAtom);
   const [, setSocketAtom] = useAtom(socketAtom); // atom을 사용하여 WebSocket 저장
 
+  const [password, setPassword] = useAtom(accountPwAtom); // 계좌 비밀번호 저장
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [idNumber, setIdNumber] = useState("");
@@ -217,7 +219,8 @@ function ConnectingTeller() {
               "secret-key"
             ).toString(CryptoJS.enc.Utf8);
             console.log("Decrypted Password:", decryptedPassword);
-            setReceivedInfo(decryptedPassword);
+            // TODO: 비밀번호 전역 저장
+            setPassword(decryptedPassword);
 
             // 비밀번호 인증을 완료
             setMessageModalData({
