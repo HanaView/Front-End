@@ -30,6 +30,7 @@ import OwnCustomer from "@/pages/Customer/own_customer";
 
 import DailyWorks from '@/pages/Admin/DailyWorks';
 import DailyScore from '@/pages/Admin/DailyScore';
+import Works from '@/pages/Admin/Works';
 
 const router = createBrowserRouter([
   {
@@ -152,6 +153,12 @@ const router = createBrowserRouter([
     path: "/admin/dailyScore",     
     children: [
       { index: true, element: <DailyScore /> },
+      { path: ":testId", element: <Main /> }
+    ]
+  },{
+    path: "/admin/works",     
+    children: [
+      { index: true, element: <Works /> },
       { path: ":testId", element: <Main /> }
     ]
   },
