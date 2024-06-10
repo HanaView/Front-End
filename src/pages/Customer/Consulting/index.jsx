@@ -27,7 +27,7 @@ function Consulting() {
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
-    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
     setSignalingSocket(socket);
 
     const pc = new RTCPeerConnection({
