@@ -72,7 +72,7 @@ function ButtonList() {
         </Button>
         <Button
           className={classNames("side-button", {
-            selected: selectedSideButton === SideButtonTypes.PRODUCT
+            selected: selectedSideButton === SideButtonTypes.DAILY_WORKS
           })}
           color="default"
           shape="none"
@@ -82,7 +82,7 @@ function ButtonList() {
         </Button>
         <Button
           className={classNames("side-button", {
-            selected: selectedSideButton === SideButtonTypes.ASSETS
+            selected: selectedSideButton === SideButtonTypes.DAILY_SCORE
           })}
           color="default"
           shape="none"
