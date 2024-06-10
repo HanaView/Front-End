@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./style.scss";
 import Modal from "react-modal";
 import Button from "../../../../components/Button";
@@ -22,9 +22,7 @@ const customStyles = {
 };
 
 function MessageModal() {
-  const [messageModalData, setMessageModalData] = useAtom(
-    messageModalAtom
-  );
+  const [messageModalData, setMessageModalData] = useAtom(messageModalAtom);
 
   const onClickConfirmButton = () => {
     if (messageModalData.onClickConfirm) {
@@ -32,7 +30,6 @@ function MessageModal() {
     }
     closeModal();
   };
-
 
   const closeModal = () => {
     setMessageModalData((prevData) => ({
@@ -48,9 +45,7 @@ function MessageModal() {
       style={customStyles}
       overlayClassName={"global-modal-overlay"}
     >
-      <div className="center">
-        {messageModalData.content}
-      </div>
+      <div className="center">{messageModalData.content}</div>
       <Button
         className="global-modal-button"
         shape="rect"
