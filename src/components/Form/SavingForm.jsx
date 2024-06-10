@@ -132,7 +132,7 @@ const SavingForm = ({ product, onBack }) => {
         content: (
           <div id="modalDiv">
             <div id="modalContent">
-              <p id="modalInfo">동의서 작성 화면을 띄웠습니다.</p>
+              <p id="modalInfo">동의서 작성 화면을 띄웠습니다!</p>
             </div>
           </div>
         ),
