@@ -7,17 +7,9 @@ import axios from "axios";
 function LoginTeller() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [randomKey, setRandomKey] = useState("");
   const navigate = useNavigate();
 
   const isFormValid = name.trim() !== "" && password.trim() !== "";
-
-  // randomKey가 업데이트되면 navigate 호출
-  // useEffect(() => {
-  //   if (randomKey) {
-  //     navigate(`/camera?key=${randomKey}`);
-  //   }
-  // }, [randomKey, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +22,7 @@ function LoginTeller() {
 
     try {
       const response = await axios.post(
-        "http://172.16.20.211:80/api/auth/consultant/login",
+        "https://hanaview.shop/api/auth/consultant/login",
         authData
       );
 
@@ -74,7 +66,12 @@ function LoginTeller() {
       }
     }
   };
-
+  // enter 키로 로그인
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && isFormValid) {
+      handleSubmit(e);
+    }
+  };
   return (
     <>
       <div className="loginContainer">
@@ -93,16 +90,18 @@ function LoginTeller() {
                 placeholder="아이디를 입력해주세요"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </label>
             <label>
               <div className="labelText">비밀번호</div>
               <input
                 className="inputForm"
-                type="text"
+                type="password"
                 placeholder="비밀번호를 입력해주세요"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </label>
           </div>

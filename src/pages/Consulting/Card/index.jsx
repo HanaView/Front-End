@@ -1,10 +1,10 @@
-import { getAllDeposits } from "@/apis/deposit";
-import DepositForm from "@/components/Form/DepositForm";
-import DepositTable from "@/components/Table/DepositTable";
+import { getAllCards } from "@/apis/card";
+import CardForm from "@/components/Form/CardForm";
+import CardTable from "@/components/Table/CardTable";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
-const DepositTask = () => {
+const CardTask = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleProductClick = (product) => {
@@ -20,16 +20,16 @@ const DepositTask = () => {
     isLoading,
     error
   } = useQuery({
-    queryKey: ["getAllDeposits"],
-    queryFn: getAllDeposits
+    queryKey: ["getAllCards"],
+    queryFn: getAllCards
   });
 
   return (
     <>
       {selectedProduct && DepositProductData ? (
-        <DepositForm product={selectedProduct} onBack={handleBack}/>
+        <CardForm product={selectedProduct} onBack={handleBack} />
       ) : (
-        <DepositTable
+        <CardTable
           products={DepositProductData?.data}
           onProductClick={handleProductClick}
         />
@@ -38,4 +38,4 @@ const DepositTask = () => {
   );
 };
 
-export default DepositTask;
+export default CardTask;

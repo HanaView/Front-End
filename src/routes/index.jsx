@@ -22,26 +22,26 @@ import LoginTeller from "@/pages/Login/indexTeller";
 import AuthCustomer from "@/pages/Auth/auth_complete";
 import Finish from "@/pages/Auth/finish";
 
-
 import ConnectingTeller from "@/pages/Teller/Consulting/index";
 
 import LoadingTeller from "@/pages/Teller/loading_teller";
 import OwnCustomer from "@/pages/Customer/own_customer";
 
-import DailyWorks from '@/pages/Admin/DailyWorks';
-import DailyScore from '@/pages/Admin/DailyScore';
+import DailyWorks from "@/pages/Admin/DailyWorks";
+import DailyScore from "@/pages/Admin/DailyScore";
+import Works from "@/pages/Admin/Works";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Footer />,
     children: [{ index: true, element: <Home /> }]
-  },  
+  },
   {
     path: "/",
     element: <RootLayout />,
 
-    children: [      
+    children: [
       {
         path: "consulting/customer/loading",
         children: [
@@ -69,7 +69,7 @@ const router = createBrowserRouter([
           { index: true, element: <ConnectingCustomer /> },
           { path: ":testId", element: <Main /> }
         ]
-      },      
+      },
       {
         path: "consulting/teller/loading",
         children: [
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
           { index: true, element: <ConnectingTeller /> },
           { path: ":testId", element: <Main /> }
         ]
-      },      
+      },
       {
         path: "test",
         children: [
@@ -92,23 +92,23 @@ const router = createBrowserRouter([
         ]
       }
     ]
-  },  
+  },
   {
-    path: "/login/customer",     
+    path: "/login/customer",
     children: [
       { index: true, element: <LoginCustomer /> },
       { path: ":testId", element: <Main /> }
     ]
   },
   {
-    path: "/login/teller",     
+    path: "/login/teller",
     children: [
       { index: true, element: <LoginTeller /> },
       { path: ":testId", element: <Main /> }
     ]
   },
   {
-    path: "/auth/customer",     
+    path: "/auth/customer",
     children: [
       { index: true, element: <AuthCustomer /> },
       { path: ":testId", element: <Main /> }
@@ -126,35 +126,55 @@ const router = createBrowserRouter([
     path: "/auth/mobile/finish",
     element: <Footer />,
     children: [{ index: true, element: <Finish /> }]
-  },    
+  },
   {
-    path: "/after/customer",     
+    path: "/after/customer",
     children: [
       { index: true, element: <AfterCustomer /> },
       { path: ":testId", element: <Main /> }
     ]
   },
   {
-    path: "/after/teller",     
+    path: "/after/teller",
     children: [
       { index: true, element: <AfterTeller /> },
       { path: ":testId", element: <Main /> }
     ]
   },
   {
-    path: "/admin/dailyWorks",     
+    path: "/admin",
+    element: <RootLayout />,
     children: [
-      { index: true, element: <DailyWorks /> },
-      { path: ":testId", element: <Main /> }
+      {
+        path: "dailyWorks",
+        children: [
+          { index: true, element: <DailyWorks /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
+        path: "dailyScore",
+        children: [
+          { index: true, element: <DailyScore /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
+        path: "tellerLog",
+        children: [
+          { index: true, element: <Works /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
+        path: "customerLog",
+        children: [
+          { index: true, element: <Works /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      }
     ]
-  },
-  {
-    path: "/admin/dailyScore",     
-    children: [
-      { index: true, element: <DailyScore /> },
-      { path: ":testId", element: <Main /> }
-    ]
-  },
+  }
 ]);
 
 export default router;

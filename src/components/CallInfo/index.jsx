@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./style.scss";
 
 function CallInfo({ onToggleMute, isMuted, duration, isTeller, onShareScreen, isScreenSharing }) {
@@ -7,7 +8,15 @@ function CallInfo({ onToggleMute, isMuted, duration, isTeller, onShareScreen, is
         const secs = seconds % 60;
         return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
       };
+      const navigate = useNavigate();
 
+      const endCall = () => {
+        if (isTeller) {
+            navigate("/after/teller");
+        } else {
+            navigate("/after/customer");
+        }
+    };
     return (
         <div id="customerCallInfoDiv">
             <div id="callTimer">{formatDuration(duration)}</div>
@@ -16,7 +25,7 @@ function CallInfo({ onToggleMute, isMuted, duration, isTeller, onShareScreen, is
                     <img className="callBtn" src="/src/assets/images/micOn.png" onClick={onToggleMute} alt="mic"/> :
                     <img className="callBtn" src="/src/assets/images/micOff.png" onClick={onToggleMute} alt="mic"/> 
                 }
-                <img className="callBtn" id="endCallBtn" src="/src/assets/images/endCallBtn.png"/>
+                <img className="callBtn" id="endCallBtn" src="/src/assets/images/endCallBtn.png" onClick={endCall} alt="end call" />
                 {isTeller && (
                     <img
                         className="shareBtn"

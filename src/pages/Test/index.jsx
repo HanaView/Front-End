@@ -4,6 +4,8 @@ import Button from "@/components/Button";
 import { globalModalAtom } from "@/stores";
 import SavingTask from "../Consulting/SavingTask";
 import DepositTask from "../Consulting/DepositTask";
+import CardTask from "../Consulting/Card";
+import CustomerTask from "../Consulting/CustomerTask";
 
 function Test() {
   const [modalData, setModalData] = useAtom(globalModalAtom);
@@ -32,8 +34,10 @@ function Test() {
 
   return (
     <>
+      <CardTask />
       <SavingTask />
       <DepositTask />
+      <CustomerTask />
       <div>
         <Button size="large" shape="rect" onClick={onClickButton}>
           go

@@ -6,6 +6,8 @@ import { useAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits, postJoin } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSetAtom } from "jotai";
+import { messageModalAtom, agreementModalAtom, socketAtom } from "@/stores";
 
 const DepositForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -113,6 +115,95 @@ const DepositForm = ({ product, onBack }) => {
     }));
   };
 
+  const [signalingSocket] = useAtom(socketAtom);
+
+  const setAgreementModalData = useSetAtom(agreementModalAtom);
+  const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
+
+  // 동의서 버튼 클릭
+  const handleAgreementButtonClick = () => {
+    console.log("ㅎㅎㅎ즐거운코딩");
+    console.log("@@@ signalingSocket", signalingSocket);
+
+    // WebSocket 메시지 전송
+    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      setMessageModalData({
+        isOpen: true,
+        children: null,
+        content: (
+          <div id="modalDiv">
+            <div id="modalContent">
+              <p id="modalInfo">동의서 작성 화면을 띄웠습니다.</p>
+            </div>
+          </div>
+        ),
+        confirmButtonText: "확인", // 확인 누르고 customer로 이동
+        onClickConfirm: () => {
+          // Close the modal
+          closeModal(setMessageModalData);
+          setTimeout(() => { 
+            setMessageModalData({
+              isOpen: true,
+              children: null,
+              content: (
+                <div id="modalDiv">
+                  <div id="modalContent">
+                    <p id="modalInfo">동의서 작성이 완료되었습니다.</p>
+                  </div>
+                </div>
+              ),
+              confirmButtonText: "확인",
+              onClickConfirm: () => {
+                // Close the modal
+                closeModal(setMessageModalData);
+              }
+            });
+          }, 3000);
+
+        }
+      });
+
+      console.log("Sending SHOW_AGREEMENT_MODAL message");
+      signalingSocket.send(JSON.stringify({ type: "SHOW_AGREEMENT_MODAL" }));
+    }
+  };
+
+  // 비밀번호 입력 요청 버튼 클릭
+  const handleRequirePasswordButtonClick = () => {
+    console.log("@@@ signalingSocket", signalingSocket);
+
+    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      setMessageModalData({
+        isOpen: true,
+        children: null,
+        content: (
+          <div id="modalDiv">
+            <div id="modalContent">
+              <p id="modalInfo">비밀번호 입력 화면을 띄웠습니다.</p>
+            </div>
+          </div>
+        ),
+        confirmButtonText: "확인",
+        onClickConfirm: () => {
+          // Close the modal
+          setMessageModalData({
+            isOpen: false,
+            children: null,
+            content: null,
+            confirmButtonText: "",
+            onClickConfirm: null
+          });
+        }
+      });
+
+      signalingSocket.send(
+        JSON.stringify({
+          type: "show_pwInputModal"
+        })
+      );
+    }
+  };
+
   const InfoItem = ({ label, value }) => (
     <div className="info">
       <div className="label">{label} : </div>
@@ -151,15 +242,17 @@ const DepositForm = ({ product, onBack }) => {
 
   //가입버튼 비활성화
   useEffect(() => {
-    const isDisable = !principal || !account;
+    const isDisable = !principal;
     setDisableJoin(isDisable);
   }, [principal, account]);
 
   return (
-    <div>
-      <Button onClick={onBack}>⬅️</Button>
-      <div className="depositForm">
-        <h2 className="title">예금</h2>
+    <div className="joinFormWrapper">
+      <div className="joinForm">
+        <div className="backButtonWrapper">
+          <button onClick={onBack} className="backBtn" />
+          <h2 className="title">예금</h2>
+        </div>
         <div className="depositInfo column">
           <div className="name">
             <p className="lableBox">상품정보:</p>
@@ -167,7 +260,7 @@ const DepositForm = ({ product, onBack }) => {
           </div>
 
           <div className="rateBox">
-            6개월:<span>{interestRate6Months}</span>% 12개월 :
+            6개월: <span>{interestRate6Months}</span>% 12개월:
             <span>{interestRate12Months}</span>% (세전)
           </div>
         </div>
@@ -182,17 +275,20 @@ const DepositForm = ({ product, onBack }) => {
               onChange={handleAccountChange}
             >
               <option value="">계좌를 선택하세요</option>
-              {/* todo: 실제 유저 계좌 데이터 */}
               {userDeposits?.data
-                .filter((item) => !item.isLoss || !item.isHuman)
+                .filter(
+                  (item) =>
+                    (!item.isLoss || !item.isHuman) &&
+                    item.depositInfo.depositCategoryId == 1
+                )
                 .map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.accountNumber} - 하나은행
+                    {item.accountNumber} - {item.depositInfo.name}
                   </option>
                 ))}
             </select>
           </div>
-          <Button size="medium" onClick={handleJoin}>
+          <Button size="medium" onClick={handleRequirePasswordButtonClick}>
             비밀번호 입력 요청
           </Button>
         </div>
@@ -224,7 +320,7 @@ const DepositForm = ({ product, onBack }) => {
               원
             </div>
           </div>
-          <Button size="medium" onClick={handleJoin}>
+          <Button size="medium" onClick={handleAgreementButtonClick}>
             동의서 전송
           </Button>
         </div>

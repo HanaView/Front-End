@@ -8,7 +8,7 @@ const DailyScore = () => {
             type: 'line'
         },
         title: {
-            text: 'Monthly Average Temperature'
+            text: '일 별 평점 현황'
         },
         subtitle: {
             text: 'Source: ' +
@@ -22,7 +22,7 @@ const DailyScore = () => {
         },
         yAxis: {
             title: {
-                text: 'Temperature (°C)'
+                text: '점(score)'
             }
         },
         plotOptions: {

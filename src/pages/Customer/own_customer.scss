@@ -1,24 +1,80 @@
 .OwnCustomerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+
+  .title {
+    font-size: 25px;
+  }
+
+  .dummy {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .ownCustomerTable {
+    //여기서 테이블 수정
+  }
+
+  .contentContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;  
-    height: 100%;
-    
-    .title {
-      font-size: 25px;      
-    }
-    
-    .dummy {
-      margin-top: 20px;
-      margin-bottom: 20px;
-    }
-    
-   .contentContainer {
+    justify-content: space-evenly;
+  }
+  .pieContainer {
+    width: 200px;
+    height: 200px;
+  }
+  .productContainer {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-   }
+    align-items: flex-start;
+    justify-content: center;
+    .first {
+      padding-right: 30px;
+    }
   }
-  
+
+  .productWrapper {
+    height: 230px;
+  }
+  .productTitle {
+    font-size: 25px;
+    text-align: left;
+    margin-top: 20px;
+  }
+  .product {
+    max-height: 170px;
+    overflow: auto;
+    width: 400px;
+    margin: 10px 0;
+    background: #fff;
+    // color: #008e71;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .product div {
+    padding: 10px 0;
+    position: relative;
+    // color: $color-gray;
+    // color: rgb(130, 130, 130);
+    color: $color-primary;
+    .num {
+      padding-left: 10px;
+      color: black;
+    }
+  }
+
+  .product div:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #008e71;
+  }
+}

@@ -17,6 +17,8 @@ export const initialModalState = {
 export const globalModalAtom = atom(initialModalState);
 //비번 요청 시 떠야하는 모달
 export const passwordRequestlModalAtom = atom(initialModalState);
+//메시지 모달
+export const messageModalAtom = atom(initialModalState);
 
 //카메라
 export const capturedImageAtom = atom(null);
@@ -24,3 +26,22 @@ export const capturedImageAtom = atom(null);
 //인증
 export const userTypeAtom = atom(getUserTypeFromStorage());
 
+// 약관 모달
+export const agreementModalAtom = atom(initialModalState);
+
+// 텔러 업무창
+export const taskAtom = atom(
+  null, // 초기 값
+  (get, set, newTaskId) => {
+    set(taskAtom, newTaskId);
+  }
+);
+
+// WebSocket 연결 정보를 저장할 atom
+// socketAtom을 쓰기 가능한 Atom으로 설정
+export const socketAtom = atom(
+  null, // 초기 값
+  (get, set, newSocket) => {
+    set(socketAtom, newSocket);
+  }
+);

@@ -4,9 +4,27 @@ import CallInfo from "@/components/CallInfo/";
 import Chat from "@/components/Chat/";
 import "./style.scss";
 import CustomerInfo from "@/components/CustomerInfo";
+import TaskList from "@/components/TellerTask";
+import SavingTask from "@/pages/Consulting/SavingTask";
+import DepositTask from "@/pages/Consulting/DepositTask";
+import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
+import {
+  messageModalAtom,
+  agreementModalAtom,
+  taskAtom,
+  socketAtom,
+  capturedImageAtom
+} from "@/stores";
+import { useAtom } from "jotai";
+import Card from "@/pages/Consulting/Card";
+import MessageModal from "@/pages/_shared/Modal/MessageModal";
+import CryptoJS from "crypto-js"; // crypto-js 라이브러리 import
+import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
+import CustomerTask from "@/pages/Consulting/CustomerTask";
+import axios from "axios";
 
 function ConnectingTeller() {
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [callDuration, setCallDuration] = useState(0);
   const [isCallActive, setIsCallActive] = useState(false);
   const [signalingSocket, setSignalingSocket] = useState(null);
@@ -19,19 +37,70 @@ function ConnectingTeller() {
   const [activeVideo, setActiveVideo] = useState(null);
   const [previousVideo, setPreviousVideo] = useState(null); // 이전 비디오 상태 저장
   const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
+  const [receivedInfo, setReceivedInfo] = useState(null); // 받은 정보 저장
+  const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
 
-  const customerInfo = {
-    name: "김하나",
-    phoneNumber: "010-0000-0000",
-    idNumber: "990000-1234567",
-    idImage: "/src/assets/images/videoPending.png"
+  const [activeTask] = useAtom(taskAtom);
+  const [, setSocketAtom] = useAtom(socketAtom); // atom을 사용하여 WebSocket 저장
+
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [image, setImage] = useState("");
+  const redisKey = localStorage.getItem("key");
+
+  const customerInfo = async (e) => {
+    // e.preventDefault();
+
+    try {
+      const response = await axios.get(
+        "https://hanaview.shop/api/login/getUserInfo?key=" + redisKey     
+      );
+
+      if (response.data.state == 200) {
+        setName(response.data.data.user.name);
+        setPhoneNumber(response.data.data.user.tele);
+        setIdNumber(response.data.data.user.socialNumber);
+        setImage(response.data.data.image);
+      } else {
+        // Handle authentication failure
+        alert(response.data.errorCode.message);
+        console.error(
+          "Authentication failed:",
+          response.data.errorCode.message
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Response error:", error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response error:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Axios error:", error.message);
+      }
+    }
   };
+  useEffect(() => {
+    customerInfo();
+  }, []);
+
+  // const customerInfo = {
+  //   name: "김하나",
+  //   phoneNumber: "010-0000-0000",
+  //   idNumber: "990000-1234567",
+  //   idImage: "/src/assets/images/videoPending.png"
+  // };
 
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
+    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
     setSignalingSocket(socket);
+    setSocketAtom(socket); // atom 저장
 
     const pc = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
@@ -55,11 +124,18 @@ function ConnectingTeller() {
     };
 
     dc.onmessage = (event) => {
+      console.log(event);
       console.log("Data channel message received:", event.data);
       const receivedMessage = JSON.parse(event.data);
+      console.log(receivedMessage);
+
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: "remote", message: receivedMessage.message, timestamp: receivedMessage.timestamp }
+        {
+          sender: "remote",
+          message: receivedMessage.message,
+          timestamp: receivedMessage.timestamp
+        }
       ]);
     };
 
@@ -74,7 +150,7 @@ function ConnectingTeller() {
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
-        console.log('Sending ICE candidate:', event.candidate);
+        console.log("Sending ICE candidate:", event.candidate);
         socket.send(
           JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
         );
@@ -82,13 +158,13 @@ function ConnectingTeller() {
     };
 
     pc.ontrack = (event) => {
-      console.log('Received remote track:', event.streams[0]);
+      console.log("Received remote track:", event.streams[0]);
       setRemoteStream(event.streams[0]);
     };
 
     pc.oniceconnectionstatechange = () => {
-      console.log('ICE connection state change:', pc.iceConnectionState);
-      if (pc.iceConnectionState === 'failed') {
+      console.log("ICE connection state change:", pc.iceConnectionState);
+      if (pc.iceConnectionState === "failed") {
         pc.restartIce();
       }
     };
@@ -134,7 +210,65 @@ function ConnectingTeller() {
           } else {
             console.error("Invalid ICE message:", message);
           }
-          break;       
+          break;
+        case "password":
+          try {
+            const decryptedPassword = CryptoJS.AES.decrypt(
+              message.data,
+              "secret-key"
+            ).toString(CryptoJS.enc.Utf8);
+            console.log("Decrypted Password:", decryptedPassword);
+            setReceivedInfo(decryptedPassword);
+
+            // 비밀번호 인증을 완료
+            setMessageModalData({
+              isOpen: true,
+              children: null,
+              content: (
+                <div id="modalDiv">
+                  <div id="modalContent">
+                    <p id="modalInfo">손님이 비밀번호 인증을 완료했습니다.</p>
+                  </div>
+                </div>
+              ),
+              confirmButtonText: "확인",
+              onClickConfirm: () => {
+                setMessageModalData({
+                  isOpen: false,
+                  children: null,
+                  content: null,
+                  confirmButtonText: "",
+                  onClickConfirm: null
+                });
+              }
+            });
+          } catch (error) {
+            console.error("Error decrypting password:", error);
+          }
+          break;
+        case "agreements_completed":
+          // 약관 동의 완료 모달
+          setMessageModalData({
+            isOpen: true,
+            children: null,
+            content: (
+              <div id="modalDiv">
+                <div id="modalContent">
+                  <p id="modalInfo">손님이 동의서 작성을 완료했습니다.</p>
+                </div>
+              </div>
+            ),
+            confirmButtonText: "확인",
+            onClickConfirm: () => {
+              setMessageModalData({
+                isOpen: false,
+                children: null,
+                content: null,
+                confirmButtonText: "",
+                onClickConfirm: null
+              });
+            }
+          });
         default:
           console.error("알 수 없는 메시지 타입:", message);
           break;
@@ -164,12 +298,16 @@ function ConnectingTeller() {
 
   const startScreenSharing = async () => {
     try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true
+      });
       setScreenStream(stream);
       setPreviousVideo(largeVideoRef.current.srcObject);
 
       const videoTrack = stream.getVideoTracks()[0];
-      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      const sender = peerConnection
+        .getSenders()
+        .find((s) => s.track.kind === videoTrack.kind);
       if (sender) {
         sender.replaceTrack(videoTrack);
       } else {
@@ -184,14 +322,16 @@ function ConnectingTeller() {
         stopScreenSharing();
       };
     } catch (error) {
-      console.error('Error sharing screen:', error);
-      alert('Error sharing screen. Please check your screen sharing permissions.');
+      console.error("Error sharing screen:", error);
+      alert(
+        "Error sharing screen. Please check your screen sharing permissions."
+      );
     }
   };
 
   const stopScreenSharing = () => {
     if (screenStream) {
-      screenStream.getTracks().forEach(track => track.stop());
+      screenStream.getTracks().forEach((track) => track.stop());
       setScreenStream(null);
       setIsScreenSharing(false);
       if (largeVideoRef.current) {
@@ -199,7 +339,9 @@ function ConnectingTeller() {
       }
 
       const videoTrack = localStream.getVideoTracks()[0];
-      const sender = peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
+      const sender = peerConnection
+        .getSenders()
+        .find((s) => s.track.kind === videoTrack.kind);
       if (sender) {
         sender.replaceTrack(videoTrack);
       }
@@ -229,6 +371,23 @@ function ConnectingTeller() {
     }
   };
 
+  // 업무 클릭 시 실행되는 함수
+  const renderActiveTask = () => {
+    switch (activeTask) {
+      case 1002:
+        return <DepositTask />;
+      case 1004:
+        return <SavingTask />;
+      case 1008:
+        return <Card />;
+      case 1009:
+        return <Card />;
+      default:
+        // TODO손님의 전체 하나은행 가입 상품 정보를 띄워함
+        return <CustomerTask />;
+    }
+  };
+
   return (
     <div className="serviceContainer teller">
       <div id="consultLeftSection">
@@ -245,10 +404,10 @@ function ConnectingTeller() {
         />
         <div className="customerInfoContainer">
           <CustomerInfo
-            name={customerInfo.name}
-            phoneNumber={customerInfo.phoneNumber}
-            idNumber={customerInfo.idNumber}
-            idImage={customerInfo.idImage}
+            name={name}
+            phoneNumber={phoneNumber}
+            idNumber={idNumber}
+            image={image}
           />
         </div>
       </div>
@@ -265,7 +424,9 @@ function ConnectingTeller() {
               isMuted={isMuted}
               duration={callDuration}
               isTeller={true}
-              onShareScreen={isScreenSharing ? stopScreenSharing : startScreenSharing}
+              onShareScreen={
+                isScreenSharing ? stopScreenSharing : startScreenSharing
+              }
               isScreenSharing={isScreenSharing}
             />
             <Chat
@@ -273,9 +434,13 @@ function ConnectingTeller() {
               messages={messages}
               onMessageReceived={handleMessageReceived}
             />
+            <MessageModal />
           </div>
         </div>
-        <div className="inputSection">필요업무에 맞는 입력창</div>
+        <div className="inputSection">
+          <div id="task">{renderActiveTask()}</div>
+        </div>
+        <AgreementModal />
       </div>
     </div>
   );
