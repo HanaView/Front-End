@@ -1,0 +1,9 @@
+#addressDiv {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+#addressDiv input{
+    width: calc(100% - 90px);
+}

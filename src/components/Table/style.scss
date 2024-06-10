@@ -73,11 +73,18 @@
   padding: 6px 12px;
   display: table-cell;
   min-width: 90px;
+
   button {
     min-width: 70px;
   }
+
   @media screen and (max-width: 580px) {
     padding: 2px 16px;
     display: block;
   }
+}
+
+.smallCell {
+  font-size: 0.8rem;
+  padding: 9px 12px;
 }
