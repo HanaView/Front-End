@@ -25,7 +25,7 @@ function ButtonList() {
             handleNavigation("/consulting/customer/loading?key=" + redisKey)
           }
         >
-          화상연결
+          화상 상담
         </Button>
         <Button
           className={classNames("side-button", {
@@ -68,7 +68,7 @@ function ButtonList() {
             handleNavigation("/consulting/teller/loading?key=" + redisKey)
           }
         >
-          화상연결(텔러)
+          화상 상담(텔러)
         </Button>
         <Button
           className={classNames("side-button", {
