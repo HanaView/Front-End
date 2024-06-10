@@ -10,7 +10,7 @@ import "./index.scss";
 import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
 
 function Consulting() {
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
   const [isCallActive, setIsCallActive] = useState(false);
   const [signalingSocket, setSignalingSocket] = useState(null);

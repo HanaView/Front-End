@@ -19,6 +19,8 @@ export const globalModalAtom = atom(initialModalState);
 export const passwordRequestlModalAtom = atom(initialModalState);
 //메시지 모달
 export const messageModalAtom = atom(initialModalState);
+//고객 정보 모달
+export const customerInfoModalAtom = atom(initialModalState);
 
 //카메라
 export const capturedImageAtom = atom(null);

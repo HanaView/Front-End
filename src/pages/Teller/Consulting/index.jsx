@@ -4,16 +4,12 @@ import CallInfo from "@/components/CallInfo/";
 import Chat from "@/components/Chat/";
 import "./style.scss";
 import CustomerInfo from "@/components/CustomerInfo";
-import TaskList from "@/components/TellerTask";
 import SavingTask from "@/pages/Consulting/SavingTask";
 import DepositTask from "@/pages/Consulting/DepositTask";
-import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
 import {
   messageModalAtom,
-  agreementModalAtom,
   taskAtom,
-  socketAtom,
-  capturedImageAtom
+  socketAtom
 } from "@/stores";
 import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
@@ -47,7 +43,8 @@ function ConnectingTeller() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [image, setImage] = useState("");
-  const redisKey = localStorage.getItem("key");
+  // const redisKey = localStorage.getItem("key");
+  const redisKey = "b03830ce-b";
 
   const customerInfo = async (e) => {
     // e.preventDefault();
