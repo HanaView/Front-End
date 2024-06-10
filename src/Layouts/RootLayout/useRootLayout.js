@@ -34,6 +34,12 @@ const useRootLayout = () => {
     } else if (location.pathname.includes("/admin/dailyScore")) {
       setSelectedSideButton(SideButtonTypes.DAILY_SCORE);
       setUserType("TELLER");
+    } else if (location.pathname.includes("/admin/tellerLog")) {
+      setSelectedSideButton(SideButtonTypes.TELLER_LOG);
+      setUserType("TELLER");
+    } else if (location.pathname.includes("/admin/customerLog")) {
+      setSelectedSideButton(SideButtonTypes.CUSTOMER_LOG);
+      setUserType("TELLER");
     } else {
       setSelectedSideButton(SideButtonTypes.NONE);
     }
