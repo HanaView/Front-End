@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.scss";
 import Modal from "react-modal";
 import Button from "../../../../components/Button";
@@ -25,9 +25,30 @@ function PasswordModal() {
   const [passWordmodalData, setPasswordModalData] = useAtom(
     passwordRequestlModalAtom
   );
+  const [password, setPassword] = useState("");
+
   const onClickConfirmButton = () => {
-    console.log("???");
-    passWordmodalData.onClickConfirm();
+    // 숫자 4자리 검증
+    if (/^\d{4}$/.test(password)) {
+      // 비밀번호 전송 로직
+      passWordmodalData.onClickConfirm(password); // 암호화하지 않은 비밀번호 전송
+      closeModal();
+    } else {
+      alert("4자리의 숫자만 입력하세요.");
+    }
+  };
+
+  const closeModal = () => {
+    setPasswordModalData((prevData) => ({
+      ...prevData,
+      isOpen: false
+    }));
+    setPassword(""); // 모달이 닫힐 때 비밀번호 초기화
+  };
+
+  // 비밀번호 입력값이 변경될 때마다 상태 업데이트
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
   };
 
   return (
@@ -37,20 +58,33 @@ function PasswordModal() {
       style={customStyles}
       overlayClassName={"global-modal-overlay"}
     >
-      {/* <Button color="default" className="right close-btn" onClick={closeModal}>
-        x
-      </Button> */}
       <div className="center">
-        <span>
-          <input className="joinPasswordInput" />
-        </span>
+        <Button
+          color="default"
+          className="right close-btn"
+          onClick={closeModal}
+        >
+          x
+        </Button>
+        <div id="modalDiv">
+          <h1 id="modalInfo">비밀번호 입력</h1>
+          <div id="modalContent">
+            <input
+              className="joinPasswordInput"
+              type="password"
+              placeholder="계좌 비밀번호 4자리"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </div>
+        </div>
       </div>
       <Button
         className="global-modal-button"
         shape="rect"
         onClick={onClickConfirmButton}
       >
-        확인
+        {passWordmodalData.confirmButtonText}
       </Button>
     </Modal>
   );

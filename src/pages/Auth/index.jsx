@@ -7,8 +7,6 @@ import { useAtom } from "jotai";
 import { capturedImageAtom, globalModalAtom } from "@/stores";
 import axios from "axios";
 
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></meta>
-
 function Auth() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
   const [modalData, setModalData] = useAtom(globalModalAtom); // 모달
@@ -86,9 +84,9 @@ function Auth() {
       console.log("본인인증이 완료되었습니다!!!");
 
       try {
-        const response = await axios.get (
-          "http://172.16.20.211:80/api/login/authComplete?key="+key,        
-        );       
+        const response = await axios.get(       
+          "https://hanaview.shop/api/login/authComplete?key=" + key
+        );
 
         console.log("--------------------------------------");
         console.log(response);
@@ -99,7 +97,7 @@ function Auth() {
             isOpen: true,
             content: "본인인증이 완료되었습니다",
             confirmButtonText: "확인",
-            onClickConfirm: () => navigate("/auth/mobile/finish?key="+key)
+            onClickConfirm: () => navigate("/auth/mobile/finish?key=" + key)
           }));
         } else {
           // Handle authentication failure
@@ -162,7 +160,7 @@ function Auth() {
     setRegistNumber("");
     setAddress("");
     setIssueDate("");
-    navigate("/camera");
+    navigate("/auth/mobile/camera?key=" + key);
   };
 
   return (

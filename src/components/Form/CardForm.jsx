@@ -6,73 +6,46 @@ import { useAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { postJoinSaving } from "@/apis/saving";
+import { postJoinCard } from "@/apis/card";
+import AddressInput from "../Input/AddressInput";
 
-const SavingForm = ({ product, onBack }) => {
+const CardForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
-  //예금 연결계좌
   const [account, setAccount] = useState("");
-  //가입진행 모달에 보여줄 계좌정보
   const [accountInfo, setAccountInfo] = useState("");
-  const [months, setMonths] = useState(6);
-  //예상 적용 이자율
-
-  const [interestRate, setInterestRate] = useState(product.savingRates[0].rate);
-  //6개월 12개월 이자율
-  const interestRate6Months = product.savingRates[0].rate;
-  const interestRate12Months = product.savingRates[1].rate;
-
-  //예상 이자
-  const [interest, setInterest] = useState(0);
-  //원금
-  const [principal, setPrincipal] = useState("");
-  //가입진행 모달
-  const [modalData, setModalData] = useAtom(globalModalAtom); // 모달
-
-  //가입 버튼 비활성화
+  const [modalData, setModalData] = useAtom(globalModalAtom);
   const [disableJoin, setDisableJoin] = useState(true);
 
-  const {
-    data: userDeposits,
-    isLoading,
-    error
-  } = useQuery({
+  // 주소 상태값
+  const [postcode, setPostcode] = useState("");
+  const [address, setAddress] = useState("");
+  const [detailAddress, setDetailAddress] = useState("");
+
+  // 출금일 상태값
+  const [withdrawalDay, setWithdrawalDay] = useState("");
+
+  const { data: userDeposits } = useQuery({
     queryKey: ["getUserDeposits"],
     queryFn: () => getUserDeposits(1)
   });
 
   const postJoinMutation = useMutation({
     mutationFn: () =>
-      postJoinSaving(product.id, {
+      postJoinCard(product.id, {
         userId: 1,
-        // @ts-ignore
-        perMonth: Number(principal.replaceAll(",", "")),
-        period: months,
-        //TODO: 실제 비번 받아서
-        password: "1234",
-        userDepositId: account
+        userDepositId: account,
+        password: "1111"
       }),
     onSuccess: (data) => {
-      // 성공 시에 실행할 코드
       console.log("Join successful:", data);
       closeModal(setModalData);
-      // 예: 데이터를 최신화하기 위해 쿼리 무효화
       // @ts-ignore
-      queryClient.invalidateQueries(["savings"]);
+      queryClient.invalidateQueries(["userCards"]);
     },
     onError: (error) => {
       console.error("Join failed:", error);
     }
   });
-
-  const changeEnteredNum = (e) => {
-    let value = e.target.value;
-    value = value.replace(/[^\d.-]/g, "");
-    if (!isNaN(value)) {
-      const removedCommaValue = Number(value.replaceAll(",", ""));
-      setPrincipal(removedCommaValue.toLocaleString());
-    }
-  };
 
   const handleAccountChange = (e) => {
     const name = e.target.options[e.target.selectedIndex].text;
@@ -80,27 +53,10 @@ const SavingForm = ({ product, onBack }) => {
     setAccount(e.target.value);
   };
 
-  const handleMonthsChange = (e) => {
-    let value = parseInt(e.target.value, 10);
-    // @ts-ignore
-    if (isNaN(value) || value === "") {
-      value = null;
-    } else if (value > 36) {
-      value = 36;
-    }
-    if (value < 12) {
-      setInterestRate(interestRate6Months);
-    } else {
-      setInterestRate(interestRate12Months);
-    }
-    setMonths(value);
-  };
-
   const handleJoinDeposit = () => {
     postJoinMutation.mutate();
   };
 
-  //가입 모달 관련
   const handleJoin = () => {
     setModalData((prevState) => ({
       ...prevState,
@@ -126,8 +82,9 @@ const SavingForm = ({ product, onBack }) => {
         <div className="joinModalContainer">
           <InfoItem label="상품정보" value={product.name} />
           <InfoItem label="출금계좌" value={accountInfo || "X"} />
-          <InfoItem label="가입액" value={principal} />
-          <InfoItem label="가입 기간" value={months} />
+          <InfoItem label="출금일" value={withdrawalDay + "일" || "X"} />
+          <InfoItem label="주소" value={address} />
+          <InfoItem label="상세 주소" value={detailAddress} />
           <InfoItem label="비밀번호 인증 여부" value="O 추후 수정" />
           <InfoItem label="동의서 전송 여부" value="O 추후 수정" />
           <div className="message">
@@ -138,38 +95,22 @@ const SavingForm = ({ product, onBack }) => {
     );
   };
 
-  //원금에 이자 예상금액
   useEffect(() => {
-    const principalNum = Number(principal.replace(/,/g, ""));
-    const calculatedInterest = (
-      (principalNum * (interestRate / 100) * months * (months + 1)) /
-      24
-    ).toFixed(0);
-    setInterest(Number(calculatedInterest));
-  }, [principal, interestRate, months]);
-
-  //가입버튼 비활성화
-  useEffect(() => {
-    const isDisable = !principal || !account;
+    const isDisable = !account || !withdrawalDay;
     setDisableJoin(isDisable);
-  }, [principal, account]);
+  }, [account, withdrawalDay]);
 
   return (
     <div className="joinFormWrapper">
       <div className="joinForm">
         <div className="backButtonWrapper">
           <button onClick={onBack} className="backBtn" />
-          <h2 className="title">적금</h2>
+          <h2 className="title">카드</h2>
         </div>
         <div className="depositInfo column">
           <div className="name">
             <p className="lableBox">상품정보:</p>
             <span>{product.name}</span>
-          </div>
-
-          <div className="rateBox">
-            6개월: <span>{interestRate6Months}</span>% 12개월:
-            <span>{interestRate12Months}</span>% (세전)
           </div>
         </div>
         <div className="column account">
@@ -200,46 +141,41 @@ const SavingForm = ({ product, onBack }) => {
             비밀번호 입력 요청
           </Button>
         </div>
-        <div className="column">
-          <label className="month">
-            <input
-              id="monthInput"
-              type="number"
-              value={months}
-              onChange={handleMonthsChange}
-            />
-            <p>개월</p>
-            <div className="interestRate">
-              <p>예상 적용 이자율: </p>
-              <span> {interestRate}</span>%
-            </div>
-          </label>
-        </div>
         <div className="depositInfo principal">
-          <div className="box">
-            <div className="boxContent">
-              원금:
-              <input
-                className="num padding"
-                type="text"
-                value={principal}
-                onChange={changeEnteredNum}
-              ></input>
-              원
-            </div>
+          <div className="accountList address">
+            <p className="lableBox">출금일:</p>
+            <select
+              id="withdrawalDaySelect"
+              value={withdrawalDay}
+              onChange={(e) => setWithdrawalDay(e.target.value)}
+            >
+              <option value="">출금일을 선택하세요</option>
+              {Array.from({ length: 30 }, (_, i) => i + 1).map((day) => (
+                <option key={day} value={day}>
+                  {day}일
+                </option>
+              ))}
+            </select>
           </div>
+
           <Button size="medium" onClick={handleJoin}>
             동의서 전송
           </Button>
         </div>
         <div className="depositInfo">
-          <div className="box">
-            <div className="boxContent">
-              이자:
-              <div className="num padding">
-                {Number(interest).toLocaleString()}
+          <div className="accountList address">
+            <p className="lableBox">주소:</p>
+            <div className="box">
+              <div className="boxContent">
+                <AddressInput
+                  postcode={postcode}
+                  setPostcode={setPostcode}
+                  address={address}
+                  setAddress={setAddress}
+                  detailAddress={detailAddress}
+                  setDetailAddress={setDetailAddress}
+                />
               </div>
-              원
             </div>
           </div>
           <div>
@@ -253,4 +189,4 @@ const SavingForm = ({ product, onBack }) => {
   );
 };
 
-export default SavingForm;
+export default CardForm;

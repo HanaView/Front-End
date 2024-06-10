@@ -5,6 +5,8 @@ import classNames from "classnames";
 import Button from "@/components/Button";
 import { useAtom } from "jotai";
 import { userTypeAtom } from "@/stores";
+import TaskList from "@/components/TellerTask";
+
 function ButtonList() {
   const { handleNavigation, selectedSideButton } = useRootLayout();
   const [userType] = useAtom(userTypeAtom);
@@ -19,7 +21,9 @@ function ButtonList() {
           })}
           color="default"
           shape="none"
-          onClick={() => handleNavigation("/consulting/customer/loading?key="+redisKey)}
+          onClick={() =>
+            handleNavigation("/consulting/customer/loading?key=" + redisKey)
+          }
         >
           화상연결
         </Button>
@@ -29,7 +33,9 @@ function ButtonList() {
           })}
           color="default"
           shape="none"
-          onClick={() => handleNavigation("/consulting/customer/explaining?key="+redisKey)}
+          onClick={() =>
+            handleNavigation("/consulting/customer/explaining?key=" + redisKey)
+          }
         >
           상품 연결
         </Button>
@@ -39,7 +45,9 @@ function ButtonList() {
           })}
           color="default"
           shape="none"
-          onClick={() => handleNavigation("/consulting/customer/mydata?key="+redisKey)}
+          onClick={() =>
+            handleNavigation("/consulting/customer/mydata?key=" + redisKey)
+          }
         >
           마이 자산 연결
         </Button>
@@ -56,18 +64,33 @@ function ButtonList() {
           })}
           color="default"
           shape="none"
-          onClick={() => handleNavigation("/consulting/teller/loading?key="+redisKey)}
+          onClick={() =>
+            handleNavigation("/consulting/teller/loading?key=" + redisKey)
+          }
         >
           화상연결(텔러)
         </Button>
-        {/* <Button
-          className="side-button"
+        <Button
+          className={classNames("side-button", {
+            selected: selectedSideButton === SideButtonTypes.DAILY_WORKS
+          })}
           color="default"
           shape="none"
-          onClick={() => console.log("상품 연결")}
+          onClick={() => handleNavigation("/admin/dailyWorks")}
         >
-          텔러 버튼
-        </Button> */}
+          마이 상담 현황
+        </Button>
+        <Button
+          className={classNames("side-button", {
+            selected: selectedSideButton === SideButtonTypes.DAILY_SCORE
+          })}
+          color="default"
+          shape="none"
+          onClick={() => handleNavigation("/admin/dailyScore")}
+        >
+          업무 기록 관리
+        </Button>
+        {selectedSideButton === SideButtonTypes.CONSULTING && <TaskList />}
       </>
     );
   });

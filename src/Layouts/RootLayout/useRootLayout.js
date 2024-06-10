@@ -15,7 +15,7 @@ const useRootLayout = () => {
   const [selectedSideButton, setSelectedSideButton] = useAtom(
     selectedSideButtonAtom
   );
-  const [userType,setUserType] = useAtom(userTypeAtom);
+  const [userType, setUserType] = useAtom(userTypeAtom);
 
   // URL 기준으로 버튼 상태 변화
   useEffect(() => {
@@ -23,15 +23,20 @@ const useRootLayout = () => {
       setSelectedSideButton(SideButtonTypes.CONSULTING);
     } else if (location.pathname.includes("/consulting/customer/explaining")) {
       setSelectedSideButton(SideButtonTypes.PRODUCT);
-    } else if (location.pathname.includes("/assets")) {
+    } else if (location.pathname.includes("/consulting/customer/mydata")) {
       setSelectedSideButton(SideButtonTypes.ASSETS);
     } else if (location.pathname.includes("/consulting/teller/connecting")) {
       setSelectedSideButton(SideButtonTypes.CONSULTING);
       setUserType("TELLER");
+    } else if (location.pathname.includes("/admin/dailyWorks")) {
+      setSelectedSideButton(SideButtonTypes.DAILY_WORKS);
+      setUserType("TELLER");
+    } else if (location.pathname.includes("/admin/dailyScore")) {
+      setSelectedSideButton(SideButtonTypes.DAILY_SCORE);
+      setUserType("TELLER");
     } else {
       setSelectedSideButton(SideButtonTypes.NONE);
     }
-
   }, [location.pathname, setSelectedSideButton]);
 
   return {
