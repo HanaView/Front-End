@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./style.scss";
 import Modal from "react-modal";
 import Button from "../../../../components/Button";
@@ -15,16 +15,14 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
     backgroundColor: "#ffffff",
-    width: "400px",
+    width: "406px",
     height: "750px",
     borderRadius: "22px"
   }
 };
 
 function CustomerInfoModal() {
-  const [customerInfoModalData, setCustomerInfoModalData] = useAtom(
-    customerInfoModalAtom
-  );
+  const [customerInfoModalData, setCustomerInfoModalData] = useAtom(customerInfoModalAtom);
 
   const onClickConfirmButton = () => {
     if (customerInfoModalData.onClickConfirm) {
@@ -34,14 +32,11 @@ function CustomerInfoModal() {
   };
 
   const closeModal = () => {
-    setCustomerInfoModalData((prevData) => {
-      return {
-        ...prevData,
-        isOpen: false
-      };
-    });
+    setCustomerInfoModalData((prevData) => ({
+      ...prevData,
+      isOpen: false
+    }));
   };
-  
 
   return (
     <Modal
