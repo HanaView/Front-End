@@ -29,7 +29,7 @@ const useRootLayout = () => {
       setSelectedSideButton(SideButtonTypes.CONSULTING);
       setUserType("TELLER");
     } else if (location.pathname.includes("/admin/dailyWorks")) {
-      setSelectedSideButton(SideButtonTypes.DAILY_SCORE);
+      setSelectedSideButton(SideButtonTypes.DAILY_WORKS);
       setUserType("TELLER");
     } else if (location.pathname.includes("/admin/dailyScore")) {
       setSelectedSideButton(SideButtonTypes.DAILY_SCORE);

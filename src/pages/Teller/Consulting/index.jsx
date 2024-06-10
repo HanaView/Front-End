@@ -12,13 +12,15 @@ import {
   messageModalAtom,
   agreementModalAtom,
   taskAtom,
-  socketAtom
+  socketAtom,
+  capturedImageAtom
 } from "@/stores";
 import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
 import MessageModal from "@/pages/_shared/Modal/MessageModal";
 import CryptoJS from "crypto-js"; // crypto-js 라이브러리 import
 import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
+import axios from "axios";
 
 function ConnectingTeller() {
   const [isMuted, setIsMuted] = useState(true);
@@ -36,18 +38,67 @@ function ConnectingTeller() {
   const [isScreenSharing, setIsScreenSharing] = useState(false); // 화면 공유 기능을 토글
   const [receivedInfo, setReceivedInfo] = useState(null); // 받은 정보 저장
   const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
-  const [agreementModalData, setAgreementModalData] =
-    useAtom(agreementModalAtom);
 
   const [activeTask] = useAtom(taskAtom);
   const [, setSocketAtom] = useAtom(socketAtom); // atom을 사용하여 WebSocket 저장
 
-  const customerInfo = {
-    name: "김하나",
-    phoneNumber: "010-0000-0000",
-    idNumber: "990000-1234567",
-    idImage: "/src/assets/images/videoPending.png"
+
+
+  const [name,setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [image, setImage] = useState("");
+  const redisKey = localStorage.getItem("key");  
+  console.log("-------------------------------------");
+  console.log(redisKey); 
+  const customerInfo = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.get(
+        "https://hanaview.shop/api/login/validate?key=" + redisKey     
+      );
+
+      console.log("------------------------------");
+      console.log(response.data);
+
+      if (response.data.state == 200) { 
+        setName(response.data.data.user.name);
+        setPhoneNumber(response.data.data.user.tele);
+        setIdNumber(response.data.data.user.socialNumber);      
+        setImage(response.data.data.image);
+      } else {
+        // Handle authentication failure
+        alert(response.data.errorCode.message);
+        console.error(
+          "Authentication failed:",
+          response.data.errorCode.message
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Response error:", error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response error:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Axios error:", error.message);
+      }
+    }
   };
+  useEffect(() => {
+    customerInfo();
+  }, []);
+
+  // const customerInfo = {
+  //   name: "김하나",
+  //   phoneNumber: "010-0000-0000",
+  //   idNumber: "990000-1234567",
+  //   idImage: "/src/assets/images/videoPending.png"
+  // };
 
   const largeVideoRef = useRef(null);
 
@@ -358,10 +409,10 @@ function ConnectingTeller() {
         />
         <div className="customerInfoContainer">
           <CustomerInfo
-            name={customerInfo.name}
-            phoneNumber={customerInfo.phoneNumber}
-            idNumber={customerInfo.idNumber}
-            idImage={customerInfo.idImage}
+            name={name}
+            phoneNumber={phoneNumber}
+            idNumber={idNumber}           
+            image={image}
           />
         </div>
       </div>
@@ -391,7 +442,9 @@ function ConnectingTeller() {
             <MessageModal />
           </div>
         </div>
-        <div className="inputSection">{renderActiveTask()}</div>
+        <div className="inputSection">
+          <div id="task">{renderActiveTask()}</div>
+        </div>
         {/* {receivedInfo && (
           <div className="receivedInfoContainer">
             <p>받은 비밀번호: {receivedInfo}</p>

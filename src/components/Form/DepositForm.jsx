@@ -289,7 +289,7 @@ const DepositForm = ({ product, onBack }) => {
             </select>
           </div>
           <Button size="medium" onClick={handleRequirePasswordButtonClick}>
-            비밀번호 입력 요청!
+            비밀번호 입력 요청
           </Button>
         </div>
         <div className="column">
@@ -321,7 +321,7 @@ const DepositForm = ({ product, onBack }) => {
             </div>
           </div>
           <Button size="medium" onClick={handleAgreementButtonClick}>
-            동의서 전송!
+            동의서 전송
           </Button>
         </div>
         <div className="depositInfo">
