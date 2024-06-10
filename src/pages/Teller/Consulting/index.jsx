@@ -6,12 +6,7 @@ import "./style.scss";
 import CustomerInfo from "@/components/CustomerInfo";
 import SavingTask from "@/pages/Consulting/SavingTask";
 import DepositTask from "@/pages/Consulting/DepositTask";
-import {
-  messageModalAtom,
-  taskAtom,
-  socketAtom,
-  accountPwAtom
-} from "@/stores";
+import { messageModalAtom, taskAtom, socketAtom, accountPwAtom } from "@/stores";
 import { useAtom } from "jotai";
 import Card from "@/pages/Consulting/Card";
 import MessageModal from "@/pages/_shared/Modal/MessageModal";
@@ -45,15 +40,14 @@ function ConnectingTeller() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [image, setImage] = useState("");
-  // const redisKey = localStorage.getItem("key");
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
+
   const redisKey = "b03830ce-b";
 
   const customerInfo = async (e) => {
-    // e.preventDefault();
-
     try {
       const response = await axios.get(
-        "https://hanaview.shop/api/login/getUserInfo?key=" + redisKey     
+        "https://hanaview.shop/api/login/getUserInfo?key=" + redisKey
       );
 
       if (response.data.state == 200) {
@@ -62,37 +56,23 @@ function ConnectingTeller() {
         setIdNumber(response.data.data.user.socialNumber);
         setImage(response.data.data.image);
       } else {
-        // Handle authentication failure
         alert(response.data.errorCode.message);
-        console.error(
-          "Authentication failed:",
-          response.data.errorCode.message
-        );
+        console.error("Authentication failed:", response.data.errorCode.message);
       }
     } catch (error) {
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         console.error("Response error:", error.response.data);
       } else if (error.request) {
-        // The request was made but no response was received
         console.error("No response error:", error.request);
       } else {
-        // Something happened in setting up the request that triggered an Error
         console.error("Axios error:", error.message);
       }
     }
   };
+
   useEffect(() => {
     customerInfo();
   }, []);
-
-  // const customerInfo = {
-  //   name: "김하나",
-  //   phoneNumber: "010-0000-0000",
-  //   idNumber: "990000-1234567",
-  //   idImage: "/src/assets/images/videoPending.png"
-  // };
 
   const largeVideoRef = useRef(null);
 
@@ -106,10 +86,8 @@ function ConnectingTeller() {
     });
     setPeerConnection(pc);
 
-    // 데이터 채널 생성
     const dc = pc.createDataChannel("chat");
 
-    // 데이터 채널 이벤트 리스너 설정
     dc.onopen = () => {
       console.log("Data channel opened");
     };
@@ -123,11 +101,7 @@ function ConnectingTeller() {
     };
 
     dc.onmessage = (event) => {
-      console.log(event);
-      console.log("Data channel message received:", event.data);
       const receivedMessage = JSON.parse(event.data);
-      console.log(receivedMessage);
-
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -138,18 +112,15 @@ function ConnectingTeller() {
       ]);
     };
 
-    // 데이터 채널 설정이 완료되었을 때 실행되는 함수
     const onDataChannelCreated = (event) => {
       const dc = event.channel;
       setDataChannel(dc);
     };
 
-    // 데이터 채널 생성 이벤트 리스너 설정
     pc.ondatachannel = onDataChannelCreated;
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
-        console.log("Sending ICE candidate:", event.candidate);
         socket.send(
           JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
         );
@@ -157,12 +128,10 @@ function ConnectingTeller() {
     };
 
     pc.ontrack = (event) => {
-      console.log("Received remote track:", event.streams[0]);
       setRemoteStream(event.streams[0]);
     };
 
     pc.oniceconnectionstatechange = () => {
-      console.log("ICE connection state change:", pc.iceConnectionState);
       if (pc.iceConnectionState === "failed") {
         pc.restartIce();
       }
@@ -184,8 +153,6 @@ function ConnectingTeller() {
               .catch((error) => {
                 console.error("Error setting remote description:", error);
               });
-          } else {
-            console.error("Invalid offer message:", message);
           }
           break;
         case "answer":
@@ -195,8 +162,6 @@ function ConnectingTeller() {
             ).catch((error) => {
               console.error("Error setting remote description:", error);
             });
-          } else {
-            console.error("Invalid answer message:", message);
           }
           break;
         case "ice-candidate":
@@ -206,8 +171,6 @@ function ConnectingTeller() {
                 console.error("Error adding ICE candidate:", error);
               }
             );
-          } else {
-            console.error("Invalid ICE message:", message);
           }
           break;
         case "password":
@@ -216,11 +179,7 @@ function ConnectingTeller() {
               message.data,
               "secret-key"
             ).toString(CryptoJS.enc.Utf8);
-            console.log("Decrypted Password:", decryptedPassword);
-            // TODO: 비밀번호 전역 저장
             setPassword(decryptedPassword);
-
-            // 비밀번호 인증을 완료
             setMessageModalData({
               isOpen: true,
               children: null,
@@ -247,7 +206,6 @@ function ConnectingTeller() {
           }
           break;
         case "agreements_completed":
-          // 약관 동의 완료 모달
           setMessageModalData({
             isOpen: true,
             children: null,
@@ -370,23 +328,38 @@ function ConnectingTeller() {
       largeVideoRef.current.srcObject = stream;
     }
   };
+  // 이미지 클릭 핸들러
+  const handleImageClick = () => {
+    setIsModalOpen(true);
+  };
 
-  // 업무 클릭 시 실행되는 함수
+  // 모달 컴포넌트
+  const ImageModal = ({ image, isOpen, onClose }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <span className="close-button" onClick={onClose}>
+            &times;
+          </span>
+          <img src={`data:image/jpeg;base64,${image}`} alt="얍얍얍" style={{ width: '100%', height: '50%' }} />
+        </div>
+      </div>
+    );
+  };
+
   const renderActiveTask = () => {
     switch (activeTask) {
       case 1002:
-        // 예금
         return <DepositTask />;
       case 1003:
-        // 적금
         return <SavingTask />;
       case 1006:
-        // 카드
         return <Card />;
       case 1007:
         return <Card />;
       default:
-        // TODO손님의 전체 하나은행 가입 상품 정보를 띄워함
         return <CustomerTask />;
     }
   };
@@ -411,6 +384,7 @@ function ConnectingTeller() {
             phoneNumber={phoneNumber}
             idNumber={idNumber}
             image={image}
+            onImageClick={handleImageClick} // 이미지 클릭 핸들러 추가
           />
         </div>
       </div>
@@ -444,6 +418,7 @@ function ConnectingTeller() {
           <div id="task">{renderActiveTask()}</div>
         </div>
         <AgreementModal />
+        <ImageModal image={image} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </div>
     </div>
   );

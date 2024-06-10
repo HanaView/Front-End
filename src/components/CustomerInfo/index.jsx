@@ -4,7 +4,7 @@ import "./style.scss";
 import { customerInfoModalAtom } from "@/stores";
 import CustomerInfoModal from "@/pages/_shared/Modal/CustomerInfoModal";
 
-const CustomerInfo = ({ name, phoneNumber, idNumber, image }) => {
+const CustomerInfo = ({ name, phoneNumber, idNumber, image, onImageClick }) => {
   const [customerInfoModalData, setCustomerInfoModalData] = useAtom(customerInfoModalAtom);
 
   const formatPhoneNumber = (phoneNumber) => {
@@ -61,7 +61,7 @@ const CustomerInfo = ({ name, phoneNumber, idNumber, image }) => {
   };
 
   return (
-    <div className="customerInfo" onClick={onClickCustomerInfo}>
+    <div className="customerInfo" >
       <h2>{name} 님</h2>
       <p>
         휴대폰 번호: <br />
@@ -73,12 +73,13 @@ const CustomerInfo = ({ name, phoneNumber, idNumber, image }) => {
       </p>
       <div id="idContainer">
         {image ? (
-          <img src={`data:image/jpeg;base64,${image}`} alt="Captured" />
+          <img src={`data:image/jpeg;base64,${image}`} alt="Captured"  onClick={onImageClick} style={{ cursor: 'pointer' }}/>
         ) : (
           <img src="/path/to/your/id-card-image.png" alt="ID Card" />
         )}
       </div>
       <CustomerInfoModal />
+      
     </div>
   );
 };
