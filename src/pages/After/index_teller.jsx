@@ -31,7 +31,7 @@ function AfterTeller() {
               type="text"
               //placeholder="박병철"
               value={customer}
-              style={{ width: "30%" }}
+              style={{ width: "40%" }}
               disabled
             />
           </label>
@@ -42,7 +42,7 @@ function AfterTeller() {
               type="text"
               placeholder="유다영"
               value={teller}
-              style={{ width: "30%" }}
+              style={{ width: "40%" }}
               disabled
             />
           </label>
@@ -76,7 +76,7 @@ function AfterTeller() {
               className="textareaForm"
               placeholder="내용을 입력해주세요"
               value={content}
-              style={{ height: "150px" }}
+              style={{ height: "200px" }}
               onChange={(e) => setContent(e.target.value)}
             />
           </label>
