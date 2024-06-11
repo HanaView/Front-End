@@ -20,32 +20,19 @@ toastConfig({ theme: "dark" });
 
 const DepositForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
-  //예금 연결계좌
   const [account, setAccount] = useState("");
-  //가입진행 모달에 보여줄 계좌정보
   const [accountInfo, setAccountInfo] = useState("");
   const [months, setMonths] = useState(6);
-  //예상 적용 이자율
   const [interestRate, setInterestRate] = useState(
     product.depositRates[0].rate
   );
-  //6개월 12개월 이자율
   const interestRate6Months = product.depositRates[0].rate;
   const interestRate12Months = product.depositRates[1].rate;
-
-  //예상 이자
   const [interest, setInterest] = useState(0);
-  //원금
   const [principal, setPrincipal] = useState("");
-  //가입진행 모달
-  const [modalData, setModalData] = useAtom(globalModalAtom); // 모달
-
-  //가입 버튼 비활성화
+  const [modalData, setModalData] = useAtom(globalModalAtom);
   const [disableJoin, setDisableJoin] = useState(true);
-
-  // 계좌 비밀번호
   const [password] = useAtom(accountPwAtom);
-  // 동의서 확인
   const [agreementSent, setAgreementSent] = useAtom(agreementOkAtom);
 
   const {
@@ -64,17 +51,13 @@ const DepositForm = ({ product, onBack }) => {
         // @ts-ignore
         balance: Number(principal.replaceAll(",", "")),
         period: months,
-        //TODO: 실제 비번 받았으니 -> atom에서 불러와서 넣기
         password: password,
         userDepositId2: account
       }),
     onSuccess: (data) => {
-      // 성공 시에 실행할 코드
       console.log("Join successful:", data);
       closeModal(setModalData);
       toast("가입되었습니다.");
-
-      // 예: 데이터를 최신화하기 위해 쿼리 무효화
       // @ts-ignore
       queryClient.invalidateQueries(["deposits"]);
     },
@@ -118,8 +101,8 @@ const DepositForm = ({ product, onBack }) => {
     postJoinMutation.mutate();
   };
 
-  //가입 모달 관련
   const handleJoin = () => {
+    console.log("Handling join...");
     setModalData((prevState) => ({
       ...prevState,
       isOpen: true,
@@ -131,91 +114,102 @@ const DepositForm = ({ product, onBack }) => {
     }));
   };
 
-  const [signalingSocket] = useAtom(socketAtom);
+  const [signalingSocket, setSignalingSocket] = useAtom(socketAtom);
 
   const setAgreementModalData = useSetAtom(agreementModalAtom);
-  const [messageModalData, setMessageModalData] = useAtom(messageModalAtom); // jotai를 사용한 상태 관리
+  const [messageModalData, setMessageModalData] = useAtom(messageModalAtom);
 
-  // 동의서 버튼 클릭
-  const handleAgreementButtonClick = () => {
-    // WebSocket 메시지 전송
-    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
-      setMessageModalData({
-        isOpen: true,
-        children: null,
-        content: (
-          <div id="modalDiv">
-            <div id="modalContent">
-              <p id="modalInfo">동의서 작성 화면을 띄웠습니다!</p>
-            </div>
+  const reconnectSocket = () => {
+    const newSocket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+    newSocket.onopen = () => {
+      console.log("Reconnected to the socket");
+      setSignalingSocket(newSocket);
+      showAgreementModal();
+    };
+    newSocket.onerror = (error) => {
+      console.error("Socket error:", error);
+    };
+  };
+
+  const showAgreementModal = () => {
+    setMessageModalData({
+      isOpen: true,
+      children: null,
+      content: (
+        <div id="modalDiv">
+          <div id="modalContent">
+            <p id="modalInfo">동의서 작성 화면을 띄웠습니다!</p>
           </div>
-        ),
-        confirmButtonText: "확인", // 확인 누르고 customer로 이동
-        onClickConfirm: () => {
-          // Close the modal
-          closeModal(setMessageModalData);
-          setTimeout(() => {
-            setMessageModalData({
-              isOpen: true,
-              children: null,
-              content: (
-                <div id="modalDiv">
-                  <div id="modalContent">
-                    <p id="modalInfo">동의서 작성이 완료되었습니다.</p>
-                  </div>
+        </div>
+      ),
+      confirmButtonText: "확인",
+      onClickConfirm: () => {
+        closeModal(setMessageModalData);
+        setTimeout(() => {
+          setMessageModalData({
+            isOpen: true,
+            children: null,
+            content: (
+              <div id="modalDiv">
+                <div id="modalContent">
+                  <p id="modalInfo">동의서 작성이 완료되었습니다.</p>
                 </div>
-              ),
-              confirmButtonText: "확인",
-              onClickConfirm: () => {
-                // Close the modal
-                closeModal(setMessageModalData);
-                setAgreementSent(true); // 동의서 전송 여부 업데이트
-              }
-            });
-          }, 3000);
-        }
-      });
+              </div>
+            ),
+            confirmButtonText: "확인",
+            onClickConfirm: () => {
+              closeModal(setMessageModalData);
+              setAgreementSent(true);
+            }
+          });
+        }, 3000);
+      }
+    });
 
-      console.log("Sending SHOW_AGREEMENT_MODAL message");
-      signalingSocket.send(JSON.stringify({ type: "SHOW_AGREEMENT_MODAL" }));
+    console.log("Sending SHOW_AGREEMENT_MODAL message");
+    signalingSocket.send(JSON.stringify({ type: "SHOW_AGREEMENT_MODAL" }));
+  };
+
+  const handleAgreementButtonClick = () => {
+    if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
+      showAgreementModal();
+    } else {
+      reconnectSocket();
     }
   };
 
-  // 비밀번호 입력 요청 버튼 클릭
+  const showPasswordModal = () => {
+    setMessageModalData({
+      isOpen: true,
+      children: null,
+      content: (
+        <div id="modalDiv">
+          <div id="modalContent">
+            <p id="modalInfo">비밀번호 입력 화면을 띄웠습니다.</p>
+          </div>
+        </div>
+      ),
+      confirmButtonText: "확인",
+      onClickConfirm: () => {
+        setAgreementSent(true);
+        closeModal(setMessageModalData);
+      }
+    });
+
+    signalingSocket.send(
+      JSON.stringify({
+        type: "show_pwInputModal"
+      })
+    );
+  };
+
   const handleRequirePasswordButtonClick = () => {
-    console.log("@@@ signalingSocket", signalingSocket);
+    console.log("Handling require password button click...");
 
     if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
-      setMessageModalData({
-        isOpen: true,
-        children: null,
-        content: (
-          <div id="modalDiv">
-            <div id="modalContent">
-              <p id="modalInfo">비밀번호 입력 화면을 띄웠습니다.</p>
-            </div>
-          </div>
-        ),
-        confirmButtonText: "확인",
-        onClickConfirm: () => {
-          setAgreementSent(true);
-
-          // Close the modal
-          setMessageModalData({
-            isOpen: false,
-            children: null,
-            content: null,
-            confirmButtonText: "",
-            onClickConfirm: null
-          });
-        }
-      });
-
-      signalingSocket.send(
-        JSON.stringify({
-          type: "show_pwInputModal"
-        })
-      );
+      showPasswordModal();
+    } else {
+      reconnectSocket();
     }
   };
 
@@ -232,8 +226,8 @@ const DepositForm = ({ product, onBack }) => {
         <div className="joinModalContainer">
           <InfoItem label="상품정보" value={product.name} />
           <InfoItem label="출금계좌" value={accountInfo || "X"} />
-          <InfoItem label="가입액" value={principal+" 원"} />
-          <InfoItem label="가입 기간" value={months+" 개월"} />
+          <InfoItem label="가입액" value={principal + " 원"} />
+          <InfoItem label="가입 기간" value={months + " 개월"} />
           <InfoItem label="비밀번호 인증 여부" value={password ? "O" : "X"} />
           <InfoItem
             label="동의서 전송 여부"
@@ -247,7 +241,6 @@ const DepositForm = ({ product, onBack }) => {
     );
   };
 
-  //원금에 이자 예상금액
   useEffect(() => {
     const principalNum = Number(principal.replace(/,/g, ""));
     const calculatedInterest = (
@@ -258,12 +251,10 @@ const DepositForm = ({ product, onBack }) => {
     setInterest(Number(calculatedInterest));
   }, [principal, interestRate, months]);
 
-  //가입버튼 비활성화
   useEffect(() => {
-    const isDisable = !principal || !account ||  !password || !agreementSent;
+    const isDisable = !principal || !account || !password || !agreementSent;
     setDisableJoin(isDisable);
   }, [principal, account, password, agreementSent]);
-
 
   return (
     <div className="joinFormWrapper">
