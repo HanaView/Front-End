@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Button";
 import "./style.scss";
-import { accountPwAtom, agreementModalAtom, agreementOkAtom, globalModalAtom, messageModalAtom, socketAtom } from "@/stores";
-import { useAtom } from "jotai";
+import {
+  accountPwAtom,
+  agreementModalAtom,
+  agreementOkAtom,
+  globalModalAtom,
+  messageModalAtom,
+  socketAtom
+} from "@/stores";
+import { useAtom, useSetAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { postJoinCard } from "@/apis/card";
 import AddressInput from "../Input/AddressInput";
-import { useSetAtom } from "jotai";
+import toast, { toastConfig } from "react-simple-toasts";
+import "react-simple-toasts/dist/theme/dark.css";
+toastConfig({ theme: "dark" });
 
 const CardForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -39,11 +48,13 @@ const CardForm = ({ product, onBack }) => {
       postJoinCard(product.id, {
         userId: 1,
         userDepositId: account,
-        password: password,
+        password: password
       }),
     onSuccess: (data) => {
       console.log("Join successful:", data);
       closeModal(setModalData);
+      toast("가입되었습니다.");
+
       // @ts-ignore
       queryClient.invalidateQueries(["userCards"]);
     },
@@ -100,7 +111,7 @@ const CardForm = ({ product, onBack }) => {
         onClickConfirm: () => {
           // Close the modal
           closeModal(setMessageModalData);
-          setTimeout(() => { 
+          setTimeout(() => {
             setMessageModalData({
               isOpen: true,
               children: null,
@@ -119,7 +130,6 @@ const CardForm = ({ product, onBack }) => {
               }
             });
           }, 3000);
-
         }
       });
 
@@ -163,8 +173,7 @@ const CardForm = ({ product, onBack }) => {
       );
     }
   };
-  
-  
+
   const InfoItem = ({ label, value }) => (
     <div className="info">
       <div className="label">{label} : </div>
@@ -178,12 +187,15 @@ const CardForm = ({ product, onBack }) => {
         <div className="joinModalContainer">
           <InfoItem label="상품정보" value={product.name} />
           <InfoItem label="출금계좌" value={accountInfo || "X"} />
-          <InfoItem label="출금일" value={withdrawalDay + "일" || "X"} />
+          <InfoItem label="출금일" value={withdrawalDay + " 일" || "X"} />
           <InfoItem label="주소" value={address} />
           <InfoItem label="상세 주소" value={detailAddress} />
           <InfoItem label="비밀번호 인증 여부" value={password ? "O" : "X"} />
-          <InfoItem label="동의서 전송 여부" value={agreementSent ? "O" : "X"} />
-          <div className="message">
+          <InfoItem
+            label="동의서 전송 여부"
+            value={agreementSent ? "O" : "X"}
+          />
+          <div className="joinMessage">
             <span>🥰 가입 정보를 확인 후 손님께 안내해주세요 🥰</span>
           </div>
         </div>
@@ -191,10 +203,12 @@ const CardForm = ({ product, onBack }) => {
     );
   };
 
+  
+  //가입버튼 비활성화
   useEffect(() => {
-    const isDisable = !account || !withdrawalDay;
+    const isDisable = !account || !withdrawalDay || !password || ! agreementSent
     setDisableJoin(isDisable);
-  }, [account, withdrawalDay]);
+  }, [account, withdrawalDay,  password, agreementSent]);
 
   return (
     <div className="joinFormWrapper">

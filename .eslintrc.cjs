@@ -16,7 +16,9 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:import/recommended",
     "plugin:jsx-a11y/recommended",
-    "eslint-config-prettier"
+    "eslint-config-prettier",
+    "plugin:storybook/recommended",
+    "plugin:storybook/recommended"
   ],
   settings: {
     react: {

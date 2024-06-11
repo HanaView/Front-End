@@ -14,6 +14,7 @@ import CryptoJS from "crypto-js"; // crypto-js 라이브러리 import
 import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
 import CustomerTask from "@/pages/Consulting/CustomerTask";
 import axios from "axios";
+import { closeModal } from "@/components/Modal";
 
 function ConnectingTeller() {
   const [isMuted, setIsMuted] = useState(true);
@@ -330,7 +331,19 @@ function ConnectingTeller() {
   };
   // 이미지 클릭 핸들러
   const handleImageClick = () => {
-    setIsModalOpen(true);
+    // setIsModalOpen(true);
+    setMessageModalData({
+      isOpen: true,
+      children: null,
+      content: (
+        <img src={`data:image/jpeg;base64,${image}`} alt="얍얍얍" style={{ width: '100%', height: '90%', objectFit: 'cover'}} />
+      ),
+      confirmButtonText: "확인",
+      onClickConfirm: () => {
+        // Close the modal
+        closeModal(setMessageModalData);
+      }
+    });
   };
 
   // 모달 컴포넌트

@@ -6,7 +6,7 @@ import { PiFootprintsFill } from "react-icons/pi";
 
 function LoadingTeller() {
   const navigate = useNavigate();
-  const [time, setTime] = useState(new Date());  
+  const [time, setTime] = useState(new Date());
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -30,15 +30,15 @@ function LoadingTeller() {
   return (
     <>
       <div className="LoadingTellerContainer">
-        <Button style={{fontSize:"20px"}} className="titleButton" shape="rect" onClick={() => {}}>
+        <div style={{ fontSize: "20px" }} className="titleButton">
           대기현황판
-        </Button>
+        </div>
 
         <div className="dummy"></div>
 
         <div className="contentLine">
           <div className="title">현재 대기중인 손님&nbsp;</div>
-          <div className="content">7</div>
+          <div className="content">7&nbsp;</div>
           <div className="title">명 </div>
         </div>
 
@@ -88,7 +88,13 @@ function LoadingTeller() {
 
         <div className="dummy"></div>
 
-        <Button style={{width:"10%", height:"50px", fontSize:"20px"}} shape="rect" onClick={() => {navigate("/consulting/teller/connecting")}}>
+        <Button
+          style={{ width: "10%", height: "50px", fontSize: "20px" }}
+          shape="rect"
+          onClick={() => {
+            navigate("/consulting/teller/connecting");
+          }}
+        >
           상담시작
         </Button>
       </div>

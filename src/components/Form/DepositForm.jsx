@@ -13,6 +13,10 @@ import { useAtom, useSetAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits, postJoin } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast, { toastConfig } from "react-simple-toasts";
+import "react-simple-toasts/dist/theme/dark.css";
+
+toastConfig({ theme: "dark" });
 
 const DepositForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -68,6 +72,8 @@ const DepositForm = ({ product, onBack }) => {
       // 성공 시에 실행할 코드
       console.log("Join successful:", data);
       closeModal(setModalData);
+      toast("가입되었습니다.");
+
       // 예: 데이터를 최신화하기 위해 쿼리 무효화
       // @ts-ignore
       queryClient.invalidateQueries(["deposits"]);
@@ -192,6 +198,8 @@ const DepositForm = ({ product, onBack }) => {
         ),
         confirmButtonText: "확인",
         onClickConfirm: () => {
+          setAgreementSent(true);
+
           // Close the modal
           setMessageModalData({
             isOpen: false,
@@ -224,14 +232,14 @@ const DepositForm = ({ product, onBack }) => {
         <div className="joinModalContainer">
           <InfoItem label="상품정보" value={product.name} />
           <InfoItem label="출금계좌" value={accountInfo || "X"} />
-          <InfoItem label="가입액" value={principal} />
-          <InfoItem label="가입 기간" value={months} />
+          <InfoItem label="가입액" value={principal+" 원"} />
+          <InfoItem label="가입 기간" value={months+" 개월"} />
           <InfoItem label="비밀번호 인증 여부" value={password ? "O" : "X"} />
           <InfoItem
             label="동의서 전송 여부"
             value={agreementSent ? "O" : "X"}
           />
-          <div className="message">
+          <div className="joinMessage">
             <span>🥰 가입 정보를 확인 후 손님께 안내해주세요 🥰</span>
           </div>
         </div>
@@ -252,9 +260,10 @@ const DepositForm = ({ product, onBack }) => {
 
   //가입버튼 비활성화
   useEffect(() => {
-    const isDisable = !principal;
+    const isDisable = !principal || !account ||  !password || !agreementSent;
     setDisableJoin(isDisable);
-  }, [principal, account]);
+  }, [principal, account, password, agreementSent]);
+
 
   return (
     <div className="joinFormWrapper">

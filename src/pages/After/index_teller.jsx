@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import "./index_teller.scss";
 import Button from "@/components/Button";
+import { useNavigate } from "react-router-dom";
+import toast, { toastConfig } from "react-simple-toasts";
+import "react-simple-toasts/dist/theme/dark.css";
+
+toastConfig({ theme: "dark" });
 
 function AfterTeller() {
   const [customer, setCustomer] = useState("박병철");
@@ -8,6 +13,7 @@ function AfterTeller() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
@@ -15,6 +21,9 @@ function AfterTeller() {
 
   const handleSubmit = (e) => {
     // '확인'버튼 눌렀을때 전송될 내용
+    e.preventDefault();
+    toast("제출 완료되었습니다.");
+    navigate("/admin/tellerLog");
   };
 
   return (
