@@ -3,7 +3,7 @@ import "./style.scss";
 import Modal from "react-modal";
 import Button from "../../../../components/Button";
 import { useAtom } from "jotai";
-import { messageModalAtom } from "@/stores";
+import { customerInfoModalAtom } from "@/stores";
 
 const customStyles = {
   content: {
@@ -16,23 +16,23 @@ const customStyles = {
     transform: "translate(-50%, -50%)",
     backgroundColor: "#ffffff",
     width: "406px",
-    height: "328px",
+    height: "750px",
     borderRadius: "22px"
   }
 };
 
-function MessageModal() {
-  const [messageModalData, setMessageModalData] = useAtom(messageModalAtom);
+function CustomerInfoModal() {
+  const [customerInfoModalData, setCustomerInfoModalData] = useAtom(customerInfoModalAtom);
 
   const onClickConfirmButton = () => {
-    if (messageModalData.onClickConfirm) {
-      messageModalData.onClickConfirm();
+    if (customerInfoModalData.onClickConfirm) {
+      customerInfoModalData.onClickConfirm();
     }
     closeModal();
   };
 
   const closeModal = () => {
-    setMessageModalData((prevData) => ({
+    setCustomerInfoModalData((prevData) => ({
       ...prevData,
       isOpen: false
     }));
@@ -40,21 +40,21 @@ function MessageModal() {
 
   return (
     <Modal
-      isOpen={messageModalData.isOpen}
+      isOpen={customerInfoModalData.isOpen}
       // @ts-ignore
       style={customStyles}
       overlayClassName={"global-modal-overlay"}
     >
-      <div className="center">{messageModalData.content}</div>
+      <div className="center">{customerInfoModalData.content}</div>
       <Button
         className="global-modal-button"
         shape="rect"
         onClick={onClickConfirmButton}
       >
-        {messageModalData.confirmButtonText}
+        {customerInfoModalData.confirmButtonText}
       </Button>
     </Modal>
   );
 }
 
-export default MessageModal;
+export default CustomerInfoModal;

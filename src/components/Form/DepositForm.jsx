@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Button";
 import "./style.scss";
-import { globalModalAtom } from "@/stores";
-import { useAtom } from "jotai";
+import {
+  globalModalAtom,
+  messageModalAtom,
+  agreementModalAtom,
+  socketAtom,
+  accountPwAtom,
+  agreementOkAtom
+} from "@/stores";
+import { useAtom, useSetAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits, postJoin } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSetAtom } from "jotai";
-import { messageModalAtom, agreementModalAtom, socketAtom } from "@/stores";
 
 const DepositForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -34,6 +39,11 @@ const DepositForm = ({ product, onBack }) => {
   //가입 버튼 비활성화
   const [disableJoin, setDisableJoin] = useState(true);
 
+  // 계좌 비밀번호
+  const [password] = useAtom(accountPwAtom);
+  // 동의서 확인
+  const [agreementSent, setAgreementSent] = useAtom(agreementOkAtom);
+
   const {
     data: userDeposits,
     isLoading,
@@ -50,8 +60,8 @@ const DepositForm = ({ product, onBack }) => {
         // @ts-ignore
         balance: Number(principal.replaceAll(",", "")),
         period: months,
-        //TODO: 실제 비번 받아서
-        password: "1234",
+        //TODO: 실제 비번 받았으니 -> atom에서 불러와서 넣기
+        password: password,
         userDepositId2: account
       }),
     onSuccess: (data) => {
@@ -122,9 +132,6 @@ const DepositForm = ({ product, onBack }) => {
 
   // 동의서 버튼 클릭
   const handleAgreementButtonClick = () => {
-    console.log("ㅎㅎㅎ즐거운코딩");
-    console.log("@@@ signalingSocket", signalingSocket);
-
     // WebSocket 메시지 전송
     if (signalingSocket && signalingSocket.readyState === WebSocket.OPEN) {
       setMessageModalData({
@@ -133,7 +140,7 @@ const DepositForm = ({ product, onBack }) => {
         content: (
           <div id="modalDiv">
             <div id="modalContent">
-              <p id="modalInfo">동의서 작성 화면을 띄웠습니다.</p>
+              <p id="modalInfo">동의서 작성 화면을 띄웠습니다!</p>
             </div>
           </div>
         ),
@@ -141,7 +148,7 @@ const DepositForm = ({ product, onBack }) => {
         onClickConfirm: () => {
           // Close the modal
           closeModal(setMessageModalData);
-          setTimeout(() => { 
+          setTimeout(() => {
             setMessageModalData({
               isOpen: true,
               children: null,
@@ -156,10 +163,10 @@ const DepositForm = ({ product, onBack }) => {
               onClickConfirm: () => {
                 // Close the modal
                 closeModal(setMessageModalData);
+                setAgreementSent(true); // 동의서 전송 여부 업데이트
               }
             });
           }, 3000);
-
         }
       });
 
@@ -219,8 +226,11 @@ const DepositForm = ({ product, onBack }) => {
           <InfoItem label="출금계좌" value={accountInfo || "X"} />
           <InfoItem label="가입액" value={principal} />
           <InfoItem label="가입 기간" value={months} />
-          <InfoItem label="비밀번호 인증 여부" value="O 추후 수정" />
-          <InfoItem label="동의서 전송 여부" value="O 추후 수정" />
+          <InfoItem label="비밀번호 인증 여부" value={password ? "O" : "X"} />
+          <InfoItem
+            label="동의서 전송 여부"
+            value={agreementSent ? "O" : "X"}
+          />
           <div className="message">
             <span>🥰 가입 정보를 확인 후 손님께 안내해주세요 🥰</span>
           </div>
@@ -276,11 +286,7 @@ const DepositForm = ({ product, onBack }) => {
             >
               <option value="">계좌를 선택하세요</option>
               {userDeposits?.data
-                .filter(
-                  (item) =>
-                    (!item.isLoss || !item.isHuman) &&
-                    item.depositInfo.depositCategoryId == 1
-                )
+                .filter((item) => !item.isLoss && !item.isHuman)
                 .map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.accountNumber} - {item.depositInfo.name}

@@ -10,7 +10,7 @@ import "./index.scss";
 import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
 
 function Consulting() {
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
   const [isCallActive, setIsCallActive] = useState(false);
   const [signalingSocket, setSignalingSocket] = useState(null);
@@ -22,12 +22,10 @@ function Consulting() {
   const [passWordmodalData, setPasswordModalData] = useAtom(passwordRequestlModalAtom);
   const [agreementModalData, setAgreementModalData] = useAtom(agreementModalAtom);
 
-
-
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
-    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
     setSignalingSocket(socket);
 
     const pc = new RTCPeerConnection({
