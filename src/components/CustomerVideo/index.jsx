@@ -180,7 +180,7 @@ const CustomerVideo = ({
     const detectSpeaking = () => {
       analyser.getByteFrequencyData(dataArray);
       const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-      setSpeaking(average > 15); // 임계값 조정 가능
+      setSpeaking(average > 5); // 임계값 조정 가능
 
       analyserRef.current.animationFrameId =
         requestAnimationFrame(detectSpeaking);
