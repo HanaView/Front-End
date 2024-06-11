@@ -228,7 +228,7 @@ function Consulting() {
   }, [isCallActive]);
 
   const handleToggleMute = () => {
-    setIsMuted(isMuted);
+    setIsMuted(!isMuted);
   };
 
   const handleMessageReceived = (message) => {
