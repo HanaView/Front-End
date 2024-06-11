@@ -48,6 +48,18 @@ const TellerVideo = ({
   };
 
   useEffect(() => {
+    if (largeVideoRef.current) {
+      largeVideoRef.current.volume = 0;
+    }
+    if (localVideoRef.current) {
+      localVideoRef.current.volume = 0;
+    }
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.volume = 0;
+    }
+  }, []);
+
+  useEffect(() => {
     const getMedia = async () => {
       const { hasMicrophone, hasCamera } = await checkMediaDevices();
 

@@ -27,6 +27,18 @@ const CustomerVideo = ({
   const [messageModalData, setMessageModalData] = useAtom(messageModalAtom);
 
   useEffect(() => {
+    if (largeVideoRef.current) {
+      largeVideoRef.current.volume = 0;
+    }
+    if (localVideoRef.current) {
+      localVideoRef.current.volume = 0;
+    }
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.volume = 0;
+    }
+  }, []);
+  
+  useEffect(() => {
     // 로컬 미디어 스트림 가져오기
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: {
