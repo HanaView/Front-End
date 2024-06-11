@@ -49,7 +49,7 @@ function AfterTeller() {
             <input
               className="inputForm"
               type="text"
-              placeholder="김서윤"
+              placeholder="유다영"
               value={teller}
               style={{ width: "30%" }}
               disabled
