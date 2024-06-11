@@ -221,6 +221,7 @@ function MainContent({ records }) {
         <tbody>
           {records.map((record, index) => (
             <tr key={index}>
+              
               <td>{record.번호}</td>
               <td>{record.손님}</td>
               <td>{record.상담분류}</td>
