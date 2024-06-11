@@ -24,11 +24,10 @@ function Consulting() {
   const [messages, setMessages] = useState([]);
   const [screenStream, setScreenStream] = useState(null);
   const [previousStream, setPreviousStream] = useState(null);
-  const [passWordmodalData, setPasswordModalData] = useAtom(
+  const [passwordModalData, setPasswordModalData] = useAtom(
     passwordRequestlModalAtom
   );
-  const [agreementModalData, setAgreementModalData] =
-    useAtom(agreementModalAtom);
+  const [agreementModalData, setAgreementModalData] = useAtom(agreementModalAtom);
 
   const largeVideoRef = useRef(null);
 
@@ -177,7 +176,6 @@ function Consulting() {
             }
           });
           break;
-        // 약관 모달 띄우기
         case "SHOW_AGREEMENT_MODAL":
           setAgreementModalData({
             isOpen: true,
@@ -196,9 +194,28 @@ function Consulting() {
           });
           break;
         default:
-          console.error("알 수 없는 메시지 타입:", message);
+          console.error("Unknown message type:", message);
           break;
       }
+    };
+
+    socket.onclose = () => {
+      console.log("Socket closed. Attempting to reconnect...");
+      setTimeout(() => {
+        reconnectSocket();
+      }, 1000);
+    };
+
+    const reconnectSocket = () => {
+      const newSocket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+      setSignalingSocket(newSocket);
+      newSocket.onopen = () => {
+        console.log("Reconnected to the socket");
+      };
+      newSocket.onerror = (error) => {
+        console.error("Socket error:", error);
+      };
+      newSocket.onmessage = socket.onmessage;
     };
 
     return () => {
@@ -288,8 +305,24 @@ function Consulting() {
           onMessageReceived={handleMessageReceived}
         />
       </div>
-      <PasswordModal />
-      <AgreementModal />
+      {passwordModalData.isOpen && (
+        <PasswordModal
+          // @ts-ignore
+          isOpen={passwordModalData.isOpen}
+          content={passwordModalData.content}
+          confirmButtonText={passwordModalData.confirmButtonText}
+          onClickConfirm={passwordModalData.onClickConfirm}
+        />
+      )}
+      {agreementModalData.isOpen && (
+        <AgreementModal
+          // @ts-ignore
+          isOpen={agreementModalData.isOpen}
+          content={agreementModalData.content}
+          confirmButtonText={agreementModalData.confirmButtonText}
+          onClickConfirm={agreementModalData.onClickConfirm}
+        />
+      )}
     </div>
   );
 }
