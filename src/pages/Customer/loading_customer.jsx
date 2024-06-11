@@ -1,7 +1,7 @@
 import React from "react";
 import "./loading_customer.scss";
 import Button from "@/components/Button";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { redirect, useNavigate, useSearchParams } from "react-router-dom";
 
 function LoadingCustomer() {
   const navigate = useNavigate();
@@ -50,9 +50,7 @@ function LoadingCustomer() {
           style={{ width: "40%", height: "70px", fontSize: "25px" }}
           shape="rect"
           onClick={() =>
-            navigate(
-              "https://www.kebhana.com/cont/util/util04/util0401/index.jsp"
-            )
+            {window.location.href = "https://www.kebhana.com/cont/util/util04/util0401/index.jsp";}
           }
         >
           가까운 지점 찾기

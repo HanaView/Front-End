@@ -10,7 +10,7 @@ toastConfig({ theme: "dark" });
 
 function AfterCustomer() {
   const [customer, setCustomer] = useState("박병철");
-  const [teller, setTeller] = useState("");
+  const [teller, setTeller] = useState("유다영");
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(5);
   const navigate = useNavigate();
