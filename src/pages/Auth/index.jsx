@@ -84,7 +84,7 @@ function Auth() {
       console.log("본인인증이 완료되었습니다!!!");
 
       try {
-        const response = await axios.get(       
+        const response = await axios.get(
           "https://hanaview.shop/api/login/authComplete?key=" + key
         );
 
@@ -95,14 +95,24 @@ function Auth() {
           setMessageModalData((prevState) => ({
             ...prevState,
             isOpen: true,
-            content: 
-            <div id="modalDiv">
-            <div id="modalContent">
-              <p id="modalInfo">"본인인증이 완료되었습니다."</p>
-            </div>
-          </div>,
+            content: (
+              <div id="modalDiv">
+                <div id="modalContent">
+                  <p id="modalInfo">"본인인증이 완료되었습니다."</p>
+                </div>
+              </div>
+            ),
             confirmButtonText: "확인",
-            onClickConfirm: () => navigate("/auth/mobile/finish?key=" + key)
+            onClickConfirm: () => {
+              navigate("/auth/mobile/finish?key=" + key),
+                setMessageModalData({
+                  isOpen: false,
+                  children: null,
+                  content: null,
+                  confirmButtonText: "",
+                  onClickConfirm: null
+                });
+            }
           }));
         } else {
           // Handle authentication failure
@@ -152,7 +162,7 @@ function Auth() {
       setMessageModalData((prevState) => ({
         ...prevState,
         isOpen: true,
-        content: "다시 입력해주세요", 
+        content: "다시 입력해주세요",
         confirmButtonText: "확인"
       }));
     }
