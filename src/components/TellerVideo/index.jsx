@@ -55,7 +55,11 @@ const TellerVideo = ({
         try {
           const stream = await navigator.mediaDevices.getUserMedia({
             video: true,
-            audio: true
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            }
           });
           if (localVideoRef.current) {
             localVideoRef.current.srcObject = stream;

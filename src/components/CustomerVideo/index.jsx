@@ -29,7 +29,11 @@ const CustomerVideo = ({
   useEffect(() => {
     // 로컬 미디어 스트림 가져오기
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
+      .getUserMedia({ video: true, audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      } })
       .then((stream) => {
         localVideoRef.current.srcObject = stream;
         setLocalStream(stream);
