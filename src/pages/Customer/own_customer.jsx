@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./own_customer.scss";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2"; // 원하는 차트 종류를 가져오세요.
+import { Pie } from "react-chartjs-2";
 import { useQuery } from "@tanstack/react-query";
 import { getUserDeposits } from "@/apis/deposit";
 import { getUserCards } from "@/apis/card";
@@ -24,11 +24,12 @@ function OwnCustomer() {
     queryKey: ["getUserSavings"],
     queryFn: () => getUserSavings(1)
   });
+
   const data = {
     labels: ["예금", "적금", "대출", "카드"],
     datasets: [
       {
-        label: "# of Votes",
+        label: "가입 상품 수",
         data: [
           userDeposits?.data?.length,
           userSavings?.data?.length,
@@ -52,109 +53,106 @@ function OwnCustomer() {
     ]
   };
 
+  const options = {
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        labels: {
+          boxWidth: 20,
+          padding: 15,
+          font: {
+            family: 'Hana2'
+          }
+        }
+      },
+      tooltip: {
+        backgroundColor: '#008e71',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        footerColor: '#fff',
+        displayColors: false,
+        bodyFont: {
+          family: 'Hana2'
+        },
+        titleFont: {
+          family: 'Hana2'
+        },
+        footerFont: {
+          family: 'Hana2'
+        }
+      }
+    },
+    maintainAspectRatio: false,
+    font: {
+      family: 'Hana2'
+    }
+  };
+  
+
   useEffect(() => {
     console.log("userDeposits", userDeposits);
     console.log("userCards", userCards);
     console.log("userSavings", userSavings);
   }, [userDeposits, userCards, userSavings]);
+
   if (!userCards) return <></>;
 
   return (
-    <>
-      <div className="OwnCustomerContainer">
-        <div className="title">마이 자산</div>
-        <div className="dummy"></div>
-        <div className="contentContainer">
-          <div className="pieContainer">
-            <Pie data={data} />
+    <div className="own-customer-container">
+      <div className="title">
+        <span className="username">박병철</span> 님의 자산 현황✨
+      </div>
+      <div className="content-container">
+        <div className="pie-container">
+          <Pie data={data} options={options} />
+        </div>
+        <div className="product-container">
+          <div className="product-wrapper">
+            <div className="product-title">예금</div>
+            <div className="product-list">
+              {userDeposits?.data?.map((product, index) => (
+                <div key={index} className="product-item">
+                  <p>{product.depositInfo?.name}</p>
+                  <p className="amount">{product?.balance.toLocaleString()}원</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="dummy"></div>
-          <div className="productContainer">
-            <div className="first">
-              <div className="productWrapper">
-                <div className="productTitle">예금</div>
-                <div className="product">
-                  {userDeposits.data?.map((product, index) => (
-                    <div key={index}>
-                      <p>{product.depositInfo?.name}</p>
-                      <p className="num">
-                        {product?.balance.toLocaleString()}원
-                      </p>
-                    </div>
-                  ))}
+          <div className="product-wrapper">
+            <div className="product-title">적금</div>
+            <div className="product-list">
+              {userSavings?.data?.map((product, index) => (
+                <div key={index} className="product-item">
+                  <p>{product.parent?.depositInfo.name}</p>
+                  <p className="amount">{product?.balance.toLocaleString()}원</p>
                 </div>
-              </div>
-              <div className="productWrapper">
-                <div className="productTitle">적금</div>
-                <div className="product">
-                  {userSavings.data?.map((product, index) => (
-                    <div key={index}>
-                      <p>{product.parent?.depositInfo.name}</p>
-                      <p className="num">
-                        {product?.balance.toLocaleString()}원
-                      </p>
-                    </div>
-                  ))}
-                </div>
+              ))}
+            </div>
+          </div>
+          <div className="product-wrapper">
+            <div className="product-title">대출</div>
+            <div className="product-list">
+              <div className="product-item">
+                <p>학자금대출</p>
+                <p className="amount">2,500,000원</p>
               </div>
             </div>
-            <div>
-              <div className="productWrapper">
-                <div className="productTitle">대출</div>
-                <div className="product">
-                  <div>
-                    <p>학자금대출</p>
-                    <p className="num">2,500,000원</p>
-                  </div>
+          </div>
+          <div className="product-wrapper">
+            <div className="product-title">카드</div>
+            <div className="product-list">
+              {userCards?.data?.map((product, index) => (
+                <div key={index} className="product-item">
+                  <p>{product.cardInfo?.name}</p>
                 </div>
-              </div>
-              <div className="productWrapper">
-                <div className="productTitle">카드</div>
-                <div className="product">
-                  {userCards.data?.map((product, index) => (
-                    <div key={index}>{product.cardInfo?.name}</div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
-    </>
-
-    //  <>
-    //   <div className="wrapper ownCustomerTable">
-    //     <div className="table">
-    //       <div className="row header green">
-    //         <div className="cell">카드상품명</div>
-    //       </div>
-    //        {userCards.data.map((product, index) => (
-    //         <div className="row" key={index}>
-    //           <div className="cell" data-title="상품명">
-    //             {product.cardInfo.name}
-    //           </div>
-    //         </div>
-    //       ))}
-    //     </div>
-    //   </div>
-    // </>
-    // <>
-    //   <div className="wrapper ownCustomerTable">
-    //     <div className="table">
-    //       <div className="row header green">
-    //         <div className="cell">예금 계좌</div>
-    //       </div>
-    //       {userDeposits.data.map((product, index) => (
-    //         <div className="row" key={index}>
-    //           <div className="cell" data-title="상품명">
-    //             {product.accountNumber}
-    //           </div>
-    //         </div>
-    //       ))}
-    //     </div>
-    //   </div>
-    // </>
-    // </div>
+    </div>
   );
 }
+
 export default OwnCustomer;

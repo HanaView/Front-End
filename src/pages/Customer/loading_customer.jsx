@@ -25,19 +25,19 @@ function LoadingCustomer() {
             <br />
             업무
           </Button>
-          <Button className="button" shape="rect" onClick={() => navigate("")}>
+          <Button className="button" shape="rect" onClick={() => navigate(`/consulting/customer/connecting?key=${key}`)}>
             카드
             <br />
             업무
           </Button>
         </div>
         <div className="buttonLine">
-          <Button className="button" shape="rect" onClick={() => navigate("")}>
+          <Button className="button" shape="rect" onClick={() => navigate(`/consulting/customer/connecting?key=${key}`)}>
             대출
             <br />
             업무
           </Button>
-          <Button className="button" shape="rect" onClick={() => navigate("")}>
+          <Button className="button" shape="rect" onClick={() => navigate(`/consulting/customer/connecting?key=${key}`)}>
             전자금융
             <br />
             업무
