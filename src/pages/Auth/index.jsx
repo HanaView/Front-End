@@ -9,7 +9,7 @@ import axios from "axios";
 
 function Auth() {
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
-  const [modalData, setModalData] = useAtom(globalModalAtom); // 모달
+  const [setMessageData, setMessageModalData] = useAtom(globalModalAtom); // 모달
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [registNumber, setRegistNumber] = useState("");
@@ -92,17 +92,22 @@ function Auth() {
         console.log(response);
 
         if (response.data.result == "success") {
-          setModalData((prevState) => ({
+          setMessageModalData((prevState) => ({
             ...prevState,
             isOpen: true,
-            content: "본인인증이 완료되었습니다",
+            content: 
+            <div id="modalDiv">
+            <div id="modalContent">
+              <p id="modalInfo">"본인인증이 완료되었습니다."</p>
+            </div>
+          </div>,
             confirmButtonText: "확인",
             onClickConfirm: () => navigate("/auth/mobile/finish?key=" + key)
           }));
         } else {
           // Handle authentication failure
           console.error("Authentication failed:", response.data.message);
-          setModalData((prevState) => ({
+          setMessageModalData((prevState) => ({
             ...prevState,
             isOpen: true,
             content: `인증 실패: ${response.data.message}`,
@@ -114,7 +119,7 @@ function Auth() {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
           console.error("Response error:", error.response.data);
-          setModalData((prevState) => ({
+          setMessageModalData((prevState) => ({
             ...prevState,
             isOpen: true,
             content: `서버 응답 에러: ${error.response.data.message || error.response.status}`,
@@ -123,7 +128,7 @@ function Auth() {
         } else if (error.request) {
           // The request was made but no response was received
           console.error("No response error:", error.request);
-          setModalData((prevState) => ({
+          setMessageModalData((prevState) => ({
             ...prevState,
             isOpen: true,
             content:
@@ -133,7 +138,7 @@ function Auth() {
         } else {
           // Something happened in setting up the request that triggered an Error
           console.error("Axios error:", error.message);
-          setModalData((prevState) => ({
+          setMessageModalData((prevState) => ({
             ...prevState,
             isOpen: true,
             content: `요청 설정 에러: ${error.message}`,
@@ -144,10 +149,10 @@ function Auth() {
     } else {
       // 본인인증이 틀렸을때
       console.log("다시 입력해주세요!!!");
-      setModalData((prevState) => ({
+      setMessageModalData((prevState) => ({
         ...prevState,
         isOpen: true,
-        content: "다시 입력해주세요",
+        content: "다시 입력해주세요", 
         confirmButtonText: "확인"
       }));
     }

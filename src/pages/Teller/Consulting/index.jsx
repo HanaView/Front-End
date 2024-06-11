@@ -78,7 +78,7 @@ function ConnectingTeller() {
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://127.0.0.1:8080/WebRTC/signaling");
+    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
     setSignalingSocket(socket);
     setSocketAtom(socket); // atom 저장
 
