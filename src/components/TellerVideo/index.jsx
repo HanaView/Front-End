@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./style.scss";
+import Button from "../Button";
 
 const TellerVideo = ({
   isMuted,
@@ -139,8 +140,8 @@ const TellerVideo = ({
   };
 
   const handleCallButtonClick = () => {
-    const res  = confirm("상담을 시작하시겠습니까?");
-    if(!res) return;
+    const res = confirm("상담을 시작하시겠습니까?");
+    if (!res) return;
 
     if (peerConnection && localStream) {
       peerConnection.addStream(localStream);
@@ -158,12 +159,6 @@ const TellerVideo = ({
       onCallStart();
     }
   };
-
-  // const handleVideoContainerClick = (stream) => {
-  //   if (largeVideoRef && largeVideoRef.current) {
-  //     largeVideoRef.current.srcObject = stream;
-  //   }
-  // };
 
   const setupAudioAnalyser = (stream, setSpeaking, analyserRef) => {
     const audioContext = new window.AudioContext();
@@ -251,7 +246,13 @@ const TellerVideo = ({
           )}
         </div>
       </div>
-      <button onClick={handleCallButtonClick}>상담 시작</button>
+      <Button
+        className="global-modal-button"
+        shape="rect"
+        onClick={handleCallButtonClick}
+      >
+        상담 시작
+      </Button>
     </div>
   );
 };

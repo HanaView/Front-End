@@ -66,7 +66,7 @@ const AddressInput = ({
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
-        <br/>
+        <br />
         <input
           type="text"
           id="sample6_detailAddress"

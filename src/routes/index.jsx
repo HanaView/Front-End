@@ -91,6 +91,20 @@ const router = createBrowserRouter([
           { index: true, element: <Test /> },
           { path: ":testId", element: <Main /> }
         ]
+      },
+      {
+        path: "/after/customer",
+        children: [
+          { index: true, element: <AfterCustomer /> },
+          { path: ":testId", element: <Main /> }
+        ]
+      },
+      {
+        path: "/after/teller",
+        children: [
+          { index: true, element: <AfterTeller /> },
+          { path: ":testId", element: <Main /> }
+        ]
       }
     ]
   },
@@ -129,20 +143,6 @@ const router = createBrowserRouter([
     children: [{ index: true, element: <Finish /> }]
   },
   {
-    path: "/after/customer",
-    children: [
-      { index: true, element: <AfterCustomer /> },
-      { path: ":testId", element: <Main /> }
-    ]
-  },
-  {
-    path: "/after/teller",
-    children: [
-      { index: true, element: <AfterTeller /> },
-      { path: ":testId", element: <Main /> }
-    ]
-  },
-  {
     path: "/admin",
     element: <RootLayout />,
     children: [
@@ -170,7 +170,7 @@ const router = createBrowserRouter([
       {
         path: "customerLog",
         children: [
-          { index: true, element: <Workscustomer/> },
+          { index: true, element: <Workscustomer /> },
           { path: ":testId", element: <Main /> }
         ]
       }

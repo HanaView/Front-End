@@ -1,6 +1,5 @@
 .App {
   display: flex;
-  font-family: Arial, sans-serif;
 }
 
 .Sidebar {
@@ -60,10 +59,18 @@
       border: 1px solid #e0e0e0; /* Lighter border color */
       padding: 10px;
       text-align: center; /* Center align text in table cells */
+      &:focus {
+        text-decoration: underline; /* 호버 및 포커스 시 밑줄 추가 */
+        cursor: pointer;
+      }
+      &:hover {
+        text-decoration: underline; /* 호버 및 포커스 시 밑줄 추가 */
+        cursor: pointer;
+      }
     }
 
     th {
-      color : white;
+      color: white;
       background-color: $color-primary;
       font-weight: bold; /* Make the header text bold */
     }

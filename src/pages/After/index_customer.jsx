@@ -2,27 +2,37 @@ import React, { useState } from "react";
 import { PiStarFill, PiStarLight } from "react-icons/pi";
 import "./index_customer.scss";
 import Button from "@/components/Button";
+import toast, { toastConfig } from "react-simple-toasts";
+import "react-simple-toasts/dist/theme/dark.css";
+import { useNavigate } from "react-router-dom";
+
+toastConfig({ theme: "dark" });
 
 function AfterCustomer() {
   const [customer, setCustomer] = useState("박병철");
-  const [teller, setTeller] = useState("");
+  const [teller, setTeller] = useState("유다영");
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(5);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     // '제출'버튼 눌렀을때 전송될 내용
+    e.preventDefault();
+    toast("제출 완료되었습니다. 이용해주셔서 감사합니다.");
+    navigate("/");
   };
 
   return (
     <>
       <form className="AfterCustomerContainer">
-        <div className="dummy"></div><div className="dummy"></div>
+        <div className="dummy"></div>
+        <div className="dummy"></div>
         <div className="title">{customer} 님</div>
         <div className="title">상담은 만족스러우셨나요?</div>
         <div className="dummy"></div>
         <div className="title" style={{ alignItems: "flex-start" }}>
           담당텔러: {teller}
-        </div>        
+        </div>
         <div>
           {[...Array(rating)].map((a, i) => (
             <PiStarFill
