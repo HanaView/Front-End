@@ -71,19 +71,39 @@ function ConnectingTeller() {
     }
   };
 
+  const largeVideoRef = useRef(null);
+
+  const createWebSocket = () => {
+    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+    setSignalingSocket(socket);
+
+    socket.onopen = () => {
+      console.log('WebSocket connection opened');
+    };
+
+    socket.onclose = (event) => {
+      console.log('WebSocket connection closed', event.reason);
+      setTimeout(createWebSocket, 1000); // 1초 후 재연결 시도
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    return socket;
+  };
+
   useEffect(() => {
     customerInfo();
   }, []);
 
-  const largeVideoRef = useRef(null);
-
   useEffect(() => {
-    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+    const socket = createWebSocket();
     setSignalingSocket(socket);
     setSocketAtom(socket); // atom 저장
 
     const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+      iceServers: [{ urls: "stun:stun4.l.google.com:19302" }]
     });
     setPeerConnection(pc);
 
