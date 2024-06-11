@@ -15,7 +15,7 @@ import "./index.scss";
 import MessageModal from "@/pages/_shared/Modal/MessageModal";
 
 function Consulting() {
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [callDuration, setCallDuration] = useState(0);
   const [isCallActive, setIsCallActive] = useState(false);
   const [signalingSocket, setSignalingSocket] = useState(null);
@@ -33,7 +33,7 @@ function Consulting() {
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
-    const socket = new WebSocket("wss://https://dan-sup.com/rtc/WebRTC/signaling");
+    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
     setSignalingSocket(socket);
 
     const pc = new RTCPeerConnection({
@@ -241,7 +241,7 @@ function Consulting() {
   }, [isCallActive]);
 
   const handleToggleMute = () => {
-    setIsMuted(isMuted);
+    setIsMuted(!isMuted);
   };
 
   const handleMessageReceived = (message) => {
