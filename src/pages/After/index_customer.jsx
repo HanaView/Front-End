@@ -18,8 +18,8 @@ function AfterCustomer() {
   const handleSubmit = (e) => {
     // '제출'버튼 눌렀을때 전송될 내용
     e.preventDefault();
-    toast("제출 완료되었습니다. 감사합니다.");
-    navigate("/consulting/customer/loading");
+    toast("제출 완료되었습니다. 이용해주셔서 감사합니다.");
+    navigate("/");
   };
 
   return (
