@@ -51,7 +51,7 @@ const DepositForm = ({ product, onBack }) => {
         // @ts-ignore
         balance: Number(principal.replaceAll(",", "")),
         period: months,
-        password: password,
+        password: "1234",
         userDepositId2: account
       }),
     onSuccess: (data) => {
