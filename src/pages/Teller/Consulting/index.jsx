@@ -187,7 +187,7 @@ function ConnectingTeller() {
               content: (
                 <div id="modalDiv">
                   <div id="modalContent">
-                    <p id="modalInfo">손님이 비밀번호 인증을 완료했습니다.</p>
+                    <p id="modalInfo">손님이 비밀번호 입력을 완료했습니다.</p>
                   </div>
                 </div>
               ),

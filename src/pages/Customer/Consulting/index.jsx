@@ -15,7 +15,7 @@ import "./index.scss";
 import MessageModal from "@/pages/_shared/Modal/MessageModal";
 
 function Consulting() {
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [callDuration, setCallDuration] = useState(0);
   const [isCallActive, setIsCallActive] = useState(false);
   const [signalingSocket, setSignalingSocket] = useState(null);
@@ -241,7 +241,7 @@ function Consulting() {
   }, [isCallActive]);
 
   const handleToggleMute = () => {
-    setIsMuted(isMuted);
+    setIsMuted(!isMuted);
   };
 
   const handleMessageReceived = (message) => {

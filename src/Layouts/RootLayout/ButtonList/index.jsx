@@ -88,7 +88,7 @@ function ButtonList() {
           shape="none"
           onClick={() => handleNavigation("/admin/dailyScore")}
         >
-          상담 평점 현황
+          마이 평점 현황
         </Button>
         <Button
           className={classNames("side-button", {
