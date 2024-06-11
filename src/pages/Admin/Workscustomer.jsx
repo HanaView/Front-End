@@ -2,6 +2,7 @@ import React from "react";
 import "./App.scss";
 
 const records = [
+
   // 369예금 -> 내맘적금 -> 트래블로그 체크
   {
     번호: "11",
@@ -106,6 +107,7 @@ const records = [
 ];
 
 const records2 = [
+
   {
     순서: "박병철",
     상담분류: "예금",
