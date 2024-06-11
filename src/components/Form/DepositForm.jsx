@@ -252,9 +252,9 @@ const DepositForm = ({ product, onBack }) => {
   }, [principal, interestRate, months]);
 
   useEffect(() => {
-    const isDisable = !principal || !account || !password || !agreementSent;
+    const isDisable = !principal || !account;
     setDisableJoin(isDisable);
-  }, [principal, account, password, agreementSent]);
+  }, [principal, account]);
 
   return (
     <div className="joinFormWrapper">

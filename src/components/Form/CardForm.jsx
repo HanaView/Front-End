@@ -48,7 +48,7 @@ const CardForm = ({ product, onBack }) => {
       postJoinCard(product.id, {
         userId: 1,
         userDepositId: account,
-        password: password
+        password: "1234"
       }),
     onSuccess: (data) => {
       console.log("Join successful:", data);
@@ -206,9 +206,9 @@ const CardForm = ({ product, onBack }) => {
   
   //가입버튼 비활성화
   useEffect(() => {
-    const isDisable = !account || !withdrawalDay || !password || ! agreementSent
+    const isDisable = !account || !withdrawalDay;
     setDisableJoin(isDisable);
-  }, [account, withdrawalDay,  password, agreementSent]);
+  }, [account, withdrawalDay]);
 
   return (
     <div className="joinFormWrapper">
