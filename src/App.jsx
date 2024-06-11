@@ -2,7 +2,7 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "react-router-dom";
 
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "@/common/styles/scss/base.scss";
 import { Provider } from "jotai";
 import router from "./routes";
@@ -27,12 +27,12 @@ function App() {
 
     window.addEventListener("resize", handleResize);
   }, []);
-  
+
   return (
     <>
       <QueryClientProvider client={queryClient}>
         <Provider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           <RouterProvider router={router} />
           <GlobalModal />
           <RequestModal />

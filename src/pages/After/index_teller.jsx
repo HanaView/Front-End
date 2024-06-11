@@ -29,7 +29,6 @@ function AfterTeller() {
   return (
     <>
       <form className="AfterTellerContainer">
-        <div className="dummy"></div>
         <div className="title">상담 내용을 기록해주세요</div>
         <div className="dummy"></div>
         <div className="formContainer">
@@ -40,7 +39,7 @@ function AfterTeller() {
               type="text"
               //placeholder="박병철"
               value={customer}
-              style={{ width: "30%" }}
+              style={{ width: "40%" }}
               disabled
             />
           </label>
@@ -51,7 +50,7 @@ function AfterTeller() {
               type="text"
               placeholder="유다영"
               value={teller}
-              style={{ width: "30%" }}
+              style={{ width: "40%" }}
               disabled
             />
           </label>
@@ -85,13 +84,13 @@ function AfterTeller() {
               className="textareaForm"
               placeholder="내용을 입력해주세요"
               value={content}
-              style={{ height: "150px" }}
+              style={{ height: "200px" }}
               onChange={(e) => setContent(e.target.value)}
             />
           </label>
         </div>
 
-        <Button type="submit" shape="rect" onClick={handleSubmit}>
+        <Button type="submit" shape="rect" onClick={handleSubmit} style={{ "font-size": "25px" }}size="medium">
           확인
         </Button>
       </form>

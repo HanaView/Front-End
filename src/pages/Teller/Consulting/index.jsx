@@ -14,9 +14,10 @@ import CryptoJS from "crypto-js"; // crypto-js 라이브러리 import
 import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
 import CustomerTask from "@/pages/Consulting/CustomerTask";
 import axios from "axios";
+import { closeModal } from "@/components/Modal";
 
 function ConnectingTeller() {
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [callDuration, setCallDuration] = useState(0);
   const [isCallActive, setIsCallActive] = useState(false);
   const [signalingSocket, setSignalingSocket] = useState(null);
@@ -42,7 +43,7 @@ function ConnectingTeller() {
   const [image, setImage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
 
-  const redisKey = "b03830ce-b";
+  const redisKey = localStorage.getItem("key");
 
   const customerInfo = async (e) => {
     try {
@@ -330,7 +331,19 @@ function ConnectingTeller() {
   };
   // 이미지 클릭 핸들러
   const handleImageClick = () => {
-    setIsModalOpen(true);
+    // setIsModalOpen(true);
+    setMessageModalData({
+      isOpen: true,
+      children: null,
+      content: (
+        <img src={`data:image/jpeg;base64,${image}`} alt="얍얍얍" style={{ width: '100%', height: '90%', objectFit: 'cover'}} />
+      ),
+      confirmButtonText: "확인",
+      onClickConfirm: () => {
+        // Close the modal
+        closeModal(setMessageModalData);
+      }
+    });
   };
 
   // 모달 컴포넌트

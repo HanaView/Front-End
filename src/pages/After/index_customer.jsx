@@ -10,7 +10,7 @@ toastConfig({ theme: "dark" });
 
 function AfterCustomer() {
   const [customer, setCustomer] = useState("박병철");
-  const [teller, setTeller] = useState("");
+  const [teller, setTeller] = useState("유다영");
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(5);
   const navigate = useNavigate();
@@ -33,12 +33,12 @@ function AfterCustomer() {
         <div className="title" style={{ alignItems: "flex-start" }}>
           담당텔러: {teller}
         </div>
-        <div>
+        <div id="ratingDiv">
           {[...Array(rating)].map((a, i) => (
             <PiStarFill
               className="star-lg"
               key={i}
-              style={{ fontSize: "30px", color: "#008e71" }}
+              style={{ fontSize: "50px", color: "#008e71" }}
               onClick={() => setRating(i + 1)}
             />
           ))}
@@ -46,7 +46,7 @@ function AfterCustomer() {
             <PiStarLight
               className="star-lg"
               key={i}
-              style={{ fontSize: "30px" }}
+              style={{ fontSize: "50px" }}
               onClick={() => setRating(rating + i + 1)}
             />
           ))}
@@ -61,7 +61,7 @@ function AfterCustomer() {
         />
         <div className="dummy"></div>
 
-        <Button type="submit" shape="rect" onClick={handleSubmit}>
+        <Button type="submit" shape="rect" onClick={handleSubmit} style={{ "font-size": "25px" }}size="medium">
           제출
         </Button>
       </form>
