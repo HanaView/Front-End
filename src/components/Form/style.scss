@@ -196,12 +196,15 @@
 
     span {
       color: $color-primary;
+      margin-left: 10px;
+
     }
 
-    .message {
+    .joinMessage {
       margin-top: 30px;
       margin-bottom: 20px;
-      margin-left: 90px;
+      // margin-left: 90px;
+      text-align: center;
     }
   }
 }
