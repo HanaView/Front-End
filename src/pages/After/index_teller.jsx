@@ -29,7 +29,6 @@ function AfterTeller() {
   return (
     <>
       <form className="AfterTellerContainer">
-        <div className="dummy"></div>
         <div className="title">상담 내용을 기록해주세요</div>
         <div className="dummy"></div>
         <div className="formContainer">
