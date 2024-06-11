@@ -16,7 +16,7 @@ function ExplainingCustomer() {
   return (
     <>
       <div className="ExplainingCustomerContainer">
-        <div className="title">원하시는 업무를 선택해주세요</div>
+        <div className="title">원하시는 상품을 선택해주세요</div>
         <div className="buttonLine">
           <Button
             className="button"
@@ -25,7 +25,7 @@ function ExplainingCustomer() {
           >
             예/적금
             <br />
-            업무
+            상품
           </Button>
           <Button
             className="button"
@@ -34,7 +34,7 @@ function ExplainingCustomer() {
           >
             카드
             <br />
-            업무
+            상품
           </Button>
           <Button
             className="button"
@@ -43,7 +43,7 @@ function ExplainingCustomer() {
           >
             대출
             <br />
-            업무
+            상품
           </Button>
           <Button
             className="button"
@@ -52,7 +52,7 @@ function ExplainingCustomer() {
           >
             전자금융
             <br />
-            업무
+            상품
           </Button>
         </div>
         <Products type={productBtn} />

@@ -37,7 +37,7 @@ function ButtonList() {
             handleNavigation("/consulting/customer/explaining?key=" + redisKey)
           }
         >
-          상품 연결
+          상품 설명
         </Button>
         <Button
           className={classNames("side-button", {
@@ -49,7 +49,7 @@ function ButtonList() {
             handleNavigation("/consulting/customer/mydata?key=" + redisKey)
           }
         >
-          마이 자산 연결
+          마이 자산 현황
         </Button>
       </>
     );
