@@ -43,7 +43,7 @@ function ConnectingTeller() {
   const [image, setImage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
 
-  const redisKey = "b03830ce-b";
+  const redisKey = localStorage.getItem("key");
 
   const customerInfo = async (e) => {
     try {
