@@ -59,6 +59,7 @@ const DailyWorks = () => {
         legend: {
             align: 'center',
             verticalAlign: 'bottom',
+            // @ts-ignore
             backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'white',
             borderColor: '#CCC',
             borderWidth: 1,
