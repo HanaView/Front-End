@@ -55,10 +55,10 @@ const CustomerTask = () => {
                 {product.balance.toLocaleString()}
               </div>
               <div className="cell" data-title="휴면상태">
-                {product.isHuman ? "T" : "F"}
+                {product.isHuman ? "T" : "-"}
               </div>
               <div className="cell" data-title="분실 신고 상태">
-                {product.isLoss ? "T" : "F"}
+                {product.isLoss ? "T" : "-"}
               </div>
               <div className="cell" data-title="이체 한도">
                 {product.bounds.toLocaleString()}
