@@ -141,10 +141,10 @@
                 </div>
               )}
             </div>
-            <div className='videoContainer' onClick={() =>  (null)}>
+            {/* <div className='videoContainer' onClick={() =>  (null)}>
               <p>화면 공유</p>
               <video className='video'/>
-            </div>
+            </div> */}
           </div>
           <button onClick={handleCallButtonClick}>Call</button>
           

@@ -1,6 +1,7 @@
 import React from "react";
-import "./style.scss"
+import "./style.scss";
 import Button from "../Button";
+import pdfIcon from "../../assets/images/pdfIcon.png";
 
 function DepositTable({ products, onProductClick }) {
   const handleProduct = (product) => {
@@ -21,6 +22,7 @@ function DepositTable({ products, onProductClick }) {
           <div className="cell smallCell">금리(6개월)</div>
           <div className="cell smallCell">금리(12개월)</div>
           <div className="cell">한도</div>
+          <div className="cell">정보</div>
           <div className="cell">가입</div>
         </div>
         {products.map((product, index) => (
@@ -44,6 +46,15 @@ function DepositTable({ products, onProductClick }) {
               {product.maxJoinAmount
                 ? product.maxJoinAmount.toLocaleString()
                 : "제한없음"}
+            </div>
+            <div>
+              <a target="_blank" href={product.infoImg ?? "#"} rel="noreferrer">
+                <img
+                  src={pdfIcon}
+                  alt="PDF"
+                  style={{ width: "24px", height: "24px" }}
+                />
+              </a>
             </div>
             <div className="cell" data-title="가입하기">
               <Button onClick={() => handleProduct(product)}>가입</Button>

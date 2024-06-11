@@ -168,6 +168,7 @@
     .num {
       width: 240px;
       justify-content: start;
+      text-align: center;
     }
 
     .padding {
@@ -193,10 +194,6 @@
       margin-bottom: 20px;
     }
 
-    .label {
-      // width: 170px;
-    }
-
     span {
       color: $color-primary;
     }
@@ -204,6 +201,7 @@
     .message {
       margin-top: 30px;
       margin-bottom: 20px;
+      margin-left: 90px;
     }
   }
 }

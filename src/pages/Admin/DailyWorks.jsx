@@ -5,44 +5,83 @@ import HighchartsReact from 'highcharts-react-official';
 const DailyWorks = () => {
     const options = {
         chart: {
-            type: 'column'
+            type: 'column',
+            style: {
+                fontFamily: 'Hana2'
+            }
         },
         title: {
-            text: '일별 업부 현황',
-            align: 'left'
+            text: '일 별 업무 현황',
+            align: 'center',
+            style: {
+                fontSize: '30px',
+                color: '#008e71',
+                fontFamily: 'Hana2',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                width: '100%',
+            }
         },
         xAxis: {
-            categories: ['6.4', '6.5', '6.7', '6.10', '6.11', '6.12']
+            categories: ['6월 4일', '6월 5일', '6월 7일', '6월 10일', '6월 11일', '6월 12일'],
+            labels: {
+                style: {
+                    fontSize: '20px',
+                    color: '#008e71',
+                    fontFamily: 'Hana2',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    width: '100%',
+                    marginBottom: '120px' // 추가된 스타일',
+                }
+            }
         },
         yAxis: {
             min: 0,
             title: {
-                text: '업무별 상담 건수 '
+                text: '업무별 상담 건수',
+                style: {
+                    fontFamily: 'Hana2'
+                }
+            },
+            labels: {
+                style: {
+                    fontFamily: 'Hana2'
+                }
             },
             stackLabels: {
-                enabled: true
+                enabled: true,
+                style: {
+                    fontFamily: 'Hana2'
+                }
             }
         },
         legend: {
-            align: 'left',
-            x: 70,
-            verticalAlign: 'top',
-            y: 70,
-            floating: true,
+            align: 'center',
+            verticalAlign: 'bottom',
             backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'white',
             borderColor: '#CCC',
             borderWidth: 1,
-            shadow: false
+            shadow: false,
+            itemStyle: {
+                fontFamily: 'Hana2'
+            }
         },
         tooltip: {
             headerFormat: '<b>{point.x}</b><br/>',
-            pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+            pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}',
+            style: {
+                fontFamily: 'Hana2'
+            }
         },
         plotOptions: {
             column: {
                 stacking: 'normal',
                 dataLabels: {
-                    enabled: true
+                    enabled: true,
+                    style: {
+                        fontFamily: 'Hana2'
+                    }
                 }
             }
         },
@@ -59,9 +98,23 @@ const DailyWorks = () => {
     };
 
     return (
-        <div>
+      <div style={{ textAlign: "center" }}>
+        <div
+          style={{
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            marginTop: "120px",
+          }}
+        >
+          <div style={{ width: "100%", margin: "0 auto" }}>
+            {" "}
             <HighchartsReact highcharts={Highcharts} options={options} />
+          </div>
         </div>
+      </div>
     );
 };
 
