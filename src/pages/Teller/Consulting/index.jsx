@@ -17,7 +17,7 @@ import axios from "axios";
 import { closeModal } from "@/components/Modal";
 
 function ConnectingTeller() {
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [callDuration, setCallDuration] = useState(0);
   const [isCallActive, setIsCallActive] = useState(false);
   const [signalingSocket, setSignalingSocket] = useState(null);

@@ -2,12 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import CallInfo from "@/components/CallInfo";
 import Chat from "@/components/Chat";
 import ConsultVideo from "@/components/CustomerVideo/";
+import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
 import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
-import { passwordRequestlModalAtom, agreementModalAtom } from "@/stores";
+import {
+  passwordRequestlModalAtom,
+  agreementModalAtom,
+  messageModalAtom
+} from "@/stores";
 import { useAtom } from "jotai";
 import CryptoJS from "crypto-js";
 import "./index.scss";
-import AgreementModal from "@/pages/_shared/Modal/AgreementModal";
+import MessageModal from "@/pages/_shared/Modal/MessageModal";
 
 function Consulting() {
   const [isMuted, setIsMuted] = useState(false);
@@ -19,8 +24,11 @@ function Consulting() {
   const [messages, setMessages] = useState([]);
   const [screenStream, setScreenStream] = useState(null);
   const [previousStream, setPreviousStream] = useState(null);
-  const [passWordmodalData, setPasswordModalData] = useAtom(passwordRequestlModalAtom);
-  const [agreementModalData, setAgreementModalData] = useAtom(agreementModalAtom);
+  const [passWordmodalData, setPasswordModalData] = useAtom(
+    passwordRequestlModalAtom
+  );
+  const [agreementModalData, setAgreementModalData] =
+    useAtom(agreementModalAtom);
 
   const largeVideoRef = useRef(null);
 
@@ -78,7 +86,9 @@ function Consulting() {
     pc.ontrack = (event) => {
       const newStream = event.streams[0];
       if (newStream.getVideoTracks()[0].label.includes("screen")) {
-        setPreviousStream(largeVideoRef.current ? largeVideoRef.current.srcObject : null);
+        setPreviousStream(
+          largeVideoRef.current ? largeVideoRef.current.srcObject : null
+        );
         setScreenStream(newStream);
         if (largeVideoRef.current) {
           largeVideoRef.current.srcObject = newStream;
@@ -136,52 +146,55 @@ function Consulting() {
             console.error("Invalid ICE message:", message);
           }
           break;
-          case "show_pwInputModal":
-            setPasswordModalData({
-              isOpen: true,
-              children: null,
-              confirmButtonText: "확인",
-              content: "",
-              onClickConfirm: (password) => {
-                const encryptedPassword = CryptoJS.AES.encrypt(password, 'secret-key').toString();
-                console.log("Encrypted password:", encryptedPassword);
-  
-                // Send encrypted password via WebSocket
-                if (socket && socket.readyState === WebSocket.OPEN) {
-                  socket.send(
-                    JSON.stringify({ type: "password", data: encryptedPassword })
-                  );
-                  console.log("Password sent via WebSocket");
-                }
-  
-                setPasswordModalData({
-                  isOpen: false,
-                  children: null,
-                  content: null,
-                  confirmButtonText: "",
-                  onClickConfirm: null
-                });
-              }
-            });
-            break;
-          // 약관 모달 띄우기
-          case "SHOW_AGREEMENT_MODAL":
-            setAgreementModalData({
-              isOpen: true,
-              children: null,
-              confirmButtonText: "확인",
-              content: "",
-              onClickConfirm: () => {
+        case "show_pwInputModal":
+          setPasswordModalData({
+            isOpen: true,
+            children: null,
+            confirmButtonText: "확인",
+            content: "",
+            onClickConfirm: (password) => {
+              const encryptedPassword = CryptoJS.AES.encrypt(
+                password,
+                "secret-key"
+              ).toString();
+              console.log("Encrypted password:", encryptedPassword);
 
-                setAgreementModalData({
-                  isOpen: false,
-                  children: null,
-                  content: null,
-                  confirmButtonText: "",
-                  onClickConfirm: null
-                });
-              }});
-            break;
+              // Send encrypted password via WebSocket
+              if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(
+                  JSON.stringify({ type: "password", data: encryptedPassword })
+                );
+                console.log("Password sent via WebSocket");
+              }
+
+              setPasswordModalData({
+                isOpen: false,
+                children: null,
+                content: null,
+                confirmButtonText: "",
+                onClickConfirm: null
+              });
+            }
+          });
+          break;
+        // 약관 모달 띄우기
+        case "SHOW_AGREEMENT_MODAL":
+          setAgreementModalData({
+            isOpen: true,
+            children: null,
+            confirmButtonText: "확인",
+            content: "",
+            onClickConfirm: () => {
+              setAgreementModalData({
+                isOpen: false,
+                children: null,
+                content: null,
+                confirmButtonText: "",
+                onClickConfirm: null
+              });
+            }
+          });
+          break;
         default:
           console.error("알 수 없는 메시지 타입:", message);
           break;
@@ -228,7 +241,7 @@ function Consulting() {
   }, [isCallActive]);
 
   const handleToggleMute = () => {
-    setIsMuted(!isMuted);
+    setIsMuted(isMuted);
   };
 
   const handleMessageReceived = (message) => {
@@ -276,7 +289,7 @@ function Consulting() {
         />
       </div>
       <PasswordModal />
-      <AgreementModal/>
+      <AgreementModal />
     </div>
   );
 }
