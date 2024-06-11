@@ -21,6 +21,9 @@
   &.btn-primary {
     background-color: $color-primary;
     color: #fff;
+    &:hover {
+      background-color: $color-primary02;
+    }
   }
 
   &.btn-secondary {
