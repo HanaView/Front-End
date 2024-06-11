@@ -7,6 +7,7 @@ import PasswordModal from "@/pages/_shared/Modal/PasswordModal";
 import {
   passwordRequestlModalAtom,
   agreementModalAtom,
+  messageModalAtom
 } from "@/stores";
 import { useAtom } from "jotai";
 import CryptoJS from "crypto-js";
@@ -23,49 +24,87 @@ function Consulting() {
   const [messages, setMessages] = useState([]);
   const [screenStream, setScreenStream] = useState(null);
   const [previousStream, setPreviousStream] = useState(null);
-  const [passwordModalData, setPasswordModalData] = useAtom(passwordRequestlModalAtom);
+  const [passwordModalData, setPasswordModalData] = useAtom(
+    passwordRequestlModalAtom
+  );
   const [agreementModalData, setAgreementModalData] = useAtom(agreementModalAtom);
+
   const largeVideoRef = useRef(null);
 
   useEffect(() => {
-    let reconnectAttempts = 0;
-    let pc;
-    let dc;
+    const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+    setSignalingSocket(socket);
 
-    const initializeWebSocket = () => {
-      const socket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
-      setSignalingSocket(socket);
+    const pc = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+    });
+    setPeerConnection(pc);
 
-      socket.onopen = () => {
-        console.log("Connected to the WebSocket server");
-        reconnectAttempts = 0;
-      };
+    const dc = pc.createDataChannel("chat");
 
-      socket.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        handleSocketMessage(message, socket, pc);
-      };
-
-      socket.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
-
-      socket.onclose = () => {
-        console.log("Socket closed. Attempting to reconnect...");
-        setTimeout(() => {
-          reconnectSocket();
-        }, Math.min(10000, (1 << reconnectAttempts) * 1000)); // Exponential backoff up to 10 seconds
-      };
-
-      const reconnectSocket = () => {
-        if (reconnectAttempts < 10) {
-          reconnectAttempts++;
-          initializeWebSocket();
-        }
-      };
+    dc.onopen = () => {
+      console.log("Data channel opened");
     };
 
-    const handleSocketMessage = (message, socket, pc) => {
+    dc.onclose = () => {
+      console.log("Data channel closed");
+    };
+
+    dc.onerror = (error) => {
+      console.error("Data channel error:", error);
+    };
+
+    dc.onmessage = (event) => {
+      console.log("Data channel message received:", event.data);
+      const receivedMessage = JSON.parse(event.data);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          sender: "remote",
+          message: receivedMessage.message,
+          timestamp: receivedMessage.timestamp
+        }
+      ]);
+    };
+
+    const onDataChannelCreated = (event) => {
+      const dc = event.channel;
+      setDataChannel(dc);
+    };
+
+    pc.ondatachannel = onDataChannelCreated;
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.send(
+          JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
+        );
+      }
+    };
+
+    pc.ontrack = (event) => {
+      const newStream = event.streams[0];
+      if (newStream.getVideoTracks()[0].label.includes("screen")) {
+        setPreviousStream(
+          largeVideoRef.current ? largeVideoRef.current.srcObject : null
+        );
+        setScreenStream(newStream);
+        if (largeVideoRef.current) {
+          largeVideoRef.current.srcObject = newStream;
+        }
+        newStream.getVideoTracks()[0].onended = () => {
+          stopScreenSharing();
+        };
+      } else {
+        setPreviousStream(newStream);
+        if (!screenStream && largeVideoRef.current) {
+          largeVideoRef.current.srcObject = newStream;
+        }
+      }
+    };
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
       switch (message.type) {
         case "offer":
           if (message.sdp) {
@@ -73,7 +112,9 @@ function Consulting() {
               .then(() => pc.createAnswer())
               .then((answer) => pc.setLocalDescription(answer))
               .then(() => {
-                socket.send(JSON.stringify({ type: "answer", sdp: pc.localDescription }));
+                socket.send(
+                  JSON.stringify({ type: "answer", sdp: pc.localDescription })
+                );
               })
               .catch((error) => {
                 console.error("Error setting remote description:", error);
@@ -84,7 +125,9 @@ function Consulting() {
           break;
         case "answer":
           if (message.sdp) {
-            pc.setRemoteDescription(new RTCSessionDescription(message.sdp)).catch((error) => {
+            pc.setRemoteDescription(
+              new RTCSessionDescription(message.sdp)
+            ).catch((error) => {
               console.error("Error setting remote description:", error);
             });
           } else {
@@ -93,9 +136,11 @@ function Consulting() {
           break;
         case "ice-candidate":
           if (message.candidate) {
-            pc.addIceCandidate(new RTCIceCandidate(message.candidate)).catch((error) => {
-              console.error("Error adding ICE candidate:", error);
-            });
+            pc.addIceCandidate(new RTCIceCandidate(message.candidate)).catch(
+              (error) => {
+                console.error("Error adding ICE candidate:", error);
+              }
+            );
           } else {
             console.error("Invalid ICE message:", message);
           }
@@ -107,11 +152,17 @@ function Consulting() {
             confirmButtonText: "확인",
             content: "",
             onClickConfirm: (password) => {
-              const encryptedPassword = CryptoJS.AES.encrypt(password, "secret-key").toString();
+              const encryptedPassword = CryptoJS.AES.encrypt(
+                password,
+                "secret-key"
+              ).toString();
               console.log("Encrypted password:", encryptedPassword);
 
+              // Send encrypted password via WebSocket
               if (socket && socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ type: "password", data: encryptedPassword }));
+                socket.send(
+                  JSON.stringify({ type: "password", data: encryptedPassword })
+                );
                 console.log("Password sent via WebSocket");
               }
 
@@ -120,9 +171,9 @@ function Consulting() {
                 children: null,
                 content: null,
                 confirmButtonText: "",
-                onClickConfirm: null,
+                onClickConfirm: null
               });
-            },
+            }
           });
           break;
         case "SHOW_AGREEMENT_MODAL":
@@ -137,9 +188,9 @@ function Consulting() {
                 children: null,
                 content: null,
                 confirmButtonText: "",
-                onClickConfirm: null,
+                onClickConfirm: null
               });
-            },
+            }
           });
           break;
         default:
@@ -148,79 +199,28 @@ function Consulting() {
       }
     };
 
-    const initializePeerConnection = () => {
-      pc = new RTCPeerConnection({
-        iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
-      });
-      setPeerConnection(pc);
-
-      dc = pc.createDataChannel("chat");
-      setDataChannel(dc);
-
-      dc.onopen = () => {
-        console.log("Data channel opened");
-      };
-
-      dc.onclose = () => {
-        console.log("Data channel closed");
-      };
-
-      dc.onerror = (error) => {
-        console.error("Data channel error:", error);
-      };
-
-      dc.onmessage = (event) => {
-        console.log("Data channel message received:", event.data);
-        const receivedMessage = JSON.parse(event.data);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            sender: "remote",
-            message: receivedMessage.message,
-            timestamp: receivedMessage.timestamp,
-          },
-        ]);
-      };
-
-      pc.ondatachannel = (event) => {
-        const dc = event.channel;
-        setDataChannel(dc);
-      };
-
-      pc.onicecandidate = (event) => {
-        if (event.candidate) {
-          signalingSocket.send(
-            JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
-          );
-        }
-      };
-
-      pc.ontrack = (event) => {
-        const newStream = event.streams[0];
-        if (newStream.getVideoTracks()[0].label.includes("screen")) {
-          setPreviousStream(largeVideoRef.current ? largeVideoRef.current.srcObject : null);
-          setScreenStream(newStream);
-          if (largeVideoRef.current) {
-            largeVideoRef.current.srcObject = newStream;
-          }
-          newStream.getVideoTracks()[0].onended = () => {
-            stopScreenSharing();
-          };
-        } else {
-          setPreviousStream(newStream);
-          if (!screenStream && largeVideoRef.current) {
-            largeVideoRef.current.srcObject = newStream;
-          }
-        }
-      };
+    socket.onclose = () => {
+      console.log("Socket closed. Attempting to reconnect...");
+      setTimeout(() => {
+        reconnectSocket();
+      }, 1000);
     };
 
-    initializeWebSocket();
-    initializePeerConnection();
+    const reconnectSocket = () => {
+      const newSocket = new WebSocket("wss://dan-sup.com/rtc/WebRTC/signaling");
+      setSignalingSocket(newSocket);
+      newSocket.onopen = () => {
+        console.log("Reconnected to the socket");
+      };
+      newSocket.onerror = (error) => {
+        console.error("Socket error:", error);
+      };
+      newSocket.onmessage = socket.onmessage;
+    };
 
     return () => {
-      if (pc) pc.close();
-      if (signalingSocket) signalingSocket.close();
+      pc.close();
+      socket.close();
     };
   }, []);
 
