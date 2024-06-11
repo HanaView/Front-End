@@ -29,7 +29,6 @@ function AfterTeller() {
   return (
     <>
       <form className="AfterTellerContainer">
-        <div className="dummy"></div>
         <div className="title">상담 내용을 기록해주세요</div>
         <div className="dummy"></div>
         <div className="formContainer">
@@ -91,7 +90,7 @@ function AfterTeller() {
           </label>
         </div>
 
-        <Button type="submit" shape="rect" onClick={handleSubmit}>
+        <Button type="submit" shape="rect" onClick={handleSubmit} style={{ "font-size": "25px" }}size="medium">
           확인
         </Button>
       </form>
