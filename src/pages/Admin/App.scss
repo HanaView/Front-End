@@ -1,0 +1,76 @@
+.App {
+  display: flex;
+  font-family: Arial, sans-serif;
+}
+
+.Sidebar {
+  width: 200px;
+  background-color: #f0f0f0;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Center align text in sidebar */
+
+  h1 {
+    color: #1abc9c;
+  }
+
+  nav {
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        margin: 10px 0;
+        cursor: pointer;
+
+        &.selected {
+          font-weight: bold;
+          color: #1abc9c;
+        }
+      }
+    }
+  }
+
+  .User {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+  }
+}
+
+.MainContent {
+  flex: 1;
+  padding: 20px;
+  text-align: center; /* Center align text in main content */
+
+  h2 {
+    font-size: 24px; /* Increase font size of header */
+    padding-bottom: 10px;
+    font-weight: bold; /* Make the header text bold */
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto; /* Center the table */
+
+    th,
+    td {
+      border: 1px solid #e0e0e0; /* Lighter border color */
+      padding: 10px;
+      text-align: center; /* Center align text in table cells */
+    }
+
+    th {
+      color : white;
+      background-color: $color-primary;
+      font-weight: bold; /* Make the header text bold */
+    }
+  }
+}
+
+.Footer {
+  margin-top: 20px;
+  text-align: center; /* Center align text in footer */
+}

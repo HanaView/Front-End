@@ -29,7 +29,8 @@ import OwnCustomer from "@/pages/Customer/own_customer";
 
 import DailyWorks from "@/pages/Admin/DailyWorks";
 import DailyScore from "@/pages/Admin/DailyScore";
-import Works from "@/pages/Admin/Works";
+import Workscustomer from "@/pages/Admin/Workscustomer";
+import Worksteller from "@/pages/Admin/Worksteller";
 
 const router = createBrowserRouter([
   {
@@ -162,14 +163,14 @@ const router = createBrowserRouter([
       {
         path: "tellerLog",
         children: [
-          { index: true, element: <Works /> },
+          { index: true, element: <Worksteller /> },
           { path: ":testId", element: <Main /> }
         ]
       },
       {
         path: "customerLog",
         children: [
-          { index: true, element: <Works /> },
+          { index: true, element: <Workscustomer/> },
           { path: ":testId", element: <Main /> }
         ]
       }
