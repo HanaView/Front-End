@@ -13,6 +13,10 @@ import { useAtom, useSetAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits, postJoin } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast, { toastConfig } from "react-simple-toasts";
+import "react-simple-toasts/dist/theme/dark.css";
+
+toastConfig({ theme: "dark" });
 
 const DepositForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -68,6 +72,8 @@ const DepositForm = ({ product, onBack }) => {
       // 성공 시에 실행할 코드
       console.log("Join successful:", data);
       closeModal(setModalData);
+      toast("가입되었습니다.");
+
       // 예: 데이터를 최신화하기 위해 쿼리 무효화
       // @ts-ignore
       queryClient.invalidateQueries(["deposits"]);

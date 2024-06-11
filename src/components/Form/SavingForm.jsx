@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Button";
 import "./style.scss";
-import { agreementModalAtom, globalModalAtom, messageModalAtom, socketAtom } from "@/stores";
-import { useAtom } from "jotai";
+import {
+  agreementModalAtom,
+  globalModalAtom,
+  messageModalAtom,
+  socketAtom
+} from "@/stores";
+import { useAtom, useSetAtom } from "jotai";
 import { closeModal } from "../Modal";
 import { getUserDeposits } from "@/apis/deposit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { postJoinSaving } from "@/apis/saving";
-import { useSetAtom } from "jotai";
+import toast, { toastConfig } from "react-simple-toasts";
+import "react-simple-toasts/dist/theme/dark.css";
+
+toastConfig({ theme: "dark" });
 
 const SavingForm = ({ product, onBack }) => {
   const queryClient = useQueryClient();
@@ -57,6 +65,7 @@ const SavingForm = ({ product, onBack }) => {
       // 성공 시에 실행할 코드
       console.log("Join successful:", data);
       closeModal(setModalData);
+      toast("가입되었습니다.");
       // 예: 데이터를 최신화하기 위해 쿼리 무효화
       // @ts-ignore
       queryClient.invalidateQueries(["savings"]);
@@ -140,7 +149,7 @@ const SavingForm = ({ product, onBack }) => {
         onClickConfirm: () => {
           // Close the modal
           closeModal(setMessageModalData);
-          setTimeout(() => { 
+          setTimeout(() => {
             setMessageModalData({
               isOpen: true,
               children: null,
@@ -158,7 +167,6 @@ const SavingForm = ({ product, onBack }) => {
               }
             });
           }, 3000);
-
         }
       });
 
@@ -202,7 +210,7 @@ const SavingForm = ({ product, onBack }) => {
       );
     }
   };
-  
+
   const InfoItem = ({ label, value }) => (
     <div className="info">
       <div className="label">{label} : </div>
