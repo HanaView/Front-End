@@ -43,7 +43,7 @@ function LoadingCustomer() {
         <Button       
           style={{ width: "40%", height:"70px", fontSize:"25px" }}
           shape="rect"
-          onClick={() => navigate("")}
+          onClick={() => navigate("https://www.kebhana.com/cont/util/util04/util0401/index.jsp")}
         >
           가까운 지점 찾기
         </Button>
