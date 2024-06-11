@@ -187,7 +187,7 @@ const CardForm = ({ product, onBack }) => {
         <div className="joinModalContainer">
           <InfoItem label="상품정보" value={product.name} />
           <InfoItem label="출금계좌" value={accountInfo || "X"} />
-          <InfoItem label="출금일" value={withdrawalDay + "일" || "X"} />
+          <InfoItem label="출금일" value={withdrawalDay + " 일" || "X"} />
           <InfoItem label="주소" value={address} />
           <InfoItem label="상세 주소" value={detailAddress} />
           <InfoItem label="비밀번호 인증 여부" value={password ? "O" : "X"} />
@@ -195,7 +195,7 @@ const CardForm = ({ product, onBack }) => {
             label="동의서 전송 여부"
             value={agreementSent ? "O" : "X"}
           />
-          <div className="message">
+          <div className="joinMessage">
             <span>🥰 가입 정보를 확인 후 손님께 안내해주세요 🥰</span>
           </div>
         </div>
@@ -203,10 +203,12 @@ const CardForm = ({ product, onBack }) => {
     );
   };
 
+  
+  //가입버튼 비활성화
   useEffect(() => {
-    const isDisable = !account || !withdrawalDay;
+    const isDisable = !account || !withdrawalDay || !password || ! agreementSent
     setDisableJoin(isDisable);
-  }, [account, withdrawalDay]);
+  }, [account, withdrawalDay,  password, agreementSent]);
 
   return (
     <div className="joinFormWrapper">
