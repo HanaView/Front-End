@@ -98,7 +98,7 @@ function Auth() {
             content: (
               <div id="modalDiv">
                 <div id="modalContent">
-                  <p id="modalInfo">"본인인증이 완료되었습니다."</p>
+                  <p id="modalInfo">본인인증이 완료되었습니다.</p>
                 </div>
               </div>
             ),
