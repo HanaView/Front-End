@@ -198,6 +198,8 @@ const DepositForm = ({ product, onBack }) => {
         ),
         confirmButtonText: "확인",
         onClickConfirm: () => {
+          setAgreementSent(true);
+
           // Close the modal
           setMessageModalData({
             isOpen: false,
@@ -230,14 +232,14 @@ const DepositForm = ({ product, onBack }) => {
         <div className="joinModalContainer">
           <InfoItem label="상품정보" value={product.name} />
           <InfoItem label="출금계좌" value={accountInfo || "X"} />
-          <InfoItem label="가입액" value={principal} />
-          <InfoItem label="가입 기간" value={months} />
+          <InfoItem label="가입액" value={principal+" 원"} />
+          <InfoItem label="가입 기간" value={months+" 개월"} />
           <InfoItem label="비밀번호 인증 여부" value={password ? "O" : "X"} />
           <InfoItem
             label="동의서 전송 여부"
             value={agreementSent ? "O" : "X"}
           />
-          <div className="message">
+          <div className="joinMessage">
             <span>🥰 가입 정보를 확인 후 손님께 안내해주세요 🥰</span>
           </div>
         </div>
@@ -258,9 +260,10 @@ const DepositForm = ({ product, onBack }) => {
 
   //가입버튼 비활성화
   useEffect(() => {
-    const isDisable = !principal;
+    const isDisable = !principal || !account ||  !password || !agreementSent;
     setDisableJoin(isDisable);
-  }, [principal, account]);
+  }, [principal, account, password, agreementSent]);
+
 
   return (
     <div className="joinFormWrapper">

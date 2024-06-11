@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import Button from "../Button";
 import "./style.scss";
 import {
+  accountPwAtom,
   agreementModalAtom,
+  agreementOkAtom,
   globalModalAtom,
   messageModalAtom,
   socketAtom
@@ -40,6 +42,12 @@ const SavingForm = ({ product, onBack }) => {
 
   //가입 버튼 비활성화
   const [disableJoin, setDisableJoin] = useState(true);
+  
+    // 계좌 비밀번호
+    const [password] = useAtom(accountPwAtom);
+    // 동의서 확인
+    const [agreementSent, setAgreementSent] = useAtom(agreementOkAtom);
+  
 
   const {
     data: userDeposits,
@@ -58,7 +66,7 @@ const SavingForm = ({ product, onBack }) => {
         perMonth: Number(principal.replaceAll(",", "")),
         period: months,
         //TODO: 실제 비번 받아서
-        password: "1234",
+        password: password,
         userDepositId: account
       }),
     onSuccess: (data) => {
@@ -145,7 +153,7 @@ const SavingForm = ({ product, onBack }) => {
             </div>
           </div>
         ),
-        confirmButtonText: "확인", // 확인 누르고 customer로 이동
+        confirmButtonText: "확인", // TODO: 확인 누르고 customer로 이동
         onClickConfirm: () => {
           // Close the modal
           closeModal(setMessageModalData);
@@ -164,6 +172,7 @@ const SavingForm = ({ product, onBack }) => {
               onClickConfirm: () => {
                 // Close the modal
                 closeModal(setMessageModalData);
+                setAgreementSent(true);
               }
             });
           }, 3000);
@@ -224,11 +233,14 @@ const SavingForm = ({ product, onBack }) => {
         <div className="joinModalContainer">
           <InfoItem label="상품정보" value={product.name} />
           <InfoItem label="출금계좌" value={accountInfo || "X"} />
-          <InfoItem label="가입액" value={principal} />
-          <InfoItem label="가입 기간" value={months} />
-          <InfoItem label="비밀번호 인증 여부" value="O 추후 수정" />
-          <InfoItem label="동의서 전송 여부" value="O 추후 수정" />
-          <div className="message">
+          <InfoItem label="가입액" value={principal+" 원"} />
+          <InfoItem label="가입 기간" value={months+" 개월"} />
+          <InfoItem label="비밀번호 인증 여부" value={password ? "O" : "X"} />
+          <InfoItem
+            label="동의서 전송 여부"
+            value={agreementSent ? "O" : "X"}
+          />
+          <div className="joinMessage">
             <span>🥰 가입 정보를 확인 후 손님께 안내해주세요 🥰</span>
           </div>
         </div>
@@ -248,9 +260,9 @@ const SavingForm = ({ product, onBack }) => {
 
   //가입버튼 비활성화
   useEffect(() => {
-    const isDisable = !principal || !account;
+    const isDisable = !principal || !account ||  !password || !agreementSent;
     setDisableJoin(isDisable);
-  }, [principal, account]);
+  }, [principal, account, password, agreementSent]);
 
   return (
     <div className="joinFormWrapper">
