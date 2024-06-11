@@ -91,7 +91,7 @@ function AfterTeller() {
           </label>
         </div>
 
-        <Button type="submit" shape="rect" onClick={handleSubmit}>
+        <Button type="submit" shape="rect" onClick={handleSubmit} style={{ "font-size": "25px" }}size="medium">
           확인
         </Button>
       </form>

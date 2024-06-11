@@ -61,7 +61,7 @@ function AfterCustomer() {
         />
         <div className="dummy"></div>
 
-        <Button type="submit" shape="rect" onClick={handleSubmit}>
+        <Button type="submit" shape="rect" onClick={handleSubmit} style={{ "font-size": "25px" }}size="medium">
           제출
         </Button>
       </form>
